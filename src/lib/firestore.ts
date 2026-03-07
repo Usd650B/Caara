@@ -1,0 +1,175 @@
+import { 
+  collection, 
+  doc, 
+  addDoc, 
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  orderBy, 
+  limit,
+  where,
+  Timestamp 
+} from 'firebase/firestore';
+import { db } from './firebase';
+
+// Products collection
+const PRODUCTS_COLLECTION = 'products';
+const ORDERS_COLLECTION = 'orders';
+
+export interface Product {
+  id?: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  category: string;
+  stock: number;
+  status: 'active' | 'out-of-stock';
+  description?: string;
+  image?: string;
+  sizes?: string[];
+  colors?: string[];
+  rating?: number;
+  reviews?: number;
+  badge?: 'Sale' | 'New' | 'Premium' | null;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface Order {
+  id?: string;
+  customerEmail: string;
+  customerName: string;
+  items: OrderItem[];
+  total: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    phone: string;
+  };
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  size?: string;
+  color?: string;
+}
+
+// Product operations
+export const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
+  try {
+    const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
+      ...product,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error adding product:', error);
+    return { success: false, error: 'Failed to add product' };
+  }
+};
+
+export const getProducts = async (): Promise<Product[]> => {
+  try {
+    console.log('Fetching products from Firestore...');
+    console.log('Database instance:', db);
+    
+    const q = query(collection(db, PRODUCTS_COLLECTION), orderBy('createdAt', 'desc'));
+    console.log('Query created:', q);
+    
+    const querySnapshot = await getDocs(q);
+    console.log('Query snapshot received:', querySnapshot);
+    
+    const products = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Product));
+    
+    console.log('Products fetched:', products);
+    console.log('Number of products:', products.length);
+    
+    return products;
+  } catch (error) {
+    console.error('Error getting products:', error);
+    console.error('Error details:', (error as Error).message);
+    console.error('Error code:', (error as any).code);
+    // Return empty array instead of mock data
+    return [];
+  }
+};
+
+export const updateProduct = async (id: string, product: Partial<Product>) => {
+  try {
+    await updateDoc(doc(db, PRODUCTS_COLLECTION, id), {
+      ...product,
+      updatedAt: Timestamp.now()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return { success: false, error: 'Failed to update product' };
+  }
+};
+
+export const deleteProduct = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return { success: false, error: 'Failed to delete product' };
+  }
+};
+
+// Order operations
+export const createOrder = async (order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => {
+  try {
+    const docRef = await addDoc(collection(db, ORDERS_COLLECTION), {
+      ...order,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error creating order:', error);
+    return { success: false, error: 'Failed to create order' };
+  }
+};
+
+export const getOrders = async (): Promise<Order[]> => {
+  try {
+    const q = query(collection(db, ORDERS_COLLECTION), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Order));
+  } catch (error) {
+    console.error('Error getting orders:', error);
+    return [];
+  }
+};
+
+export const updateOrder = async (id: string, order: Partial<Order>) => {
+  try {
+    await updateDoc(doc(db, ORDERS_COLLECTION, id), {
+      ...order,
+      updatedAt: Timestamp.now()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return { success: false, error: 'Failed to update order' };
+  }
+};

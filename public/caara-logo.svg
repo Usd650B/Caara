@@ -1,0 +1,15 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="120" height="40" rx="12" fill="url(#bg)"/>
+  <g>
+    <path d="M30 30c-4-8 2-18 10-18s14 10 10 18" fill="#fff"/>
+    <ellipse cx="40" cy="20" rx="8" ry="8" fill="#ec4899"/>
+    <rect x="52" y="12" width="36" height="16" rx="8" fill="#fff"/>
+    <text x="60" y="25" font-family="Segoe UI, sans-serif" font-size="14" font-weight="bold" fill="#ec4899">Caara</text>
+  </g>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="120" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ec4899"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+</svg>
