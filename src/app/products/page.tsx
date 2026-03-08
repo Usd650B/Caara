@@ -187,84 +187,86 @@ export default function ProductsPage() {
             ) : (
               sortedProducts.map((product) => (
                 <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="group hover:shadow-lg transition-shadow overflow-hidden bg-white border border-gray-100 cursor-pointer">
-                  <CardContent className="p-0">
-                    <div className="relative">
-                      {/* Product Image */}
-                      <div className="aspect-square bg-gray-50 flex items-center justify-center">
+                  <Card className="group cursor-pointer border-0 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
+                    <div className="relative overflow-hidden">
+                      <div className="aspect-[3/4] bg-gray-50">
                         {product.image ? (
                           <img 
                             src={product.image} 
                             alt={product.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                             <ShoppingCart className="h-12 w-12 text-gray-400" />
                           </div>
                         )}
                       </div>
                       
-                      {/* NEW Badge */}
+                      {/* Badge */}
                       {product.badge === "New" && (
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-black text-white">
+                        <div className="absolute top-2 left-2">
+                          <span className="px-2 py-1 text-xs font-medium bg-black text-white rounded">
                             NEW
                           </span>
                         </div>
                       )}
 
-                      {/* Quick Add to Cart */}
-                      <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button 
-                          className="w-full bg-black text-white hover:bg-gray-800 text-xs"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const cartItem = {
-                              id: product.id,
-                              name: product.name,
-                              price: product.price,
-                              image: product.image,
-                              quantity: 1,
-                              size: "M", // Default size
-                              color: "Black" // Default color
-                            };
-                            const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-                            existingCart.push(cartItem);
-                            localStorage.setItem('cart', JSON.stringify(existingCart));
-                            
-                            // Dispatch custom event to update header cart count
-                            window.dispatchEvent(new CustomEvent('cart-updated'));
-                            
-                            alert('Product added to cart!');
-                          }}
-                        >
-                          <ShoppingCart className="h-3 w-3 mr-1" />
-                          Quick Add
-                        </Button>
+                      {/* Hover Actions */}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="flex flex-col space-y-2">
+                          <Button 
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const cartItem = {
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.image,
+                                quantity: 1,
+                                size: "M",
+                                color: "Black"
+                              };
+                              const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                              existingCart.push(cartItem);
+                              localStorage.setItem('cart', JSON.stringify(existingCart));
+                              window.dispatchEvent(new CustomEvent('cart-updated'));
+                              alert('Added to cart! ✨');
+                            }}
+                          >
+                            Add to Cart
+                          </Button>
+                          <Button 
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert('Added to wishlist! ❤️');
+                            }}
+                          >
+                            <Heart className="h-4 w-4 mr-1" />
+                            Wishlist
+                          </Button>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="p-4 space-y-3">
-                      {/* Product Name */}
-                      <h3 className="font-medium text-sm text-black hover:text-gray-800 transition-colors line-clamp-2">
+                    <div className="p-4">
+                      <h3 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors">
                         {product.name}
                       </h3>
-
-                      {/* Price */}
                       <div className="flex items-center justify-between">
-                        <span className="text-black font-bold text-sm">${product.price}</span>
+                        <span className="text-lg font-semibold text-black">
+                          ${product.price}
+                        </span>
                         {product.originalPrice && (
-                          <span className="text-xs text-gray-500 line-through">
+                          <span className="text-sm text-gray-500 line-through">
                             ${product.originalPrice}
                           </span>
                         )}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </Card>
                 </Link>
               ))
             )}

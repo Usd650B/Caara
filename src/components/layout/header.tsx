@@ -49,14 +49,11 @@ export function Header() {
           </Button>
 
           {/* Center - Logo */}
-              <Link href="/" className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-full overflow-hidden">
-                  <img src="/caara-logo.svg" alt="Caara Logo" className="w-full h-full object-cover" />
-                </div>
-                <span className="text-xl font-bold text-black font-serif bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                  Caara
-                </span>
-              </Link>
+          <Link href="/" className="flex items-center">
+            <span className="text-2xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+              CAARA
+            </span>
+          </Link>
 
           {/* Right - Search and Cart */}
           <div className="flex items-center space-x-2">

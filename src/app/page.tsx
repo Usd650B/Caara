@@ -231,107 +231,85 @@ export default function Home() {
             ) : (
               featuredProducts.map((product) => (
                 <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="card-compact group cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                    <CardContent className="p-0">
-                      <div className="relative overflow-hidden">
-                        <div className="aspect-[3/4] bg-gradient-to-br from-purple-50 to-pink-50">
-                          {product.image ? (
-                            <img 
-                              src={product.image} 
-                              alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                              <ShoppingBag className="h-12 w-12 text-purple-400" />
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Floating Badge */}
-                        {product.badge === "New" && (
-                          <div className="absolute top-3 left-3">
-                            <span className="px-3 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
-                              NEW
-                            </span>
+                  <Card className="group cursor-pointer border-0 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden bg-white">
+                    <div className="relative overflow-hidden">
+                      <div className="aspect-[3/4] bg-gray-50">
+                        {product.image ? (
+                          <img 
+                            src={product.image} 
+                            alt={product.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                            <ShoppingBag className="h-12 w-12 text-gray-400" />
                           </div>
                         )}
-
-                        {/* Quick Actions */}
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <div className="flex space-x-2">
-                            <Button 
-                              className="bg-white text-purple-600 hover:bg-purple-600 hover:text-white border-2 border-purple-600 transform hover:scale-110 transition-all duration-300"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const cartItem = {
-                                  id: product.id,
-                                  name: product.name,
-                                  price: product.price,
-                                  image: product.image,
-                                  quantity: 1,
-                                  size: "M",
-                                  color: "Black"
-                                };
-                                const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-                                existingCart.push(cartItem);
-                                localStorage.setItem('cart', JSON.stringify(existingCart));
-                                window.dispatchEvent(new CustomEvent('cart-updated'));
-                                alert('Added to cart! ✨');
-                              }}
-                            >
-                              <ShoppingCart className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              className="bg-white text-pink-600 hover:bg-pink-600 hover:text-white border-2 border-pink-600 transform hover:scale-110 transition-all duration-300"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // Add to wishlist functionality
-                                alert('Added to wishlist! ❤️');
-                              }}
-                            >
-                              <Heart className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
                       </div>
-
-                      <div className="p-4 space-y-3">
-                        <h3 className="heading-card line-clamp-2 group-hover:text-purple-600 transition-colors">
-                          {product.name}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                              ${product.price}
-                            </span>
-                            {product.originalPrice && (
-                              <span className="text-caption text-gray-500 line-through">
-                                ${product.originalPrice}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`h-3 w-3 ${
-                                  i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        {/* View Details Indicator */}
-                        <div className="flex items-center justify-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="text-xs text-purple-600 font-medium flex items-center">
-                            View Details <ArrowRight className="h-3 w-3 ml-1" />
+                      
+                      {/* Badge */}
+                      {product.badge === "New" && (
+                        <div className="absolute top-2 left-2">
+                          <span className="px-2 py-1 text-xs font-medium bg-black text-white rounded">
+                            NEW
                           </span>
                         </div>
+                      )}
+
+                      {/* Hover Actions */}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="flex flex-col space-y-2">
+                          <Button 
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const cartItem = {
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.image,
+                                quantity: 1,
+                                size: "M",
+                                color: "Black"
+                              };
+                              const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                              existingCart.push(cartItem);
+                              localStorage.setItem('cart', JSON.stringify(existingCart));
+                              window.dispatchEvent(new CustomEvent('cart-updated'));
+                              alert('Added to cart! ✨');
+                            }}
+                          >
+                            Add to Cart
+                          </Button>
+                          <Button 
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert('Added to wishlist! ❤️');
+                            }}
+                          >
+                            <Heart className="h-4 w-4 mr-1" />
+                            Wishlist
+                          </Button>
+                        </div>
                       </div>
-                    </CardContent>
+                    </div>
+
+                    <div className="p-4">
+                      <h3 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-black">
+                          ${product.price}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-gray-500 line-through">
+                            ${product.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </Card>
                 </Link>
               ))
