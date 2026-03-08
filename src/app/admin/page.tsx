@@ -615,6 +615,16 @@ export default function AdminPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+      console.log('Edit form submitted');
+      console.log('Form data:', formData);
+      console.log('Edit product ID:', editProduct?.id);
+      
+      // Basic validation
+      if (!formData.name || !formData.price || !formData.category) {
+        alert('Please fill in all required fields (name, price, category)');
+        return;
+      }
+      
       const updatedProduct = {
         name: formData.name,
         price: parseFloat(formData.price),
@@ -630,13 +640,20 @@ export default function AdminPage() {
         colors: formData.colors,
         badge: formData.badge
       };
+      
+      console.log('Updating product with data:', updatedProduct);
+      
       const { updateProduct } = await import("@/lib/firestore");
       const result = await updateProduct(editProduct.id!, updatedProduct);
+      console.log('Update result:', result);
+      
       if (result.success) {
         setEditProduct(null);
         loadProducts();
+        alert('Product updated successfully!');
       } else {
-        alert("Failed to update product");
+        console.error('Update failed:', result.error);
+        alert("Failed to update product: " + (result.error || 'Unknown error'));
       }
     };
 

@@ -146,14 +146,32 @@ export const getProducts = async (): Promise<Product[]> => {
 
 export const updateProduct = async (id: string, product: Partial<Product>) => {
   try {
-    await updateDoc(doc(db, PRODUCTS_COLLECTION, id), {
+    console.log('Updating product with ID:', id);
+    console.log('Product data to update:', product);
+    
+    const productData = {
       ...product,
       updatedAt: Timestamp.now()
-    });
+    };
+    
+    console.log('Final product data for Firestore:', productData);
+    
+    await updateDoc(doc(db, PRODUCTS_COLLECTION, id), productData);
+    console.log('Product updated successfully in Firestore');
+    
     return { success: true };
   } catch (error) {
     console.error('Error updating product:', error);
-    return { success: false, error: 'Failed to update product' };
+    console.error('Error details:', (error as Error).message);
+    console.error('Error code:', (error as any).code);
+    
+    // Check if it's a permissions error
+    if ((error as any).code === 'permission-denied') {
+      console.error('Permission denied - check Firebase rules');
+      return { success: false, error: 'Permission denied - check Firebase rules' };
+    }
+    
+    return { success: false, error: (error as Error).message || 'Failed to update product' };
   }
 };
 
