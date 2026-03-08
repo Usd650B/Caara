@@ -25,8 +25,8 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Caara - Trendy Women's Fashion | Shop the Latest Styles",
-  description: "Discover the latest trendy women's clothing at Caara. Shop affordable, fashionable pieces with fast shipping. Your go-to destination for modern style like SHEIN.",
+  title: "CARA - Trendy Women's Fashion | Shop the Latest Styles",
+  description: "Discover the latest trendy women's clothing at CARA. Shop affordable, fashionable pieces with fast shipping. Your go-to destination for modern style like SHEIN.",
 };
 
 export default function RootLayout({

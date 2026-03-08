@@ -10,7 +10,7 @@ import { signInAsSeller } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState("admin@caara.com");
+  const [email, setEmail] = useState("admin@cara.com");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
     setError("");
 
     // Simple authentication for single seller
-    if (email === "admin@caara.com" && password === "caara123") {
+    if (email === "admin@cara.com" && password === "caara123") {
       const result = await signInAsSeller();
       if (result.success) {
         router.push("/admin");
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
           <div className="mx-auto h-12 w-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
             <Lock className="h-6 w-6 text-white" />
           </div>
-          <CardTitle className="text-2xl">Caara Admin</CardTitle>
+          <CardTitle className="text-2xl">CARA Admin</CardTitle>
           <p className="text-gray-600">Sign in to manage your store</p>
         </CardHeader>
         <CardContent>

@@ -1156,7 +1156,7 @@ export default function AdminPage() {
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-lg border-r flex flex-col py-8 px-6">
         <div className="mb-10">
-          <h1 className="text-2xl font-bold text-pink-600">Caara Admin</h1>
+          <h1 className="text-2xl font-bold text-pink-600">CARA Admin</h1>
         </div>
         <nav className="flex-1 space-y-2">
           <button

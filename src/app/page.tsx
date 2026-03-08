@@ -59,33 +59,25 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      {/* Animated Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-blue-600/20 animate-pulse"></div>
-          <div className="absolute top-20 left-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-40 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center">
+        {/* Content */}
+        <div className="text-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-6 sm:space-y-8">
             {/* Animated Badge */}
-            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 py-2 sm:px-6 py-3 rounded-full shadow-lg">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 animate-pulse" />
-              <span className="text-xs sm:text-sm font-semibold text-gray-800">Limited Edition Collection</span>
+            <div className="inline-flex items-center space-x-2 bg-gray-100 px-4 py-2 sm:px-6 py-3 rounded-full shadow-lg border border-gray-200">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-black animate-pulse" />
+              <span className="text-xs sm:text-sm font-semibold text-black uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>The Art of Being Unforgettable</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-3 sm:space-y-4">
-              <h1 className="heading-hero text-2xl sm:text-3xl md:text-4xl lg:text-6xl bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
-                Caara Fashion
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+                Every Queen Wear CARA
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-700 font-light max-w-3xl mx-auto font-inter">
-                Where Style Meets <span className="font-semibold text-purple-600">Elegance</span>
+              <p className="text-lg sm:text-xl md:text-2xl text-black font-light max-w-3xl mx-auto tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
+                ......
               </p>
             </div>
 
@@ -94,59 +86,49 @@ export default function Home() {
               <Link href="/products">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="bg-black text-white hover:bg-gray-800 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold tracking-wider shadow-xl transform hover:scale-105 transition-all duration-300"
+                  style={{ fontFamily: 'Georgia, serif' }}
                 >
-                  Shop Collection <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  Enter the World <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold transform hover:scale-105 transition-all duration-300"
+                className="border-2 border-black text-black hover:bg-black hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold tracking-wider transform hover:scale-105 transition-all duration-300"
+                style={{ fontFamily: 'Georgia, serif' }}
               >
-                View Lookbook
+                Discover More
               </Button>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 sm:gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-600">10K+</div>
-                <div className="text-xs sm:text-sm text-gray-600">Happy Customers</div>
+                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>10K+</div>
+                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Style Icons</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-pink-600">500+</div>
-                <div className="text-xs sm:text-sm text-gray-600">Unique Designs</div>
+                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>500+</div>
+                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Signature Pieces</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600">4.9★</div>
-                <div className="text-xs sm:text-sm text-gray-600">Average Rating</div>
+                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>∞</div>
+                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Possibilities</div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Floating Elements */}
-        <div className="absolute top-20 right-10 animate-float">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
-            <Crown className="h-8 w-8 text-white" />
-          </div>
-        </div>
-        <div className="absolute bottom-20 left-10 animate-float-delayed">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg">
-            <Diamond className="h-8 w-8 text-white" />
           </div>
         </div>
       </section>
 
       {/* Interactive Categories */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="heading-section mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Shop by Category
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+              Define Your Universe
             </h2>
-            <p className="text-body text-gray-600">Discover your perfect style</p>
+            <p className="text-gray-600 text-lg font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Every piece tells your story</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -170,9 +152,9 @@ export default function Home() {
                       activeCategory === category.id ? 'text-white' : 'text-white'
                     }`} />
                   </div>
-                  <span className={`font-semibold text-sm ${
-                    activeCategory === category.id ? 'text-white' : 'text-gray-700'
-                  }`}>
+                  <span className={`font-semibold text-sm tracking-wide uppercase ${
+                    activeCategory === category.id ? 'text-white' : 'text-black'
+                  }`} style={{ fontFamily: 'Georgia, serif' }}>
                     {category.name}
                   </span>
                 </div>
@@ -188,17 +170,17 @@ export default function Home() {
       </section>
 
       {/* Featured Products with Enhanced Design */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-sm">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-3 rounded-full mb-4">
-              <TrendingUp className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-semibold text-purple-800">TRENDING NOW</span>
+            <div className="inline-flex items-center space-x-2 bg-gray-100 px-6 py-3 rounded-full mb-4">
+              <TrendingUp className="h-5 w-5 text-black" />
+              <span className="text-sm font-semibold text-black uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>CULTURE CREATORS</span>
             </div>
-            <h2 className="heading-section mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Featured Collection
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+              The Collection
             </h2>
-            <p className="text-body text-gray-600 max-w-2xl mx-auto">Handpicked pieces that are taking the fashion world by storm</p>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Curated pieces that become part of your identity</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
@@ -206,26 +188,26 @@ export default function Home() {
               Array.from({ length: 8 }).map((_, index) => (
                 <Card key={index} className="animate-pulse">
                   <CardContent className="p-0">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-purple-200 to-pink-200"></div>
+                    <div className="aspect-[3/4] bg-gray-200"></div>
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gradient-to-r from-purple-200 to-pink-200 rounded"></div>
-                      <div className="h-4 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-3/4"></div>
-                      <div className="h-6 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-1/2"></div>
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-6 bg-gray-200 rounded w-1/2"></div>
                     </div>
                   </CardContent>
                 </Card>
               ))
             ) : featuredProducts.length === 0 ? (
               <div className="col-span-full text-center py-20">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShoppingBag className="h-10 w-10 text-purple-600" />
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShoppingBag className="h-10 w-10 text-black" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Coming Soon
+                <h3 className="text-2xl font-black mb-2 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+                  The Future Awaits
                 </h3>
-                <p className="text-gray-600 mb-6">We're curating something amazing for you!</p>
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white" asChild>
-                  <Link href="/products">Browse All Products</Link>
+                <p className="text-gray-600 mb-6 font-light" style={{ fontFamily: 'Georgia, serif' }}>Something extraordinary is coming your way</p>
+                <Button className="bg-black text-white hover:bg-gray-800 font-semibold tracking-wider" style={{ fontFamily: 'Georgia, serif' }} asChild>
+                  <Link href="/products">Explore the Universe</Link>
                 </Button>
               </div>
             ) : (
@@ -250,7 +232,7 @@ export default function Home() {
                       {/* Badge */}
                       {product.badge === "New" && (
                         <div className="absolute top-2 left-2">
-                          <span className="px-2 py-1 text-xs font-medium bg-black text-white rounded">
+                          <span className="px-2 py-1 text-xs font-semibold bg-black text-white rounded uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
                             NEW
                           </span>
                         </div>
@@ -260,7 +242,8 @@ export default function Home() {
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="flex flex-col space-y-2">
                           <Button 
-                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm font-semibold tracking-wider"
+                            style={{ fontFamily: 'Georgia, serif' }}
                             onClick={(e) => {
                               e.stopPropagation();
                               const cartItem = {
@@ -279,32 +262,33 @@ export default function Home() {
                               alert('Added to cart! ✨');
                             }}
                           >
-                            Add to Cart
+                            Make It Yours
                           </Button>
                           <Button 
-                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm"
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm font-semibold tracking-wider"
+                            style={{ fontFamily: 'Georgia, serif' }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert('Added to wishlist! ❤️');
+                              alert('Saved to your collection! ❤️');
                             }}
                           >
                             <Heart className="h-4 w-4 mr-1" />
-                            Wishlist
+                            Save
                           </Button>
                         </div>
                       </div>
                     </div>
 
                     <div className="p-4">
-                      <h3 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors">
+                      <h3 className="font-medium text-black text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
                         {product.name}
                       </h3>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-semibold text-black">
+                        <span className="text-lg font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
                           ${product.price}
                         </span>
                         {product.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">
+                          <span className="text-sm text-gray-500 line-through font-medium" style={{ fontFamily: 'Georgia, serif' }}>
                             ${product.originalPrice}
                           </span>
                         )}
@@ -318,88 +302,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      {/* Culture Section - Replacing Testimonials */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="heading-section mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              What Our Customers Say
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+              The CARA Culture
             </h2>
-            <p className="text-body text-gray-600">Real reviews from real customers</p>
+            <p className="text-gray-600 text-lg font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>More than fashion, it's a movement</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="card-compact bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 font-poppins">{testimonial.name}</h4>
-                      <div className="flex items-center">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-body text-gray-600 italic font-inter">"{testimonial.text}"</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-black" style={{ fontFamily: 'Georgia, serif' }}>B</span>
+              </div>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Be Bold</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Dare to stand out, embrace your uniqueness</p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-black" style={{ fontFamily: 'Georgia, serif' }}>E</span>
+              </div>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Be Extraordinary</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Elevate every moment, make it count</p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-black" style={{ fontFamily: 'Georgia, serif' }}>Y</span>
+              </div>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Be You</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Authenticity is your greatest power</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50 backdrop-blur-sm">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
                 <Gift className="h-8 w-8 text-white" />
               </div>
-              <h3 className="heading-card text-gray-900">Free Shipping</h3>
-              <p className="text-body text-gray-600">On orders over $50</p>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Beyond Fashion</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Free shipping on your journey</p>
             </div>
             <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
                 <Heart className="h-8 w-8 text-white" />
               </div>
-              <h3 className="heading-card text-gray-900">Easy Returns</h3>
-              <p className="text-body text-gray-600">30-day return policy</p>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Love It or Exchange</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>30 days to find your perfect match</p>
             </div>
             <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <h3 className="heading-card text-gray-900">Premium Quality</h3>
-              <p className="text-body text-gray-600">Carefully selected materials</p>
+              <h3 className="text-xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>Crafted Excellence</h3>
+              <p className="text-gray-600 font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Every piece tells a story</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-12 shadow-2xl">
-            <h2 className="heading-hero text-white mb-4">
-              Ready to Transform Your Style?
+          <div className="bg-black rounded-3xl p-12 shadow-2xl">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+              Ready to Become Iconic?
             </h2>
-            <p className="text-body text-white/90 mb-8 max-w-2xl mx-auto">
-              Join thousands of stylish women who have discovered their perfect look with Caara.
+            <p className="text-white/90 mb-8 max-w-2xl mx-auto text-lg font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
+              Join the movement. Wear CARA. Create your legacy.
             </p>
             <Link href="/products">
               <Button 
                 size="lg" 
-                className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="bg-white text-black hover:bg-gray-100 px-8 py-4 text-lg font-semibold tracking-wider shadow-xl transform hover:scale-105 transition-all duration-300"
+                style={{ fontFamily: 'Georgia, serif' }}
               >
-                Start Shopping Now <ArrowRight className="ml-2 h-5 w-5" />
+                Begin Your Journey <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>

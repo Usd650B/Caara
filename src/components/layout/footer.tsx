@@ -9,10 +9,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="h-8 w-8 rounded-full overflow-hidden">
-                <img src="/cara-logo.svg" alt="Cara Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-xl font-bold font-serif">CAARA</span>
+              <span className="text-xl font-bold font-serif">CARA</span>
             </div>
             <p className="text-gray-300 mb-4">
               Discover your unique style with our curated collection of women's fashion. From casual chic to elegant evening wear.
@@ -87,7 +84,7 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">hello@caara.com</span>
+                <span className="text-gray-300">hello@cara.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-gray-400" />
@@ -105,7 +102,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-                &copy; 2024 CAARA. All rights reserved.
+                &copy; 2024 CARA. All rights reserved.
             </p>
             <p className="text-gray-400 text-sm">
               Made with &hearts; for fashion lovers

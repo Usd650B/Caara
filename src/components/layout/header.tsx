@@ -51,7 +51,7 @@ export function Header() {
           {/* Center - Logo */}
           <Link href="/" className="flex items-center">
             <span className="text-2xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
-              CAARA
+              CARA
             </span>
           </Link>
 
