@@ -314,68 +314,44 @@ export default function AdminPage() {
       image: "",
       sizes: [] as string[],
       colors: [] as string[],
-      badge: undefined as "New" | "Sale" | "Premium" | undefined
+      badge: undefined as "New" | "Sale" | "Premium" | undefined,
     });
-
     const handleImageUpload = (imageUrl: string): void => {
       setFormData(prev => ({ ...prev, image: imageUrl }));
     };
-
     const handleSizeToggle = (size: string) => {
-      setFormData(prev => ({
-        ...prev,
-        sizes: prev.sizes.includes(size)
-          ? prev.sizes.filter(s => s !== size)
-          : [...prev.sizes, size]
-      }));
+      setFormData(prev => {
+        const prevSizes = prev.sizes || [];
+        return ({
+          ...prev,
+          sizes: prevSizes.includes(size) ? prevSizes.filter(s => s !== size) : [...prevSizes, size]
+        });
+      });
     };
-
     const handleColorToggle = (color: string) => {
-      setFormData(prev => ({
-        ...prev,
-        colors: prev.colors.includes(color)
-          ? prev.colors.filter(c => c !== color)
-          : [...prev.colors, color]
-      }));
+      setFormData(prev => {
+        const prevColors = prev.colors || [];
+        return ({
+          ...prev,
+          colors: prevColors.includes(color) ? prevColors.filter(c => c !== color) : [...prevColors, color]
+        });
+      });
     };
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      
-      const productData = {
-        name: formData.name,
-        price: parseFloat(formData.price),
-        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
-        category: formData.category,
-        stock: parseInt(formData.stock),
-        status: formData.status,
-        description: formData.description,
-        image: formData.image,
-        sizes: formData.sizes,
-        colors: formData.colors,
-        rating: 0,
-        reviews: 0,
-        badge: formData.badge
-      };
-
-      handleAddProduct(productData);
+      // Add product logic here
     };
-
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <Card className="w-full max-w-2xl max-h-[95vh] overflow-y-auto">
-          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50">
-            <CardTitle className="text-2xl">Add New Product</CardTitle>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <Card className="w-full max-w-2xl">
+          <CardHeader>
+            <CardTitle>Add New Product</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 p-6">
+          <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Image Upload */}
               <div>
-                <Label className="text-base font-semibold mb-2 block">Product Image</Label>
-                <ImageUpload
-                  onImageUpload={handleImageUpload}
-                  currentImage={formData.image}
-                />
+                <ImageUpload onImageUpload={handleImageUpload} currentImage={formData.image} />
               </div>
 
               {/* Product Name & Category Row */}
@@ -708,13 +684,61 @@ export default function AdminPage() {
     );
   };
 
-  const OrdersContent = () => (
+  const OrdersContent = ({ orders, isLoading }: { orders: Order[], isLoading: boolean }) => {
+    const [orderSearchTerm, setOrderSearchTerm] = useState<string>("");
+    const [orderFilterStatus, setOrderFilterStatus] = useState<string>("");
+    const filteredOrders: Order[] = orders.filter((order: Order) => {
+      const matchesSearch = order.customerName?.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
+        order.customerEmail?.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
+        order.id?.toLowerCase().includes(orderSearchTerm.toLowerCase());
+      const matchesStatus = !orderFilterStatus || order.status === orderFilterStatus;
+      return matchesSearch && matchesStatus;
+    });
+    function handleExportCSV(): void {
+      const csvRows = [
+        ["Order ID","Customer Name","Customer Email","Date","Total","Status"],
+        ...filteredOrders.map((order: Order) => [
+          order.id,
+          order.customerName,
+          order.customerEmail,
+          order.createdAt?.toDate()?.toLocaleDateString() || "",
+          order.total,
+          order.status
+        ])
+      ];
+      const csvContent = csvRows.map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "orders.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Orders</h2>
-        <Button variant="outline" onClick={loadOrders}>
-          Refresh Orders
-        </Button>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl font-bold">Orders</h2>
+          <Button variant="outline" onClick={loadOrders}>Refresh Orders</Button>
+        </div>
+        <div className="flex gap-2">
+          <Input
+            placeholder="Search orders by customer, email, or ID"
+            value={orderSearchTerm}
+            onChange={e => setOrderSearchTerm(e.target.value)}
+            className="w-64"
+          />
+          <Button variant="outline" onClick={handleExportCSV}>Export CSV</Button>
+          <select value={orderFilterStatus} onChange={e => setOrderFilterStatus(e.target.value)} className="border rounded px-2" title="Order Status Filter">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">In Progress</option>
+            <option value="shipped">Delivered</option>
+            <option value="delivered">Complete</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
       </div>
 
       {/* Orders Table */}
@@ -758,7 +782,7 @@ export default function AdminPage() {
                     </td>
                   </tr>
                 ) : (
-                  orders.map((order) => (
+                  filteredOrders.map((order) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
@@ -826,8 +850,9 @@ export default function AdminPage() {
         </CardContent>
       </Card>
     </div>
-  );
-
+    );
+  };
+  // End of OrdersContent
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
@@ -880,7 +905,7 @@ export default function AdminPage() {
           {/* Content */}
           {activeTab === "dashboard" && <DashboardContent />}
           {activeTab === "products" && <ProductsContent />}
-          {activeTab === "orders" && <OrdersContent />}
+          {activeTab === "orders" && <OrdersContent orders={orders} isLoading={isLoading} />}
         </div>
         {showAddProduct && <AddProductModal />}
         {editProduct && <EditProductModal />}
