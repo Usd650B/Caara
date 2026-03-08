@@ -27,6 +27,8 @@ export interface Product {
   status: 'active' | 'out-of-stock';
   description?: string;
   image?: string;
+  images?: string[]; // Multiple images (up to 3)
+  video?: string; // Product video
   sizes?: string[];
   colors?: string[];
   rating?: number;
@@ -52,6 +54,7 @@ export interface Order {
     zipCode: string;
     phone: string;
   };
+  trackingNumber?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -63,19 +66,36 @@ export interface OrderItem {
   quantity: number;
   size?: string;
   color?: string;
+  image?: string;
 }
 
 // Product operations
-export const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; id?: string; error?: string }> => {
   try {
-    const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
+    console.log('Adding product to Firestore:', product);
+    
+    const productData = {
       ...product,
       createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
-    });
+      status: product.status || 'active'
+    };
+    
+    console.log('Product data to save:', productData);
+    
+    const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), productData);
+    console.log('Product added successfully with ID:', docRef.id);
+    
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error('Error adding product:', error);
+    console.error('Error details:', (error as Error).message);
+    
+    // Check if it's a permissions error
+    if ((error as any).code === 'permission-denied') {
+      console.error('Permission denied - check Firebase rules');
+      return { success: false, error: 'Permission denied - check Firebase rules' };
+    }
+    
     return { success: false, error: 'Failed to add product' };
   }
 };
@@ -91,19 +111,34 @@ export const getProducts = async (): Promise<Product[]> => {
     const querySnapshot = await getDocs(q);
     console.log('Query snapshot received:', querySnapshot);
     
-    const products = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Product));
+    const products = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      console.log('Product data:', data);
+      return {
+        id: doc.id,
+        ...data
+      } as Product;
+    });
     
     console.log('Products fetched:', products);
     console.log('Number of products:', products.length);
+    
+    // If no products found, return empty array (no mock data)
+    if (products.length === 0) {
+      console.log('No products found in Firestore');
+    }
     
     return products;
   } catch (error) {
     console.error('Error getting products:', error);
     console.error('Error details:', (error as Error).message);
     console.error('Error code:', (error as any).code);
+    
+    // Check if it's a permissions error
+    if ((error as any).code === 'permission-denied') {
+      console.error('Permission denied - check Firebase rules');
+    }
+    
     // Return empty array instead of mock data
     return [];
   }

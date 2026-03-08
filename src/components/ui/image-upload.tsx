@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
 interface ImageUploadProps {
   onImageUpload: (url: string) => void;
@@ -41,14 +43,27 @@ export function ImageUpload({ onImageUpload, currentImage, className }: ImageUpl
       };
       reader.readAsDataURL(file);
 
-      // In a real implementation, you would upload to Firebase Storage here
-      // For now, we'll simulate the upload
-      setTimeout(() => {
-        // Simulate getting a download URL
-        const mockUrl = `https://picsum.photos/seed/${Date.now()}/400/400.jpg`;
-        onImageUpload(mockUrl);
+      // Upload to Firebase Storage
+      const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+      
+      try {
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        
+        onImageUpload(downloadUrl);
         setIsUploading(false);
-      }, 1000);
+      } catch (storageError) {
+        console.error('Firebase Storage error:', storageError);
+        
+        // Fallback: Use base64 encoding for now
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64String = e.target?.result as string;
+          onImageUpload(base64String);
+          setIsUploading(false);
+        };
+        reader.readAsDataURL(file);
+      }
 
     } catch (error) {
       console.error('Error uploading image:', error);

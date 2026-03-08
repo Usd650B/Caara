@@ -186,7 +186,8 @@ export default function ProductsPage() {
               </div>
             ) : (
               sortedProducts.map((product) => (
-                <Card key={product.id} className="group hover:shadow-lg transition-shadow overflow-hidden bg-white border border-gray-100">
+                <Link key={product.id} href={`/products/${product.id}`}>
+                  <Card className="group hover:shadow-lg transition-shadow overflow-hidden bg-white border border-gray-100 cursor-pointer">
                   <CardContent className="p-0">
                     <div className="relative">
                       {/* Product Image */}
@@ -218,8 +219,8 @@ export default function ProductsPage() {
                         <Button 
                           className="w-full bg-black text-white hover:bg-gray-800 text-xs"
                           size="sm"
-                          onClick={() => {
-                            // Quick add to cart (simplified)
+                          onClick={(e) => {
+                            e.stopPropagation();
                             const cartItem = {
                               id: product.id,
                               name: product.name,
@@ -264,6 +265,7 @@ export default function ProductsPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </Link>
               ))
             )}
           </div>

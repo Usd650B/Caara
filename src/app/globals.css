@@ -18,6 +18,9 @@
   --ring: #000000;
   --card: #ffffff;
   --card-foreground: #000000;
+  --font-inter: var(--font-inter);
+  --font-poppins: var(--font-poppins);
+  --font-playfair: var(--font-playfair);
 }
 
 @theme inline {
@@ -38,8 +41,9 @@
   --color-ring: var(--ring);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --font-sans: 'Poppins', sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,7 +56,9 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-poppins);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer base {
@@ -63,13 +69,85 @@ body {
     @apply bg-background text-foreground;
   }
   
-  /* Fashion-forward typography */
+  /* Modern Typography Classes */
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+  
+  .font-poppins {
+    font-family: var(--font-poppins);
+  }
+  
+  .font-playfair {
+    font-family: var(--font-playfair);
+  }
+  
   .font-serif {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-playfair);
   }
   
   .font-sans {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-poppins);
+  }
+  
+  /* Modern E-commerce Card Sizes */
+  .card-modern {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden;
+  }
+  
+  .card-compact {
+    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden;
+  }
+  
+  .card-large {
+    @apply bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden;
+  }
+  
+  /* Modern Text Styles */
+  .heading-display {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold leading-tight;
+    font-family: var(--font-playfair);
+  }
+  
+  .heading-hero {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold leading-tight;
+    font-family: var(--font-poppins);
+  }
+  
+  .heading-section {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+    font-family: var(--font-poppins);
+  }
+  
+  .heading-card {
+    @apply text-lg md:text-xl font-semibold leading-tight;
+    font-family: var(--font-poppins);
+  }
+  
+  .text-body {
+    @apply text-sm md:text-base leading-relaxed;
+    font-family: var(--font-inter);
+  }
+  
+  .text-caption {
+    @apply text-xs md:text-sm leading-relaxed;
+    font-family: var(--font-inter);
+  }
+  
+  /* Modern Button Styles */
+  .btn-primary {
+    @apply bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg;
+    font-family: var(--font-poppins);
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-black px-6 py-3 rounded-xl font-semibold border-2 border-black hover:bg-gray-100 transition-all duration-300 transform hover:scale-105;
+    font-family: var(--font-poppins);
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300;
+    font-family: var(--font-poppins);
   }
 }
 
@@ -108,4 +186,94 @@ body {
 
 .fashion-text-shadow {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern E-commerce Grid */
+.grid-modern {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6;
+}
+
+.grid-compact {
+  @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4;
+}
+
+.grid-large {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8;
+}
+
+/* Mobile-First Responsive Utilities */
+.container-mobile {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.text-mobile {
+  @apply text-sm sm:text-base;
+}
+
+.heading-mobile {
+  @apply text-xl sm:text-2xl lg:text-3xl;
+}
+
+.button-mobile {
+  @apply px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base;
+}
+
+.card-mobile {
+  @apply rounded-lg sm:rounded-xl;
+}
+
+/* Mobile Touch Targets */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  @apply fixed inset-0 bg-white z-50 transform translate-x-0 transition-transform duration-300;
+}
+
+.mobile-menu.closed {
+  @apply translate-x-full;
+}
+
+/* Mobile Product Cards */
+.product-card-mobile {
+  @apply aspect-[3/4] sm:aspect-square;
+}
+
+/* Mobile Navigation */
+.nav-mobile {
+  @apply flex-col sm:flex-row;
+}
+
+/* Mobile Forms */
+.form-mobile {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.form-group-mobile {
+  @apply flex-col sm:flex-row sm:space-x-4;
+}
+
+/* Mobile Tables */
+.table-mobile {
+  @apply block sm:hidden;
+}
+
+.table-desktop {
+  @apply hidden sm:block;
+}
+
+/* Mobile Images */
+.img-mobile {
+  @apply w-full h-auto;
+}
+
+/* Mobile Spacing */
+.space-y-mobile {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.space-x-mobile {
+  @apply space-x-2 sm:space-x-4;
 }

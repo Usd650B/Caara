@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, TrendingUp, LogOut } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, TrendingUp, LogOut, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
 import { getProducts, addProduct, Product, getOrders, Order } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { MultiMediaUpload } from "@/components/ui/multi-media-upload";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -312,10 +313,20 @@ export default function AdminPage() {
       status: "active" as "active" | "out-of-stock",
       description: "",
       image: "",
+      images: [] as string[],
+      video: "",
       sizes: [] as string[],
       colors: [] as string[],
       badge: undefined as "New" | "Sale" | "Premium" | undefined,
     });
+    const handleImagesChange = (urls: string[]): void => {
+      setFormData(prev => ({ ...prev, images: urls }));
+    };
+    
+    const handleVideoChange = (url: string | null): void => {
+      setFormData(prev => ({ ...prev, video: url || "" }));
+    };
+    
     const handleImageUpload = (imageUrl: string): void => {
       setFormData(prev => ({ ...prev, image: imageUrl }));
     };
@@ -339,7 +350,24 @@ export default function AdminPage() {
     };
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      // Add product logic here
+      
+      const productData = {
+        name: formData.name,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
+        category: formData.category,
+        stock: parseInt(formData.stock),
+        status: formData.status,
+        description: formData.description,
+        image: formData.images[0] || formData.image, // Use first image as primary
+        images: formData.images,
+        video: formData.video,
+        sizes: formData.sizes,
+        colors: formData.colors,
+        badge: formData.badge
+      };
+      
+      await handleAddProduct(productData);
     };
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
@@ -349,9 +377,14 @@ export default function AdminPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Image Upload */}
+              {/* Multi-Media Upload */}
               <div>
-                <ImageUpload onImageUpload={handleImageUpload} currentImage={formData.image} />
+                <MultiMediaUpload 
+                  onImagesChange={handleImagesChange}
+                  onVideoChange={handleVideoChange}
+                  initialImages={formData.images}
+                  initialVideo={formData.video}
+                />
               </div>
 
               {/* Product Name & Category Row */}
@@ -541,11 +574,21 @@ export default function AdminPage() {
       status: editProduct.status || "active",
       description: editProduct.description || "",
       image: editProduct.image || "",
+      images: editProduct.images || [],
+      video: editProduct.video || "",
       sizes: editProduct.sizes || [],
       colors: editProduct.colors || [],
       badge: editProduct.badge
     });
 
+    const handleImagesChange = (urls: string[]): void => {
+      setFormData(prev => ({ ...prev, images: urls }));
+    };
+    
+    const handleVideoChange = (url: string | null): void => {
+      setFormData(prev => ({ ...prev, video: url || "" }));
+    };
+    
     const handleImageUpload = (imageUrl: string): void => {
       setFormData(prev => ({ ...prev, image: imageUrl }));
     };
@@ -580,7 +623,9 @@ export default function AdminPage() {
         stock: parseInt(formData.stock),
         status: formData.status as Product['status'],
         description: formData.description,
-        image: formData.image,
+        image: formData.images[0] || formData.image, // Use first image as primary
+        images: formData.images,
+        video: formData.video,
         sizes: formData.sizes,
         colors: formData.colors,
         badge: formData.badge
@@ -604,8 +649,13 @@ export default function AdminPage() {
           <CardContent className="space-y-6 p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <Label className="text-base font-semibold mb-2 block">Product Image</Label>
-                <ImageUpload onImageUpload={handleImageUpload} currentImage={formData.image} />
+                <Label className="text-base font-semibold mb-2 block">Product Media</Label>
+                <MultiMediaUpload 
+                  onImagesChange={handleImagesChange}
+                  onVideoChange={handleVideoChange}
+                  initialImages={formData.images}
+                  initialVideo={formData.video}
+                />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -684,9 +734,13 @@ export default function AdminPage() {
     );
   };
 
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
+
   const OrdersContent = ({ orders, isLoading }: { orders: Order[], isLoading: boolean }) => {
     const [orderSearchTerm, setOrderSearchTerm] = useState<string>("");
     const [orderFilterStatus, setOrderFilterStatus] = useState<string>("");
+    const [trackingNumbers, setTrackingNumbers] = useState<{[key: string]: string}>({});
     const filteredOrders: Order[] = orders.filter((order: Order) => {
       const matchesSearch = order.customerName?.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
         order.customerEmail?.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
@@ -752,6 +806,9 @@ export default function AdminPage() {
                     Order ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Products
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Customer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -787,6 +844,32 @@ export default function AdminPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
                           {order.id}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          {order.items.slice(0, 2).map((item, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={item.image || '/placeholder-product.png'}
+                                alt={item.name}
+                                className="w-10 h-10 object-cover rounded-lg border"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = '/placeholder-product.png';
+                                }}
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all" />
+                              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                {item.name}
+                              </div>
+                            </div>
+                          ))}
+                          {order.items.length > 2 && (
+                            <div className="w-10 h-10 bg-gray-100 rounded-lg border flex items-center justify-center text-xs font-medium text-gray-600">
+                              +{order.items.length - 2}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -826,18 +909,32 @@ export default function AdminPage() {
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">In Progress</option>
-                          <option value="shipped">Delivered</option>
-                          <option value="delivered">Complete</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
                           <option value="cancelled">Cancelled</option>
                         </select>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm" onClick={() => router.push(`/order-tracking/${order.id}`)}>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setShowOrderDetails(true);
+                            }}
+                          >
                             View
                           </Button>
-                          <Button variant="ghost" size="sm">
-                            Update Status
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setShowOrderDetails(true);
+                            }}
+                          >
+                            Manage
                           </Button>
                         </div>
                       </td>
@@ -853,6 +950,190 @@ export default function AdminPage() {
     );
   };
   // End of OrdersContent
+
+  const OrderDetailsModal = () => {
+    if (!selectedOrder || !showOrderDetails) return null;
+
+    const [trackingNumber, setTrackingNumber] = useState("");
+    const [notes, setNotes] = useState("");
+
+    const handleUpdateStatus = async (newStatus: Order['status']) => {
+      const { updateOrder } = await import("@/lib/firestore");
+      const result = await updateOrder(selectedOrder.id!, { status: newStatus });
+      if (result.success) {
+        setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+        loadOrders();
+      } else {
+        alert("Failed to update order status");
+      }
+    };
+
+    const handleAddTracking = async () => {
+      if (!trackingNumber.trim()) return;
+      
+      const { updateOrder } = await import("@/lib/firestore");
+      const result = await updateOrder(selectedOrder.id!, { 
+        trackingNumber: trackingNumber.trim(),
+        status: 'shipped'
+      });
+      if (result.success) {
+        setSelectedOrder(prev => prev ? { ...prev, trackingNumber: trackingNumber.trim(), status: 'shipped' } : null);
+        setTrackingNumber("");
+        loadOrders();
+      } else {
+        alert("Failed to add tracking number");
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-2xl">Order Details: {selectedOrder.id}</CardTitle>
+              <Button variant="ghost" onClick={() => setShowOrderDetails(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6 p-6">
+            {/* Order Status */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Order Status</h3>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 text-sm rounded-full ${
+                      selectedOrder.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      selectedOrder.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                      selectedOrder.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                      selectedOrder.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      Placed on {selectedOrder.createdAt?.toDate()?.toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {selectedOrder.status === 'pending' && (
+                    <Button onClick={() => handleUpdateStatus('processing')}>
+                      Start Processing
+                    </Button>
+                  )}
+                  {selectedOrder.status === 'processing' && (
+                    <Button onClick={() => handleUpdateStatus('shipped')}>
+                      Mark as Shipped
+                    </Button>
+                  )}
+                  {selectedOrder.status === 'shipped' && (
+                    <Button onClick={() => handleUpdateStatus('delivered')}>
+                      Mark as Delivered
+                    </Button>
+                  )}
+                  <Button variant="outline" onClick={() => handleUpdateStatus('cancelled')}>
+                    Cancel Order
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Customer Information */}
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Customer Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Name</p>
+                  <p className="font-medium">{selectedOrder.customerName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="font-medium">{selectedOrder.customerEmail}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="font-medium">{selectedOrder.shippingAddress.phone}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="font-medium">
+                    {selectedOrder.shippingAddress.address}, {selectedOrder.shippingAddress.city}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Products */}
+            <div>
+              <h3 className="font-semibold text-lg mb-4">Products</h3>
+              <div className="space-y-4">
+                {selectedOrder.items.map((item, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                    <img
+                      src={item.image || '/placeholder-product.png'}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded-lg border"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-product.png';
+                      }}
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-medium">{item.name}</h4>
+                      <p className="text-sm text-gray-500">Qty: {item.quantity} | Size: {item.size || 'N/A'} | Color: {item.color || 'N/A'}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="text-sm text-gray-500">${item.price} each</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tracking Information */}
+            {selectedOrder.status !== 'pending' && selectedOrder.status !== 'cancelled' && (
+              <div>
+                <h3 className="font-semibold text-lg mb-4">Tracking Information</h3>
+                <div className="space-y-4">
+                  {selectedOrder.trackingNumber ? (
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <p className="text-sm text-green-800">
+                        Tracking Number: <span className="font-mono font-bold">{selectedOrder.trackingNumber}</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter tracking number"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button onClick={handleAddTracking} disabled={!trackingNumber.trim()}>
+                        Add Tracking
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Order Summary */}
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-semibold">Total Amount:</span>
+                <span className="text-2xl font-bold text-pink-600">${selectedOrder.total.toFixed(2)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
@@ -909,6 +1190,7 @@ export default function AdminPage() {
         </div>
         {showAddProduct && <AddProductModal />}
         {editProduct && <EditProductModal />}
+        {showOrderDetails && <OrderDetailsModal />}
       </main>
     </div>
   );
