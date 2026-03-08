@@ -115,12 +115,12 @@ export default function CheckoutPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <Button variant="ghost" asChild className="mb-4">
-          <Link href="/cart">
+        <Link href="/cart">
+          <Button variant="ghost" className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Cart
-          </Link>
-        </Button>
+          </Button>
+        </Link>
         <h1 className="text-3xl font-bold">Checkout</h1>
         <p className="text-gray-600">Complete your order as a guest</p>
       </div>

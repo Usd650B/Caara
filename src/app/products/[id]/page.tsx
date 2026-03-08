@@ -166,12 +166,12 @@ export default function ProductDetailPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
           <p className="text-gray-600 mb-6">The product you're looking for doesn't exist.</p>
-          <Button asChild>
-            <Link href="/products">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Products
+          <Link href="/products">
+              <Button>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Products
+              </Button>
             </Link>
-          </Button>
         </div>
       </div>
     );

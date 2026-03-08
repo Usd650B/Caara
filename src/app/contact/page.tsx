@@ -70,9 +70,11 @@ export default function ContactPage() {
               <Mail className="h-8 w-8 text-black mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">Email Us</h3>
               <p className="text-gray-600 mb-6">We&apos;re preparing amazing products for you. Check back soon!</p>
-              <Button asChild>
-                <Link href="/products">Browse All Categories</Link>
-              </Button>
+              <Link href="/products">
+                <Button>
+                  Browse All Categories
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 

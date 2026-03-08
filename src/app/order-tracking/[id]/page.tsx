@@ -110,12 +110,12 @@ export default function OrderTrackingPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Order Not Found</h1>
           <p className="text-gray-600 mb-6">The order you&apos;re looking for doesn&apos;t exist.</p>
-          <Button asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
+          <Link href="/">
+              <Button>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
             </Link>
-          </Button>
         </div>
       </div>
     );
@@ -125,12 +125,12 @@ export default function OrderTrackingPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Button variant="ghost" asChild className="mb-4">
-          <Link href="/">
+        <Link href="/">
+          <Button variant="ghost" className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
-          </Link>
-        </Button>
+          </Button>
+        </Link>
         <h1 className="text-3xl font-bold">Order Tracking</h1>
         <p className="text-gray-600">Order ID: {order.id}</p>
       </div>
@@ -286,11 +286,11 @@ export default function OrderTrackingPage() {
               <Button className="w-full" variant="outline">
                 Print Receipt
               </Button>
-              <Button className="w-full" asChild>
-                <Link href="/products">
+              <Link href="/products">
+                <Button className="w-full">
                   Shop Again
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 

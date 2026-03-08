@@ -91,13 +91,14 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
-                asChild
-              >
-                Shop Collection <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
+              <Link href="/products">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  Shop Collection <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+              </Link>
               <Button 
                 variant="outline" 
                 size="lg" 
@@ -415,15 +416,14 @@ export default function Home() {
             <p className="text-body text-white/90 mb-8 max-w-2xl mx-auto">
               Join thousands of stylish women who have discovered their perfect look with Caara.
             </p>
-            <Button 
-              size="lg" 
-              className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
-              asChild
-            >
-              <Link href="/products">
+            <Link href="/products">
+              <Button 
+                size="lg" 
+                className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-300"
+              >
                 Start Shopping Now <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
