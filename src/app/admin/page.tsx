@@ -277,10 +277,15 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => setEditProduct(product)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-600">
+                          <Button variant="ghost" size="sm" className="text-red-600" onClick={async () => {
+                            if (!confirm('Delete this product?')) return;
+                            const { deleteProduct } = await import('@/lib/firestore');
+                            const res = await deleteProduct(product.id!);
+                            if (res.success) loadProducts(); else alert('Failed to delete product');
+                          }}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -296,6 +301,7 @@ export default function AdminPage() {
     </div>
   );
 
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
   const AddProductModal = () => {
     const [formData, setFormData] = useState({
       name: "",
@@ -473,7 +479,7 @@ export default function AdminPage() {
               <div>
                 <Label htmlFor="description" className="font-semibold block mb-2">Description</Label>
                 <textarea
-                  id="description"
+                  id="add-description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Product description..."
@@ -539,6 +545,161 @@ export default function AdminPage() {
                 >
                   Add Product
                 </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const EditProductModal = () => {
+    if (!editProduct) return null;
+    const [formData, setFormData] = useState({
+      id: editProduct.id,
+      name: editProduct.name || "",
+      price: editProduct.price?.toString() ?? "",
+      originalPrice: editProduct.originalPrice?.toString() ?? "",
+      category: editProduct.category || "",
+      stock: editProduct.stock?.toString() ?? "0",
+      status: editProduct.status || "active",
+      description: editProduct.description || "",
+      image: editProduct.image || "",
+      sizes: editProduct.sizes || [],
+      colors: editProduct.colors || [],
+      badge: editProduct.badge
+    });
+
+    const handleImageUpload = (imageUrl: string): void => {
+      setFormData(prev => ({ ...prev, image: imageUrl }));
+    };
+
+    const handleSizeToggle = (size: string) => {
+      setFormData(prev => {
+        const prevSizes = prev.sizes || [];
+        return ({
+          ...prev,
+          sizes: prevSizes.includes(size) ? prevSizes.filter(s => s !== size) : [...prevSizes, size]
+        });
+      });
+    };
+
+    const handleColorToggle = (color: string) => {
+      setFormData(prev => {
+        const prevColors = prev.colors || [];
+        return ({
+          ...prev,
+          colors: prevColors.includes(color) ? prevColors.filter(c => c !== color) : [...prevColors, color]
+        });
+      });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      const updatedProduct = {
+        name: formData.name,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
+        category: formData.category,
+        stock: parseInt(formData.stock),
+        status: formData.status as Product['status'],
+        description: formData.description,
+        image: formData.image,
+        sizes: formData.sizes,
+        colors: formData.colors,
+        badge: formData.badge
+      };
+      const { updateProduct } = await import("@/lib/firestore");
+      const result = await updateProduct(editProduct.id!, updatedProduct);
+      if (result.success) {
+        setEditProduct(null);
+        loadProducts();
+      } else {
+        alert("Failed to update product");
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50">
+            <CardTitle className="text-2xl">Edit Product</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Label className="text-base font-semibold mb-2 block">Product Image</Label>
+                <ImageUpload onImageUpload={handleImageUpload} currentImage={formData.image} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="font-semibold">Product Name *</Label>
+                  <Input value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} required className="mt-1" />
+                </div>
+                <div>
+                  <Label className="font-semibold">Category *</Label>
+                  <Input value={formData.category} onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))} required className="mt-1" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <Label className="font-semibold">Sale Price ($) *</Label>
+                  <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} required className="mt-1" />
+                </div>
+                <div>
+                  <Label className="font-semibold">Original Price ($)</Label>
+                  <Input type="number" step="0.01" value={formData.originalPrice} onChange={(e) => setFormData(prev => ({ ...prev, originalPrice: e.target.value }))} className="mt-1" />
+                </div>
+                <div>
+                  <Label className="font-semibold">Stock Quantity *</Label>
+                  <Input type="number" value={formData.stock} onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.value }))} required className="mt-1" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="font-semibold block mb-2">Badge</Label>
+                  <select aria-label="Product Badge Selection" value={formData.badge || "none"} onChange={(e) => setFormData(prev => ({ ...prev, badge: e.target.value === "none" ? undefined : e.target.value as "New" | "Sale" | "Premium" }))} className="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="none">No Badge</option>
+                    <option value="New">New</option>
+                    <option value="Sale">Sale</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="font-semibold block mb-2">Status</Label>
+                  <select aria-label="Product Status Selection" value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as "active" | "out-of-stock" }))} className="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="active">Active</option>
+                    <option value="out-of-stock">Out of Stock</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <Label className="font-semibold block mb-2">Description</Label>
+                <textarea value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} placeholder="Product description..." className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md text-sm" />
+              </div>
+              <div>
+                <Label className="font-semibold block mb-3">Available Sizes</Label>
+                <div className="grid grid-cols-5 sm:grid-cols-6 gap-2">
+                  {["XS","S","M","L","XL","XXL"].map(size => (
+                    <button key={size} type="button" onClick={() => handleSizeToggle(size)} className={`py-2.5 px-3 border rounded-lg font-semibold ${formData.sizes.includes(size) ? 'border-pink-500 bg-pink-100' : 'border-gray-300'}`}>
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <Label className="font-semibold block mb-3">Available Colors</Label>
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                  {["Black","White","Pink","Blue","Red","Green","Yellow","Purple","Gray","Brown"].map(color => (
+                    <button key={color} type="button" onClick={() => handleColorToggle(color)} className={`py-2.5 px-2 border rounded-lg text-xs ${formData.colors.includes(color) ? 'border-pink-500 bg-pink-100' : 'border-gray-300'}`}>
+                      {color}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3 pt-6 border-t">
+                <Button type="button" variant="outline" onClick={() => setEditProduct(null)} className="flex-1">Cancel</Button>
+                <Button type="submit" className="flex-1 bg-gradient-to-r from-pink-600 to-purple-600">Save Changes</Button>
               </div>
             </form>
           </CardContent>
@@ -621,15 +782,30 @@ export default function AdminPage() {
                         ${order.total.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                          order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {order.status}
-                        </span>
+                        <select
+                          value={order.status}
+                          title="Order Status"
+                          onChange={async (e) => {
+                            const status = e.target.value as Order['status'];
+                            const { updateOrder } = await import("@/lib/firestore");
+                            const result = await updateOrder(order.id!, { status });
+                            if (result.success) loadOrders();
+                            else alert("Failed to update order status");
+                          }}
+                          className={`px-2 py-1 text-xs rounded-full focus:outline-none focus:ring-2 focus:ring-pink-500 ${
+                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                            order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                            'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="processing">In Progress</option>
+                          <option value="shipped">Delivered</option>
+                          <option value="delivered">Complete</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
@@ -707,6 +883,7 @@ export default function AdminPage() {
           {activeTab === "orders" && <OrdersContent />}
         </div>
         {showAddProduct && <AddProductModal />}
+        {editProduct && <EditProductModal />}
       </main>
     </div>
   );
