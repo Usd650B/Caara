@@ -633,7 +633,7 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => router.push(`/order-tracking/${order.id}`)}>
                             View
                           </Button>
                           <Button variant="ghost" size="sm">
@@ -653,66 +653,61 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold">Caara Admin</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </Button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white shadow-lg border-r flex flex-col py-8 px-6">
+        <div className="mb-10">
+          <h1 className="text-2xl font-bold text-pink-600">Caara Admin</h1>
         </div>
-      </header>
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="flex space-x-1 mb-8 bg-white rounded-lg p-1">
+        <nav className="flex-1 space-y-2">
           <button
             onClick={() => setActiveTab("dashboard")}
-            className={`flex-1 py-2 px-4 rounded-md transition-colors ${
+            className={`w-full text-left py-3 px-4 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
               activeTab === "dashboard"
-                ? "bg-pink-600 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-pink-600 text-white shadow"
+                : "text-gray-700 hover:bg-pink-50"
             }`}
           >
-            Dashboard
+            <TrendingUp className="h-5 w-5" /> Dashboard
           </button>
           <button
             onClick={() => setActiveTab("products")}
-            className={`flex-1 py-2 px-4 rounded-md transition-colors ${
+            className={`w-full text-left py-3 px-4 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
               activeTab === "products"
-                ? "bg-pink-600 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-pink-600 text-white shadow"
+                : "text-gray-700 hover:bg-pink-50"
             }`}
           >
-            Products
+            <Package className="h-5 w-5" /> Products
           </button>
           <button
             onClick={() => setActiveTab("orders")}
-            className={`flex-1 py-2 px-4 rounded-md transition-colors ${
+            className={`w-full text-left py-3 px-4 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
               activeTab === "orders"
-                ? "bg-pink-600 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-pink-600 text-white shadow"
+                : "text-gray-700 hover:bg-pink-50"
             }`}
           >
-            Orders
+            <ShoppingCart className="h-5 w-5" /> Orders
           </button>
+        </nav>
+        <div className="mt-auto">
+          <Button variant="outline" onClick={handleSignOut} className="w-full">
+            <LogOut className="mr-2 h-4 w-4" /> Logout
+          </Button>
         </div>
+      </aside>
 
-        {/* Content */}
-        {activeTab === "dashboard" && <DashboardContent />}
-        {activeTab === "products" && <ProductsContent />}
-        {activeTab === "orders" && <OrdersContent />}
-      </div>
-
-      {showAddProduct && <AddProductModal />}
+      {/* Main Content */}
+      <main className="flex-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Content */}
+          {activeTab === "dashboard" && <DashboardContent />}
+          {activeTab === "products" && <ProductsContent />}
+          {activeTab === "orders" && <OrdersContent />}
+        </div>
+        {showAddProduct && <AddProductModal />}
+      </main>
     </div>
   );
 }
