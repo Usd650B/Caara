@@ -370,13 +370,13 @@ export default function AdminPage() {
       await handleAddProduct(productData);
     };
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-        <Card className="w-full max-w-2xl">
-          <CardHeader>
-            <CardTitle>Add New Product</CardTitle>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
+        <Card className="w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50 sticky top-0 z-10">
+            <CardTitle className="text-xl">Add New Product</CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="p-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Multi-Media Upload */}
               <div>
                 <MultiMediaUpload 
@@ -388,9 +388,9 @@ export default function AdminPage() {
               </div>
 
               {/* Product Name & Category Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="productName" className="font-semibold">Product Name *</Label>
+                  <Label htmlFor="productName" className="font-semibold text-sm">Product Name *</Label>
                   <Input
                     id="productName"
                     value={formData.name}
@@ -401,7 +401,7 @@ export default function AdminPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="category" className="font-semibold">Category *</Label>
+                  <Label htmlFor="category" className="font-semibold text-sm">Category *</Label>
                   <Input
                     id="category"
                     value={formData.category}
@@ -414,9 +414,9 @@ export default function AdminPage() {
               </div>
 
               {/* Pricing Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <Label htmlFor="price" className="font-semibold">Sale Price ($) *</Label>
+                  <Label htmlFor="price" className="font-semibold text-sm">Sale Price ($) *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -429,7 +429,7 @@ export default function AdminPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="originalPrice" className="font-semibold">Original Price ($)</Label>
+                  <Label htmlFor="originalPrice" className="font-semibold text-sm">Original Price ($)</Label>
                   <Input
                     id="originalPrice"
                     type="number"
@@ -441,7 +441,7 @@ export default function AdminPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="stock" className="font-semibold">Stock Quantity *</Label>
+                  <Label htmlFor="stock" className="font-semibold text-sm">Stock Quantity *</Label>
                   <Input
                     id="stock"
                     type="number"
@@ -455,9 +455,9 @@ export default function AdminPage() {
               </div>
 
               {/* Badge & Status Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <Label className="font-semibold block mb-2">Badge</Label>
+                  <Label className="font-semibold text-sm block mb-2">Badge</Label>
                   <select
                     aria-label="Product Badge Selection"
                     value={formData.badge || "none"}
@@ -471,7 +471,7 @@ export default function AdminPage() {
                   </select>
                 </div>
                 <div>
-                  <Label className="font-semibold block mb-2">Status</Label>
+                  <Label className="font-semibold text-sm block mb-2">Status</Label>
                   <select
                     aria-label="Product Status Selection"
                     value={formData.status}
@@ -486,26 +486,26 @@ export default function AdminPage() {
 
               {/* Description */}
               <div>
-                <Label htmlFor="description" className="font-semibold block mb-2">Description</Label>
+                <Label htmlFor="description" className="font-semibold text-sm block mb-2">Description</Label>
                 <textarea
                   id="add-description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Product description..."
-                  className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
+                  className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                 />
               </div>
 
               {/* Sizes Selection */}
               <div>
-                <Label className="font-semibold block mb-3">Available Sizes</Label>
-                <div className="grid grid-cols-5 sm:grid-cols-6 gap-2">
+                <Label className="font-semibold text-sm block mb-2">Available Sizes</Label>
+                <div className="grid grid-cols-6 gap-2">
                   {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => handleSizeToggle(size)}
-                      className={`py-2.5 px-3 border rounded-lg font-semibold transition-all ${
+                      className={`py-2 px-2 border rounded-lg text-sm font-semibold transition-all ${
                         formData.sizes.includes(size)
                           ? "border-pink-500 bg-pink-100 text-pink-700 shadow-md"
                           : "border-gray-300 bg-white text-gray-700 hover:border-pink-300 hover:bg-pink-50"
@@ -519,14 +519,14 @@ export default function AdminPage() {
 
               {/* Colors Selection */}
               <div>
-                <Label className="font-semibold block mb-3">Available Colors</Label>
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <Label className="font-semibold text-sm block mb-2">Available Colors</Label>
+                <div className="grid grid-cols-5 gap-2">
                   {["Black", "White", "Pink", "Blue", "Red", "Green", "Yellow", "Purple", "Gray", "Brown"].map((color) => (
                     <button
                       key={color}
                       type="button"
                       onClick={() => handleColorToggle(color)}
-                      className={`py-2.5 px-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                      className={`py-2 px-1 border rounded-lg text-xs font-semibold transition-all ${
                         formData.colors.includes(color)
                           ? "border-pink-500 bg-pink-100 text-pink-700 shadow-md"
                           : "border-gray-300 bg-white text-gray-700 hover:border-pink-300 hover:bg-pink-50"
@@ -539,7 +539,7 @@ export default function AdminPage() {
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-3 pt-6 border-t">
+              <div className="flex gap-3 pt-4 border-t sticky bottom-0 bg-white">
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -659,12 +659,12 @@ export default function AdminPage() {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <Card className="w-full max-w-2xl max-h-[95vh] overflow-y-auto">
-          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50">
-            <CardTitle className="text-2xl">Edit Product</CardTitle>
+        <Card className="w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+          <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50 sticky top-0 z-10">
+            <CardTitle className="text-xl">Edit Product</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="space-y-4 p-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label className="text-base font-semibold mb-2 block">Product Media</Label>
                 <MultiMediaUpload 
@@ -674,17 +674,17 @@ export default function AdminPage() {
                   initialVideo={formData.video}
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <Label className="font-semibold">Product Name *</Label>
+                  <Label className="font-semibold text-sm">Product Name *</Label>
                   <Input value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} required className="mt-1" />
                 </div>
                 <div>
-                  <Label className="font-semibold">Category *</Label>
+                  <Label className="font-semibold text-sm">Category *</Label>
                   <Input value={formData.category} onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))} required className="mt-1" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <Label className="font-semibold">Sale Price ($) *</Label>
                   <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} required className="mt-1" />
