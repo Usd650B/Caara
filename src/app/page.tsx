@@ -28,7 +28,7 @@ export default function Home() {
     <div className="space-y-20">
       {/* Hero Banner */}
       <section className="relative w-full h-80 sm:h-96 md:h-[500px] lg:h-[600px] overflow-hidden bg-gradient-to-br from-pink-50 to-purple-50">
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-[linear-gradient(135deg,_rgba(0,0,0,0.3)_0%,_rgba(0,0,0,0.1)_100%),_url('https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=1600&h=800&fit=crop')]"></div>
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-[linear-gradient(135deg,_rgba(0,0,0,0.3)_0%,_rgba(0,0,0,0.1)_100%),_url('https://images.unsplash.com/photo-1517841905240-472988babdf9?w=1600&h=800&fit=crop')]"></div>
         <div className="relative h-full flex items-center justify-center text-center z-10">
           <div className="px-4 space-y-4 sm:space-y-6 max-w-2xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white drop-shadow-lg tracking-tight">

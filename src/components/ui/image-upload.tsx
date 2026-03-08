@@ -94,13 +94,17 @@ export function ImageUpload({ onImageUpload, currentImage, className }: ImageUpl
       </div>
 
       <div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
+          <label htmlFor="image-upload-input" className="sr-only">Upload Image</label>
+          <input
+            id="image-upload-input"
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            title="Upload product image"
+            placeholder="Select image file"
+          />
         <Button
           type="button"
           variant="outline"

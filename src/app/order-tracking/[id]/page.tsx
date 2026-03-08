@@ -12,6 +12,7 @@ export default function OrderTrackingPage() {
   const params = useParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [productImages, setProductImages] = useState<{ [productId: string]: string }>({});
 
   const loadOrder = async (orderId: string) => {
     setIsLoading(true);
@@ -19,6 +20,17 @@ export default function OrderTrackingPage() {
       const orders = await getOrders();
       const foundOrder = orders.find(o => o.id === orderId);
       setOrder(foundOrder || null);
+      // Fetch product images for order items
+      if (foundOrder && foundOrder.items) {
+        const { getProducts } = await import("@/lib/firestore");
+        const products = await getProducts();
+        const images: { [productId: string]: string } = {};
+        foundOrder.items.forEach(item => {
+          const prod = products.find(p => p.id === item.productId);
+          images[item.productId] = prod?.image || "https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=200&h=200&fit=crop";
+        });
+        setProductImages(images);
+      }
     } catch (error) {
       console.error('Error loading order:', error);
     }
@@ -217,6 +229,11 @@ export default function OrderTrackingPage() {
                   <div className="space-y-3">
                     {order.items.map((item, index) => (
                       <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <img
+                          src={productImages[item.productId] || "https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=80&h=80&fit=crop"}
+                          alt={item.name}
+                          className="w-16 h-16 rounded object-cover mr-4"
+                        />
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-600">
