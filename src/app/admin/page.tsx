@@ -5,13 +5,56 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, TrendingUp, LogOut, X } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, TrendingUp, LogOut, X, Eye, XCircle, MousePointer, DollarSign, Activity, BarChart3, PieChart, TrendingDown, Clock, Filter, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
 import { getProducts, addProduct, Product, getOrders, Order } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { MultiMediaUpload } from "@/components/ui/multi-media-upload";
+
+// Analytics data types
+interface AnalyticsData {
+  totalVisitors: number;
+  activeVisitors: number;
+  cartAbandonmentRate: number;
+  conversionRate: number;
+  topProducts: ProductAnalytics[];
+  revenueData: RevenueData[];
+  visitorTrends: VisitorTrend[];
+  cartActivity: CartActivity[];
+}
+
+interface ProductAnalytics {
+  product: Product;
+  views: number;
+  clicks: number;
+  addToCart: number;
+  purchases: number;
+  conversionRate: number;
+}
+
+interface RevenueData {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
+interface VisitorTrend {
+  date: string;
+  visitors: number;
+  pageViews: number;
+  uniqueVisitors: number;
+}
+
+interface CartActivity {
+  id: string;
+  timestamp: string;
+  items: number;
+  value: number;
+  status: 'active' | 'abandoned' | 'converted';
+  sessionId: string;
+}
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -20,6 +63,8 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("7d");
   const router = useRouter();
 
   const loadProducts = async () => {
@@ -34,6 +79,51 @@ export default function AdminPage() {
     setOrders(ordersData);
   };
 
+  // Mock analytics data generation
+  const generateAnalyticsData = (): AnalyticsData => {
+    const mockTopProducts: ProductAnalytics[] = products.slice(0, 5).map((product, index) => ({
+      product,
+      views: Math.floor(Math.random() * 1000) + 100,
+      clicks: Math.floor(Math.random() * 500) + 50,
+      addToCart: Math.floor(Math.random() * 200) + 20,
+      purchases: Math.floor(Math.random() * 100) + 10,
+      conversionRate: parseFloat(((Math.random() * 20) + 5).toFixed(2))
+    }));
+
+    const mockRevenueData: RevenueData[] = Array.from({ length: 7 }, (_, i) => ({
+      date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      revenue: Math.floor(Math.random() * 5000) + 1000,
+      orders: Math.floor(Math.random() * 50) + 10
+    }));
+
+    const mockVisitorTrends: VisitorTrend[] = Array.from({ length: 30 }, (_, i) => ({
+      date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      visitors: Math.floor(Math.random() * 500) + 100,
+      pageViews: Math.floor(Math.random() * 2000) + 500,
+      uniqueVisitors: Math.floor(Math.random() * 300) + 50
+    }));
+
+    const mockCartActivity: CartActivity[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `cart_${i}`,
+      timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      items: Math.floor(Math.random() * 5) + 1,
+      value: Math.floor(Math.random() * 500) + 50,
+      status: Math.random() > 0.7 ? 'abandoned' : Math.random() > 0.3 ? 'converted' : 'active',
+      sessionId: `session_${Math.floor(Math.random() * 1000)}`
+    }));
+
+    return {
+      totalVisitors: Math.floor(Math.random() * 10000) + 5000,
+      activeVisitors: Math.floor(Math.random() * 200) + 50,
+      cartAbandonmentRate: parseFloat((Math.random() * 30 + 60).toFixed(2)),
+      conversionRate: parseFloat((Math.random() * 5 + 2).toFixed(2)),
+      topProducts: mockTopProducts,
+      revenueData: mockRevenueData,
+      visitorTrends: mockVisitorTrends,
+      cartActivity: mockCartActivity
+    };
+  };
+
   useEffect(() => {
     if (!isSellerAuthenticated()) {
       router.push("/admin/login");
@@ -41,7 +131,10 @@ export default function AdminPage() {
     }
     loadProducts();
     loadOrders();
-  }, [router]);
+    if (products.length > 0) {
+      setAnalyticsData(generateAnalyticsData());
+    }
+  }, [router, products.length]);
 
   const handleAddProduct = async (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
     const result = await addProduct(productData);
@@ -83,100 +176,344 @@ export default function AdminPage() {
 
   const DashboardContent = () => (
     <div className="space-y-6">
-      {/* Stats Cards */}
+      {/* Header with Time Range Selector */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h2>
+          <p className="text-gray-600">Track your business performance and customer behavior</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select 
+            value={selectedTimeRange}
+            onChange={(e) => setSelectedTimeRange(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value="24h">Last 24 Hours</option>
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+          </select>
+          <Button variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
+        </div>
+      </div>
+
+      {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">${stats.totalRevenue}</p>
+                <p className="text-sm font-medium text-gray-600">Total Visitors</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {analyticsData?.totalVisitors.toLocaleString() || '0'}
+                </p>
+                <p className="text-sm text-green-600 mt-1">
+                  <TrendingUp className="inline h-3 w-3 mr-1" />
+                  +12.5% from last period
+                </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <Eye className="h-6 w-6 text-blue-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-green-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold">{stats.totalOrders}</p>
+                <p className="text-sm font-medium text-gray-600">Active Now</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {analyticsData?.activeVisitors || '0'}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  <Activity className="inline h-3 w-3 mr-1" />
+                  Live visitors
+                </p>
               </div>
-              <ShoppingCart className="h-8 w-8 text-blue-600" />
+              <div className="bg-green-100 p-3 rounded-lg">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-red-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Products</p>
-                <p className="text-2xl font-bold">{stats.totalProducts}</p>
+                <p className="text-sm font-medium text-gray-600">Cart Abandonment</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {analyticsData?.cartAbandonmentRate || '0'}%
+                </p>
+                <p className="text-sm text-red-600 mt-1">
+                  <TrendingDown className="inline h-3 w-3 mr-1" />
+                  +5.2% from last period
+                </p>
               </div>
-              <Package className="h-8 w-8 text-purple-600" />
+              <div className="bg-red-100 p-3 rounded-lg">
+                <XCircle className="h-6 w-6 text-red-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-purple-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Customers</p>
-                <p className="text-2xl font-bold">{stats.totalCustomers}</p>
+                <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {analyticsData?.conversionRate || '0'}%
+                </p>
+                <p className="text-sm text-green-600 mt-1">
+                  <TrendingUp className="inline h-3 w-3 mr-1" />
+                  +2.1% from last period
+                </p>
               </div>
-              <Users className="h-8 w-8 text-pink-600" />
+              <div className="bg-purple-100 p-3 rounded-lg">
+                <DollarSign className="h-6 w-6 text-purple-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Orders */}
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Revenue & Orders Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <BarChart3 className="h-12 w-12 mx-auto mb-2" />
+                <p>Revenue chart visualization</p>
+                <p className="text-sm">Last 7 days performance</p>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Total Revenue</p>
+                <p className="text-lg font-bold text-green-600">$12,450</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Total Orders</p>
+                <p className="text-lg font-bold text-blue-600">245</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Visitor Trends */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Visitor Analytics
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <PieChart className="h-12 w-12 mx-auto mb-2" />
+                <p>Visitor trends visualization</p>
+                <p className="text-sm">30-day overview</p>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Page Views</p>
+                <p className="text-lg font-bold">45.2K</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Unique</p>
+                <p className="text-lg font-bold">8.7K</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">Bounce Rate</p>
+                <p className="text-lg font-bold">32%</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Products Performance */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Orders</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Top Products Performance
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {isLoading ? (
-              <div className="text-center py-8">
-                <p>Loading orders...</p>
-              </div>
-            ) : orders.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600">No orders yet</p>
-              </div>
-            ) : (
-              orders.slice(0, 5).map((order) => (
-                <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">{order.id}</p>
-                    <p className="text-sm text-gray-600">{order.customerName}</p>
-                    <p className="text-xs text-gray-500">
-                      {order.createdAt?.toDate()?.toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">${order.total.toFixed(2)}</p>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                      order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4">Product</th>
+                  <th className="text-center py-3 px-4">Views</th>
+                  <th className="text-center py-3 px-4">Clicks</th>
+                  <th className="text-center py-3 px-4">Add to Cart</th>
+                  <th className="text-center py-3 px-4">Purchases</th>
+                  <th className="text-center py-3 px-4">Conversion</th>
+                </tr>
+              </thead>
+              <tbody>
+                {analyticsData?.topProducts.map((item, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <Package className="h-5 w-5 text-gray-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{item.product.name}</p>
+                          <p className="text-xs text-gray-500">${item.product.price}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-center py-3 px-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <Eye className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm">{item.views}</span>
+                      </div>
+                    </td>
+                    <td className="text-center py-3 px-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <MousePointer className="h-4 w-4 text-blue-500" />
+                        <span className="text-sm">{item.clicks}</span>
+                      </div>
+                    </td>
+                    <td className="text-center py-3 px-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <ShoppingCart className="h-4 w-4 text-green-500" />
+                        <span className="text-sm">{item.addToCart}</span>
+                      </div>
+                    </td>
+                    <td className="text-center py-3 px-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <DollarSign className="h-4 w-4 text-purple-500" />
+                        <span className="text-sm">{item.purchases}</span>
+                      </div>
+                    </td>
+                    <td className="text-center py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        item.conversionRate > 10 ? 'bg-green-100 text-green-800' :
+                        item.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {item.conversionRate}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </CardContent>
       </Card>
+
+      {/* Cart Activity & Recent Orders */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Cart Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5" />
+              Cart Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {analyticsData?.cartActivity.slice(0, 5).map((cart) => (
+                <div key={cart.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full ${
+                      cart.status === 'converted' ? 'bg-green-500' :
+                      cart.status === 'abandoned' ? 'bg-red-500' :
+                      'bg-yellow-500'
+                    }`} />
+                    <div>
+                      <p className="text-sm font-medium">{cart.items} items</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(cart.timestamp).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium">${cart.value}</p>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      cart.status === 'converted' ? 'bg-green-100 text-green-800' :
+                      cart.status === 'abandoned' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {cart.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Orders */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Recent Orders
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <p>Loading orders...</p>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No orders yet</p>
+                </div>
+              ) : (
+                orders.slice(0, 5).map((order) => (
+                  <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">{order.id}</p>
+                      <p className="text-xs text-gray-600">{order.customerName}</p>
+                      <p className="text-xs text-gray-500">
+                        {order.createdAt?.toDate()?.toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-sm">${order.total.toFixed(2)}</p>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                        order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 

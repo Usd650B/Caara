@@ -80,11 +80,8 @@ export function Header() {
               <Link href="/products" className="text-gray-700 hover:text-black transition-colors">
                 Shop
               </Link>
-              <Link href="/categories" className="text-gray-700 hover:text-black transition-colors">
+              <Link href="/products" className="text-gray-700 hover:text-black transition-colors">
                 Categories
-              </Link>
-              <Link href="/about" className="text-gray-700 hover:text-black transition-colors">
-                About
               </Link>
               <Link href="/contact" className="text-gray-700 hover:text-black transition-colors">
                 Contact
@@ -104,5 +101,5 @@ export function Header() {
         )}
       </div>
     </header>
-  )
+  );
 }
