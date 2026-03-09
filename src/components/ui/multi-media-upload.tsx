@@ -67,9 +67,9 @@ export function MultiMediaUpload({
           continue;
         }
 
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert('Image size should be less than 5MB');
+        // Check file size (max 1MB for Firebase free tier)
+        if (file.size > 1 * 1024 * 1024) {
+          alert('Image size should be less than 1MB for Firebase free tier');
           continue;
         }
 
