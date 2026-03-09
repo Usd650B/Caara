@@ -101,22 +101,6 @@ export default function Home() {
                 Discover More
               </Button>
             </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 sm:gap-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>10K+</div>
-                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Style Icons</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>500+</div>
-                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Signature Pieces</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>∞</div>
-                <div className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Possibilities</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>

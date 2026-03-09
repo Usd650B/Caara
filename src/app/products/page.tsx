@@ -107,7 +107,7 @@ export default function ProductsPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filters Sidebar */}
+          {/* Filters Sidebar - Independently Scrollable */}
           <div className="lg:w-64">
             {/* Mobile Filter Toggle */}
             <div className="lg:hidden mb-4">
@@ -121,8 +121,8 @@ export default function ProductsPage() {
               </Button>
             </div>
 
-            {/* Desktop Filters */}
-            <div className={`${showFilters ? 'block' : 'hidden'} lg:block bg-white rounded-lg border border-gray-200 p-4 space-y-4`}>
+            {/* Desktop Filters - Fixed Height with Scroll */}
+            <div className={`${showFilters ? 'block' : 'hidden'} lg:block bg-white rounded-lg border border-gray-200 p-4 space-y-4 h-[calc(100vh-200px)] lg:h-[calc(100vh-250px)] overflow-y-auto sticky top-24`}>
 
               {/* Categories Dropdown */}
               <div>
@@ -220,6 +220,107 @@ export default function ProductsPage() {
                 )}
               </div>
 
+              {/* Additional Filters for Scroll Testing */}
+              <div className="space-y-4 pt-4 border-t border-gray-200">
+                <h3 className="font-semibold text-black text-sm" style={{ fontFamily: 'Georgia, serif' }}>Additional Filters</h3>
+                
+                {/* Color Filter */}
+                <div>
+                  <button
+                    onClick={() => toggleDropdown('color')}
+                    className="w-full flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="font-semibold text-black text-sm" style={{ fontFamily: 'Georgia, serif' }}>Color</span>
+                    <ChevronDown className={`h-4 w-4 text-black transition-transform ${openDropdown === 'color' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openDropdown === 'color' && (
+                    <div className="mt-2 space-y-1">
+                      {['Black', 'White', 'Red', 'Blue', 'Green', 'Yellow', 'Pink', 'Purple'].map((color) => (
+                        <button
+                          key={color}
+                          className="w-full text-left px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black text-sm transition-colors"
+                          style={{ fontFamily: 'Georgia, serif' }}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Material Filter */}
+                <div>
+                  <button
+                    onClick={() => toggleDropdown('material')}
+                    className="w-full flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="font-semibold text-black text-sm" style={{ fontFamily: 'Georgia, serif' }}>Material</span>
+                    <ChevronDown className={`h-4 w-4 text-black transition-transform ${openDropdown === 'material' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openDropdown === 'material' && (
+                    <div className="mt-2 space-y-1">
+                      {['Cotton', 'Silk', 'Wool', 'Linen', 'Polyester', 'Denim', 'Leather', 'Cashmere'].map((material) => (
+                        <button
+                          key={material}
+                          className="w-full text-left px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black text-sm transition-colors"
+                          style={{ fontFamily: 'Georgia, serif' }}
+                        >
+                          {material}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Brand Filter */}
+                <div>
+                  <button
+                    onClick={() => toggleDropdown('brand')}
+                    className="w-full flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="font-semibold text-black text-sm" style={{ fontFamily: 'Georgia, serif' }}>Brand</span>
+                    <ChevronDown className={`h-4 w-4 text-black transition-transform ${openDropdown === 'brand' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openDropdown === 'brand' && (
+                    <div className="mt-2 space-y-1">
+                      {['CARA', 'CARA Premium', 'CARA Essentials', 'CARA Limited'].map((brand) => (
+                        <button
+                          key={brand}
+                          className="w-full text-left px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black text-sm transition-colors"
+                          style={{ fontFamily: 'Georgia, serif' }}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Occasion Filter */}
+                <div>
+                  <button
+                    onClick={() => toggleDropdown('occasion')}
+                    className="w-full flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="font-semibold text-black text-sm" style={{ fontFamily: 'Georgia, serif' }}>Occasion</span>
+                    <ChevronDown className={`h-4 w-4 text-black transition-transform ${openDropdown === 'occasion' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openDropdown === 'occasion' && (
+                    <div className="mt-2 space-y-1">
+                      {['Casual', 'Formal', 'Business', 'Party', 'Date Night', 'Weekend', 'Travel', 'Special'].map((occasion) => (
+                        <button
+                          key={occasion}
+                          className="w-full text-left px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black text-sm transition-colors"
+                          style={{ fontFamily: 'Georgia, serif' }}
+                        >
+                          {occasion}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Clear Filters */}
               <Button
                 variant="outline"
@@ -236,7 +337,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          {/* Products Grid */}
+          {/* Products Grid - Normal Scroll */}
           <div className="flex-1">
             {/* Active Filters Display */}
             <div className="mb-4 flex flex-wrap gap-2">
