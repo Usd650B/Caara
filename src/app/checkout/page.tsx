@@ -49,10 +49,7 @@ export default function CheckoutPage() {
   const baseShipping = calculateShippingCost(subtotal, formData.state, false);
   const expressShipping = calculateShippingCost(subtotal, formData.state, true);
   const shipping = shippingMethod === "express" ? expressShipping : baseShipping;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
-  
-  const isEligibleForFreeShipping = subtotal >= getFreeShippingThreshold();
+  const total = subtotal + shipping;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -86,7 +83,6 @@ export default function CheckoutPage() {
       total: total,
       subtotal: subtotal,
       shipping: shipping,
-      tax: tax,
       shippingMethod: shippingMethod,
       status: 'pending' as const,
       shippingAddress: {
@@ -271,13 +267,6 @@ export default function CheckoutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isEligibleForFreeShipping && (
-                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm font-semibold text-green-800">✓ Free Shipping Eligible!</p>
-                  <p className="text-xs text-green-700">Your order qualifies for free standard shipping</p>
-                </div>
-              )}
-              
               <div className="space-y-3">
                 <label className={`flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${shippingMethod === 'standard' ? 'border-pink-500' : 'border-gray-200'}`}>
                   <input
@@ -290,10 +279,8 @@ export default function CheckoutPage() {
                   />
                   <div className="flex-1">
                     <p className="font-semibold">Standard Shipping</p>
-                    <p className="text-sm text-gray-600">Delivery in 5-7 business days</p>
-                    <p className="text-sm font-bold text-pink-600 mt-1">
-                      {baseShipping === 0 ? 'FREE' : `$${baseShipping.toFixed(2)}`}
-                    </p>
+                    <p className="text-sm text-gray-600">Delivery in 1-2 business days</p>
+                    <p className="text-sm font-bold text-pink-600 mt-1">${baseShipping.toFixed(2)}</p>
                   </div>
                 </label>
                 
@@ -311,7 +298,7 @@ export default function CheckoutPage() {
                       Express Shipping
                       <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full ml-2">Fast</span>
                     </p>
-                    <p className="text-sm text-gray-600">Delivery in 2-3 business days</p>
+                    <p className="text-sm text-gray-600">Delivery in 1 business day</p>
                     <p className="text-sm font-bold text-pink-600 mt-1">${expressShipping.toFixed(2)}</p>
                   </div>
                 </label>
@@ -377,13 +364,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping ({shippingMethod === 'express' ? 'Express' : 'Standard'})</span>
-                    <span className={shipping === 0 ? 'text-green-600 font-semibold' : ''}>
-                      {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>${shipping.toFixed(2)}</span>
                   </div>
                 </div>
 
