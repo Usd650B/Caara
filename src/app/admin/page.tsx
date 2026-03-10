@@ -485,15 +485,15 @@ export default function AdminPage() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-3 px-4">Product</th>
                   <th className="text-center py-3 px-4">Views</th>
                   <th className="text-center py-3 px-4">Clicks</th>
-                  <th className="text-center py-3 px-4">Add to Cart</th>
-                  <th className="text-center py-3 px-4">Purchases</th>
-                  <th className="text-center py-3 px-4">Conversion</th>
+                  <th className="text-center py-3 px-4">Cart</th>
+                  <th className="text-center py-3 px-4">Sales</th>
+                  <th className="text-center py-3 px-4">Rate</th>
                 </tr>
               </thead>
               <tbody>

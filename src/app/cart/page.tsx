@@ -133,9 +133,9 @@ export default function CartPage() {
         <p className="text-gray-600">{getTotalItems()} items in your cart</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4">
           {cartItems.map((item, index) => (
             <Card key={`${item.id}-${item.size}-${item.color}-${index}`} className="overflow-hidden">
               <CardContent className="p-0">

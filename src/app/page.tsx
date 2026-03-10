@@ -61,41 +61,41 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center">
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
         {/* Content */}
-        <div className="text-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6 sm:space-y-8">
+        <div className="text-center max-w-7xl mx-auto w-full">
+          <div className="space-y-4 sm:space-y-6 md:space-y-8">
             {/* Animated Badge */}
-            <div className="inline-flex items-center space-x-2 bg-gray-100 px-4 py-2 sm:px-6 py-3 rounded-full shadow-lg border border-gray-200">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-black animate-pulse" />
+            <div className="inline-flex items-center space-x-2 bg-gray-100 px-3 py-2 sm:px-6 sm:py-3 rounded-full shadow-lg border border-gray-200">
+              <Sparkles className="h-3 w-3 sm:h-5 sm:w-5 text-black animate-pulse" />
               <span className="text-xs sm:text-sm font-semibold text-black uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>The Art of Being Unforgettable</span>
             </div>
 
             {/* Main Heading */}
-            <div className="space-y-3 sm:space-y-4">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
-                Every Queen Wear CARA
+            <div className="space-y-2 sm:space-y-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-black text-black tracking-tight leading-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+                Every Queen<br className="sm:hidden" /> Wear CARA
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-black font-light max-w-3xl mx-auto tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-black font-light max-w-2xl mx-auto tracking-wide px-4" style={{ fontFamily: 'Georgia, serif' }}>
                 ......
               </p>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
               <Link href="/products">
                 <Button 
                   size="lg" 
-                  className="bg-black text-white hover:bg-gray-800 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold tracking-wider shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="bg-black text-white hover:bg-gray-800 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
-                  Enter the World <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  Enter the World <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-2 border-black text-black hover:bg-black hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold tracking-wider transform hover:scale-105 transition-all duration-300"
+                className="border-2 border-black text-black hover:bg-black hover:text-white px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 Discover More
@@ -106,45 +106,45 @@ export default function Home() {
       </section>
 
       {/* Interactive Categories */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
               Define Your Universe
             </h2>
-            <p className="text-gray-600 text-lg font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Every piece tells your story</p>
+            <p className="text-gray-600 text-base sm:text-lg font-light tracking-wide px-4" style={{ fontFamily: 'Georgia, serif' }}>Every piece tells your story</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`group relative p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 ${
+                className={`group relative p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-105 ${
                   activeCategory === category.id 
                     ? 'bg-gradient-to-br ' + category.color + ' text-white shadow-xl' 
                     : 'bg-white hover:shadow-lg border border-gray-200'
                 }`}
               >
-                <div className="flex flex-col items-center space-y-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${
                     activeCategory === category.id 
                       ? 'bg-white/20' 
                       : 'bg-gradient-to-br ' + category.color
                   }`}>
-                    <category.icon className={`h-6 w-6 ${
+                    <category.icon className={`h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 ${
                       activeCategory === category.id ? 'text-white' : 'text-white'
                     }`} />
                   </div>
-                  <span className={`font-semibold text-sm tracking-wide uppercase ${
+                  <span className={`font-semibold text-xs sm:text-sm tracking-wide uppercase text-center ${
                     activeCategory === category.id ? 'text-white' : 'text-black'
                   }`} style={{ fontFamily: 'Georgia, serif' }}>
                     {category.name}
                   </span>
                 </div>
                 {activeCategory === category.id && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                    <Sparkles className="h-3 w-3 text-white" />
+                  <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <Sparkles className="h-2 w-2 sm:h-3 sm:w-3 text-white" />
                   </div>
                 )}
               </button>
@@ -154,43 +154,43 @@ export default function Home() {
       </section>
 
       {/* Featured Products with Enhanced Design */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center space-x-2 bg-gray-100 px-6 py-3 rounded-full mb-4">
-              <TrendingUp className="h-5 w-5 text-black" />
-              <span className="text-sm font-semibold text-black uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>CULTURE CREATORS</span>
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center space-x-2 bg-gray-100 px-4 py-2 sm:px-6 sm:py-3 rounded-full mb-4">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-black" />
+              <span className="text-xs sm:text-sm font-semibold text-black uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>CULTURE CREATORS</span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
               The Collection
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto font-light tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>Curated pieces that become part of your identity</p>
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto font-light tracking-wide px-4" style={{ fontFamily: 'Georgia, serif' }}>Curated pieces that become part of your identity</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {isLoading ? (
               Array.from({ length: 8 }).map((_, index) => (
                 <Card key={index} className="animate-pulse">
                   <CardContent className="p-0">
                     <div className="aspect-[3/4] bg-gray-200"></div>
-                    <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 rounded"></div>
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                      <div className="h-3 sm:h-4 bg-gray-200 rounded"></div>
+                      <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/2"></div>
                     </div>
                   </CardContent>
                 </Card>
               ))
             ) : featuredProducts.length === 0 ? (
-              <div className="col-span-full text-center py-20">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShoppingBag className="h-10 w-10 text-black" />
+              <div className="col-span-full text-center py-12 sm:py-20">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShoppingBag className="h-8 w-8 sm:h-10 sm:w-10 text-black" />
                 </div>
-                <h3 className="text-2xl font-black mb-2 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+                <h3 className="text-xl sm:text-2xl font-black mb-2 text-black tracking-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
                   The Future Awaits
                 </h3>
-                <p className="text-gray-600 mb-6 font-light" style={{ fontFamily: 'Georgia, serif' }}>Something extraordinary is coming your way</p>
-                <Button className="bg-black text-white hover:bg-gray-800 font-semibold tracking-wider" style={{ fontFamily: 'Georgia, serif' }} asChild>
+                <p className="text-gray-600 mb-6 font-light px-4" style={{ fontFamily: 'Georgia, serif' }}>Something extraordinary is coming your way</p>
+                <Button className="bg-black text-white hover:bg-gray-800 font-semibold tracking-wider px-6 py-3 text-sm sm:text-base" style={{ fontFamily: 'Georgia, serif' }} asChild>
                   <Link href="/products">Explore the Universe</Link>
                 </Button>
               </div>
@@ -208,7 +208,7 @@ export default function Home() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                            <ShoppingBag className="h-12 w-12 text-gray-400" />
+                            <ShoppingBag className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
                           </div>
                         )}
                       </div>
@@ -226,7 +226,7 @@ export default function Home() {
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="flex flex-col space-y-2">
                           <Button 
-                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm font-semibold tracking-wider"
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm font-semibold tracking-wider"
                             style={{ fontFamily: 'Georgia, serif' }}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -249,30 +249,30 @@ export default function Home() {
                             Make It Yours
                           </Button>
                           <Button 
-                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-4 py-2 text-sm font-semibold tracking-wider"
+                            className="bg-white text-black hover:bg-black hover:text-white border border-gray-200 px-3 py-2 text-xs sm:px-4 sm:py-2 sm:text-sm font-semibold tracking-wider"
                             style={{ fontFamily: 'Georgia, serif' }}
                             onClick={(e) => {
                               e.stopPropagation();
                               alert('Saved to your collection! ❤️');
                             }}
                           >
-                            <Heart className="h-4 w-4 mr-1" />
+                            <Heart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                             Save
                           </Button>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-4">
-                      <h3 className="font-medium text-black text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
+                    <div className="p-3 sm:p-4">
+                      <h3 className="font-medium text-black text-xs sm:text-sm mb-1 line-clamp-2 group-hover:text-black transition-colors tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
                         {product.name}
                       </h3>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
+                        <span className="text-sm sm:text-base lg:text-lg font-black text-black tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
                           ${product.price}
                         </span>
                         {product.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through font-medium" style={{ fontFamily: 'Georgia, serif' }}>
+                          <span className="text-xs sm:text-sm text-gray-500 line-through font-medium" style={{ fontFamily: 'Georgia, serif' }}>
                             ${product.originalPrice}
                           </span>
                         )}

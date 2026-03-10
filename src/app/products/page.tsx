@@ -70,28 +70,28 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed Header */}
-      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4">
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>The Collection</h1>
-              <p className="text-gray-600 text-sm">Discover pieces that define your universe</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>The Collection</h1>
+              <p className="text-gray-600 text-xs sm:text-sm">Discover pieces that define your universe</p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-none">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black w-48 md:w-64"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black w-full sm:w-48 md:w-64 text-sm"
                 />
               </div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
               >
                 <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
@@ -384,16 +384,16 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, index) => (
                   <Card key={index} className="animate-pulse">
                     <CardContent className="p-0">
                       <div className="aspect-[3/4] bg-gray-200"></div>
-                      <div className="p-3 space-y-2">
-                        <div className="h-3 bg-gray-200 rounded"></div>
-                        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                        <div className="h-3 sm:h-4 bg-gray-200 rounded"></div>
+                        <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 sm:h-5 bg-gray-200 rounded w-1/2"></div>
                       </div>
                     </CardContent>
                   </Card>

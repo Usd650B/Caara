@@ -75,25 +75,25 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <nav className="flex flex-col space-y-4">
-              <Link href="/products" className="text-gray-700 hover:text-black transition-colors">
+          <div className="md:hidden py-4 border-t bg-white">
+            <nav className="flex flex-col space-y-3">
+              <Link href="/products" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
                 Shop
               </Link>
-              <Link href="/products" className="text-gray-700 hover:text-black transition-colors">
+              <Link href="/products" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
                 Categories
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-black transition-colors">
+              <Link href="/contact" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
                 Contact
               </Link>
-              <div className="border-t pt-4 mt-4">
-                <Link href="/contact" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors">
+              <div className="border-t pt-3 mt-3 space-y-2">
+                <Link href="/contact" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors py-2 text-sm">
                   <Mail className="h-4 w-4" />
-                  <span className="text-sm">Contact Us</span>
+                  <span>Contact Us</span>
                 </Link>
-                <Link href="tel:+1234567890" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors">
+                <Link href="tel:+1234567890" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors py-2 text-sm">
                   <Phone className="h-4 w-4" />
-                  <span className="text-sm">Call Us</span>
+                  <span>Call Us</span>
                 </Link>
               </div>
             </nav>
