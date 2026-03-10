@@ -30,6 +30,7 @@ export default function CheckoutPage() {
     state: "",
     zipCode: "",
     phone: "",
+    whatsapp: "",
     notes: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,6 +66,14 @@ export default function CheckoutPage() {
     const orderData = {
       customerEmail: formData.email,
       customerName: `${formData.firstName} ${formData.lastName}`,
+      customerPhone: formData.phone,
+      customerWhatsapp: formData.whatsapp,
+      customerLocation: {
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode
+      },
       items: items.map((item: CartItem, index: number) => ({
         productId: item.id || '',
         name: item.name,
@@ -87,7 +96,8 @@ export default function CheckoutPage() {
         city: formData.city,
         state: formData.state,
         zipCode: formData.zipCode,
-        phone: formData.phone
+        phone: formData.phone,
+        whatsapp: formData.whatsapp
       },
       notes: formData.notes
     };
@@ -229,10 +239,25 @@ export default function CheckoutPage() {
                 <Input
                   id="phone"
                   type="tel"
+                  placeholder="+1 (555) 123-4567"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   required
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="whatsapp">WhatsApp Number (Optional)</Label>
+                <Input
+                  id="whatsapp"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  value={formData.whatsapp}
+                  onChange={(e) => handleInputChange("whatsapp", e.target.value)}
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  For quick order updates and support
+                </p>
               </div>
             </CardContent>
           </Card>

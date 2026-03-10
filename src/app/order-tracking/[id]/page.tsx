@@ -205,7 +205,16 @@ export default function OrderTrackingPage() {
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="font-medium">{order.customerName}</p>
                     <p className="text-gray-600">{order.customerEmail}</p>
-                    <p className="text-gray-600">{order.shippingAddress.phone}</p>
+                    <div className="flex items-center text-gray-600">
+                      <span className="mr-1">📞</span>
+                      {order.customerPhone || order.shippingAddress.phone}
+                    </div>
+                    {order.customerWhatsapp && (
+                      <div className="flex items-center text-green-600">
+                        <span className="mr-1">💬</span>
+                        {order.customerWhatsapp}
+                      </div>
+                    )}
                   </div>
                 </div>
 

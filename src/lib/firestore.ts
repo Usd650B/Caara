@@ -42,8 +42,20 @@ export interface Order {
   id?: string;
   customerEmail: string;
   customerName: string;
+  customerPhone?: string;
+  customerWhatsapp?: string;
+  customerLocation?: {
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
   items: OrderItem[];
   total: number;
+  subtotal?: number;
+  shipping?: number;
+  tax?: number;
+  shippingMethod?: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   shippingAddress: {
     firstName: string;
@@ -53,8 +65,10 @@ export interface Order {
     state: string;
     zipCode: string;
     phone: string;
+    whatsapp?: string;
   };
   trackingNumber?: string;
+  notes?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

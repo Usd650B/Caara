@@ -573,13 +573,13 @@ export default function AdminPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={8} className="px-6 py-12 text-center">
                       <p>Loading products...</p>
                     </td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={8} className="px-6 py-12 text-center">
                       <p>No products found</p>
                     </td>
                   </tr>
@@ -1166,6 +1166,12 @@ export default function AdminPage() {
                     Customer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -1182,13 +1188,13 @@ export default function AdminPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={8} className="px-6 py-12 text-center">
                       <p>Loading orders...</p>
                     </td>
                   </tr>
                 ) : orders.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={8} className="px-6 py-12 text-center">
                       <p className="text-gray-600">No orders yet</p>
                     </td>
                   </tr>
@@ -1234,6 +1240,28 @@ export default function AdminPage() {
                           <div className="text-sm text-gray-500">
                             {order.customerEmail}
                           </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="space-y-1">
+                          {order.customerPhone && (
+                            <div className="flex items-center text-sm text-gray-600">
+                              <span className="h-3 w-3 mr-1">📞</span>
+                              {order.customerPhone}
+                            </div>
+                          )}
+                          {order.customerWhatsapp && (
+                            <div className="flex items-center text-sm text-green-600">
+                              <span className="h-3 w-3 mr-1">💬</span>
+                              {order.customerWhatsapp}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">
+                          <div>{order.shippingAddress?.city}, {order.shippingAddress?.state}</div>
+                          <div className="text-xs text-gray-500">{order.shippingAddress?.zipCode}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
