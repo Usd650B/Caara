@@ -228,6 +228,26 @@ export const getOrders = async (): Promise<Order[]> => {
   }
 };
 
+export const getOrder = async (id: string): Promise<Order | null> => {
+  try {
+    const docRef = doc(db, ORDERS_COLLECTION, id);
+    const docSnap = await getDocs(query(collection(db, ORDERS_COLLECTION), where('__name__', '==', id)));
+    
+    if (docSnap.empty) {
+      return null;
+    }
+    
+    const orderDoc = docSnap.docs[0];
+    return {
+      id: orderDoc.id,
+      ...orderDoc.data()
+    } as Order;
+  } catch (error) {
+    console.error('Error getting order:', error);
+    return null;
+  }
+};
+
 export const updateOrder = async (id: string, order: Partial<Order>) => {
   try {
     await updateDoc(doc(db, ORDERS_COLLECTION, id), {
