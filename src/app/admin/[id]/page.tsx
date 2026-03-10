@@ -28,8 +28,8 @@ interface OrderItem {
   name: string
   price: number
   quantity: number
-  size: string
-  color: string
+  size?: string
+  color?: string
   image?: string
 }
 
@@ -65,7 +65,7 @@ export default function AdminOrderDetailPage() {
     loadOrder()
   }, [orderId])
 
-  const handleStatusUpdate = async (newStatus: string) => {
+  const handleStatusUpdate = async (newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled") => {
     if (!order) return
     
     try {
@@ -190,7 +190,7 @@ export default function AdminOrderDetailPage() {
             <CardContent>
               <div className="space-y-4">
                 {order.items?.map((item: OrderItem, index: number) => (
-                  <div key={`${item.productId}-${item.size}-${item.color}-${index}`} className="flex gap-4 p-4 border rounded-lg">
+                  <div key={`${item.productId}-${item.size || 'default'}-${item.color || 'default'}-${index}`} className="flex gap-4 p-4 border rounded-lg">
                     {/* Product Image */}
                     <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
                       {item.image ? (
@@ -210,8 +210,8 @@ export default function AdminOrderDetailPage() {
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
                       <div className="flex flex-wrap gap-2 text-sm text-gray-600 mb-2">
-                        <span className="bg-gray-100 px-2 py-1 rounded">Size: {item.size}</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded">Color: {item.color}</span>
+                        {item.size && <span className="bg-gray-100 px-2 py-1 rounded">Size: {item.size}</span>}
+                        {item.color && <span className="bg-gray-100 px-2 py-1 rounded">Color: {item.color}</span>}
                         <span className="bg-gray-100 px-2 py-1 rounded">Qty: {item.quantity}</span>
                       </div>
                       <p className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</p>
