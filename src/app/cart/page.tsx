@@ -224,18 +224,10 @@ export default function CartPage() {
                 <span>Subtotal ({getTotalItems()} items)</span>
                 <span className="font-semibold">${getTotalPrice().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span className="text-green-600">Free</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>${(getTotalPrice() * 0.08).toFixed(2)}</span>
-              </div>
               <div className="border-t pt-4">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${(getTotalPrice() * 1.08).toFixed(2)}</span>
+                  <span>${getTotalPrice().toFixed(2)}</span>
                 </div>
               </div>
 
