@@ -257,6 +257,16 @@ export const updateOrder = async (id: string, order: Partial<Order>) => {
     return { success: true };
   } catch (error) {
     console.error('Error updating order:', error);
-    return { success: false, error: 'Failed to update order' };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+};
+
+export const deleteOrder = async (id: string): Promise<{ success: boolean; error?: string }> => {
+  try {
+    await deleteDoc(doc(db, ORDERS_COLLECTION, id));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };

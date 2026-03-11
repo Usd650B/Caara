@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, LogOut, X, Eye, Menu, Home, BarChart3, FileText, DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
-import { getProducts, addProduct, Product, getOrders, Order } from "@/lib/firestore";
+import { getProducts, addProduct, Product, getOrders, Order, deleteOrder } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { MultiMediaUpload } from "@/components/ui/multi-media-upload";
@@ -68,6 +68,18 @@ export default function AdminPage() {
         alert('All products cleared successfully!');
       } else {
         alert('Failed to clear products');
+      }
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+      const result = await deleteOrder(orderId);
+      if (result.success) {
+        loadOrders();
+        alert('Order deleted successfully!');
+      } else {
+        alert('Failed to delete order: ' + (result.error || 'Unknown error'));
       }
     }
   };
@@ -324,10 +336,18 @@ export default function AdminPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link href={`/admin/${order.id}`}>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="mr-2">
                           <Eye className="h-4 w-4" />
                         </Button>
                       </Link>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleDeleteOrder(order.id!)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))}
