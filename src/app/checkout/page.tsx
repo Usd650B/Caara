@@ -102,6 +102,26 @@ export default function CheckoutPage() {
       const result = await createOrder(orderData);
       
       if (result.success) {
+        // Save order to localStorage for history tracking
+        if (typeof window !== 'undefined') {
+          const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+          const newOrder = {
+            ...orderData,
+            id: result.id,
+            createdAt: new Date()
+          };
+          
+          // Add new order to the beginning
+          orderHistory.unshift(newOrder);
+          
+          // Keep only last 10 orders
+          if (orderHistory.length > 10) {
+            orderHistory.splice(10);
+          }
+          
+          localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+        }
+        
         // Clear cart
         localStorage.removeItem('cart');
         

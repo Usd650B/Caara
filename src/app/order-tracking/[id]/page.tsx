@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, Download, Home, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { getOrders, Order } from "@/lib/firestore";
+import { downloadReceipt, generateReceiptNumber, ReceiptData } from "@/lib/receipt";
 
 export default function OrderTrackingPage() {
   const params = useParams();
@@ -14,12 +15,58 @@ export default function OrderTrackingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [productImages, setProductImages] = useState<{ [productId: string]: string }>({});
 
+  // Save order to localStorage for persistence
+  const saveOrderToHistory = (order: Order) => {
+    if (typeof window !== 'undefined') {
+      const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+      
+      // Check if order already exists in history
+      const existingIndex = orderHistory.findIndex((o: Order) => o.id === order.id);
+      
+      if (existingIndex >= 0) {
+        // Update existing order
+        orderHistory[existingIndex] = order;
+      } else {
+        // Add new order to the beginning
+        orderHistory.unshift(order);
+      }
+      
+      // Keep only last 10 orders
+      if (orderHistory.length > 10) {
+        orderHistory.splice(10);
+      }
+      
+      localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+    }
+  };
+
+  const handleDownloadReceipt = () => {
+    if (!order) return;
+    
+    const receiptData: ReceiptData = {
+      order,
+      receiptNumber: generateReceiptNumber(order.id || ''),
+      issuedDate: new Date().toLocaleDateString(),
+      subtotal: order.subtotal || 0,
+      shipping: order.shipping || 0,
+      total: order.total || 0
+    };
+    
+    downloadReceipt(receiptData);
+  };
+
   const loadOrder = async (orderId: string) => {
     setIsLoading(true);
     try {
       const orders = await getOrders();
       const foundOrder = orders.find(o => o.id === orderId);
       setOrder(foundOrder || null);
+      
+      // Save order to history for persistence
+      if (foundOrder) {
+        saveOrderToHistory(foundOrder);
+      }
+      
       // Fetch product images for order items
       if (foundOrder && foundOrder.items) {
         const { getProducts } = await import("@/lib/firestore");
@@ -125,14 +172,28 @@ export default function OrderTrackingPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Link href="/">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
-        </Link>
-        <h1 className="text-3xl font-bold">Order Tracking</h1>
-        <p className="text-gray-600">Order ID: {order.id}</p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <Link href="/">
+            <Button variant="ghost">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+          <div className="flex gap-2">
+            <Button onClick={handleDownloadReceipt} variant="outline" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Download Receipt
+            </Button>
+            <Link href="/products">
+              <Button variant="outline" className="flex items-center gap-2">
+                <ShoppingBag className="h-4 w-4" />
+                Shop More
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Order Tracking</h1>
+        <p className="text-gray-600 text-lg">Order ID: {order.id}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

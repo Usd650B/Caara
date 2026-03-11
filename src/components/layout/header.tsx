@@ -83,6 +83,9 @@ export function Header() {
               <Link href="/products" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
                 Categories
               </Link>
+              <Link href="/orders" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
+                My Orders
+              </Link>
               <Link href="/contact" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
                 Contact
               </Link>
