@@ -21,17 +21,7 @@ import {
   X
 } from "lucide-react"
 import Link from "next/link"
-import { getOrder, updateOrder, Order } from "@/lib/firestore"
-
-interface OrderItem {
-  productId: string
-  name: string
-  price: number
-  quantity: number
-  size?: string
-  color?: string
-  image?: string
-}
+import { getOrder, updateOrder, Order, OrderItem } from "@/lib/firestore"
 
 export default function AdminOrderDetailPage() {
   const params = useParams()
