@@ -163,8 +163,8 @@ export default function AdminOrderDetailPage() {
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-bold">Order Details</h1>
-              <p className="text-gray-600">Order ID: {order.id}</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Order Details</h1>
+              <p className="text-gray-600 text-base sm:text-lg">Order ID: {order.id}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

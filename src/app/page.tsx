@@ -73,10 +73,10 @@ export default function Home() {
 
             {/* Main Heading */}
             <div className="space-y-2 sm:space-y-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-black text-black tracking-tight leading-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-black tracking-tight leading-tight" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
                 Every Queen<br className="sm:hidden" /> Wear CARA
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-black font-light max-w-2xl mx-auto tracking-wide px-4" style={{ fontFamily: 'Georgia, serif' }}>
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-black font-light max-w-2xl mx-auto tracking-wide px-4" style={{ fontFamily: 'Georgia, serif' }}>
                 ......
               </p>
             </div>

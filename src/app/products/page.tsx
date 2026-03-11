@@ -74,8 +74,8 @@ export default function ProductsPage() {
         <div className="container mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>The Collection</h1>
-              <p className="text-gray-600 text-xs sm:text-sm">Discover pieces that define your universe</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>The Collection</h1>
+              <p className="text-gray-600 text-sm sm:text-base">Discover pieces that define your universe</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="relative flex-1 sm:flex-none">

@@ -129,8 +129,8 @@ export default function CartPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">Shopping Cart</h1>
-        <p className="text-gray-600">{getTotalItems()} items in your cart</p>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">Shopping Cart</h1>
+        <p className="text-gray-600 text-base sm:text-lg">{getTotalItems()} items in your cart</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
