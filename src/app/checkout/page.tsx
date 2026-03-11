@@ -78,6 +78,7 @@ export default function CheckoutPage() {
         quantity: item.quantity,
         size: item.size,
         color: item.color,
+        image: item.image,
         index: index
       })),
       total: total,
