@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Chrome, ArrowRight, CheckCircle, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { signInWithGoogle } from "@/lib/customer-auth"
+import { signInWithGoogle, User } from "@/lib/customer-auth"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -15,6 +15,7 @@ export default function SignInPage() {
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
   const [isSuccess, setIsSuccess] = useState(false)
+  const [userData, setUserData] = useState<User | null>(null)
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
@@ -23,12 +24,13 @@ export default function SignInPage() {
     
     try {
       const result = await signInWithGoogle()
-      if (result.success) {
+      if (result.success && result.user) {
+        setUserData(result.user)
         setIsSuccess(true)
-        setMessage("Successfully signed in! Redirecting...")
+        // Wait gracefully while the 'proceeding as' animation plays
         setTimeout(() => {
           router.push('/orders')
-        }, 2000)
+        }, 2500)
       } else {
         setError(result.error || "Failed to sign in with Google")
       }
@@ -44,18 +46,18 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-white mb-2" style={{ fontFamily: 'Georgia, serif' }}>CARA</h1>
-          <p className="text-gray-300">Every Queen Wear CARA</p>
+          <h1 className="text-4xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-playfair)' }}>CARA</h1>
+          <p className="text-gray-300">Every Queen Wears CARA</p>
         </div>
 
         {/* Sign In Card */}
         <Card className="bg-white/10 backdrop-blur-lg border-white/20">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-white">
-              {isSuccess ? 'Welcome!' : 'Sign In'}
+              {isSuccess ? 'Welcome Back!' : 'Sign In'}
             </CardTitle>
             <p className="text-gray-300">
-              {isSuccess ? 'You\'re all set!' : 'Sign in to your CARA account'}
+              {isSuccess ? 'You\'re securely authenticated.' : 'Sign in to your CARA account'}
             </p>
           </CardHeader>
           
@@ -66,7 +68,7 @@ export default function SignInPage() {
               </Alert>
             )}
             
-            {message && (
+            {message && !isSuccess && (
               <Alert className="bg-green-500/20 border-green-500/50 text-green-200">
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>{message}</AlertDescription>
@@ -77,35 +79,46 @@ export default function SignInPage() {
               <Button 
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="w-full bg-white text-black hover:bg-gray-100"
+                className="w-full bg-white text-black hover:bg-gray-100 h-12 rounded-xl text-base shadow-xl"
               >
-                <Chrome className="mr-2 h-4 w-4" />
-                {isLoading ? 'Signing in...' : 'Continue with Google'}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <Chrome className="mr-3 h-5 w-5" />
+                {isLoading ? 'Connecting to Google...' : 'Continue with Google'}
+                {!isLoading && <ArrowRight className="ml-auto h-5 w-5" />}
               </Button>
             )}
 
-            {isSuccess && (
-              <div className="text-center space-y-4">
-                <div className="bg-green-500/20 rounded-lg p-4">
-                  <CheckCircle className="h-8 w-8 text-green-400 mx-auto mb-2" />
-                  <p className="text-white font-medium">Success!</p>
-                  <p className="text-gray-300 text-sm">{message}</p>
+            {isSuccess && userData && (
+              <div className="text-center space-y-6 animate-in fade-in zoom-in duration-500">
+                <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-md">
+                  <div className="relative inline-block mb-4">
+                    {userData.avatar ? (
+                      <img src={userData.avatar} alt={userData.name} className="w-20 h-20 rounded-full border-4 border-white/20 shadow-2xl mx-auto object-cover" />
+                    ) : (
+                      <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center border-4 border-white/10 mx-auto shadow-2xl">
+                        <span className="text-3xl text-white font-bold">{userData.name?.charAt(0) || userData.email?.charAt(0)}</span>
+                      </div>
+                    )}
+                    <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 border-4 border-gray-900 shadow-xl">
+                      <CheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    Proceeding as <span className="text-primary">{userData.name?.split(' ')[0] || "User"}</span>
+                  </h3>
+                  <p className="text-gray-400 text-sm overflow-hidden text-ellipsis">{userData.email}</p>
                 </div>
                 
-                <Link href="/orders">
-                  <Button className="w-full">
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    View My Orders
-                  </Button>
-                </Link>
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  <span className="text-xs text-gray-400 tracking-widest uppercase">Securing your session</span>
+                </div>
               </div>
             )}
 
             {/* Skip for now */}
             {!isSuccess && (
               <div className="text-center pt-4 border-t border-white/20">
-                <Link href="/" className="text-gray-300 hover:text-white text-sm">
+                <Link href="/" className="text-gray-300 hover:text-white text-sm transition-colors">
                   Continue as Guest
                 </Link>
               </div>
@@ -115,22 +128,18 @@ export default function SignInPage() {
 
         {/* Benefits */}
         <div className="mt-8 text-center">
-          <div className="space-y-4 text-gray-300 text-sm">
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Track your orders</span>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-gray-400 text-xs tracking-wider uppercase">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-3 w-3 text-white/50" />
+              <span>Track Orders</span>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Save your favorites</span>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-3 w-3 text-white/50" />
+              <span>Save Favorites</span>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Faster checkout</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Exclusive offers</span>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="h-3 w-3 text-white/50" />
+              <span>Exclusive Offers</span>
             </div>
           </div>
         </div>

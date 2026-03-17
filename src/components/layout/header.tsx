@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight } from "lucide-react";
 import { getCurrentUser, signOutCustomer, isCustomerAuthenticated } from "@/lib/customer-auth";
 
 export function Header() {
@@ -45,150 +45,132 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full glass-header border-b border-white/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Left - Menu Icon */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center space-x-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden glass rounded-xl border-white/5"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+                Discover
+              </Link>
+              <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+                Collections
+              </Link>
+              <Link href="/contact" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+                Concierge
+              </Link>
+            </nav>
+          </div>
 
           {/* Center - Logo */}
-          <Link href="/" className="flex items-center">
-            <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
-              CARA
+          <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group">
+            <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter transition-all duration-500 group-hover:scale-110">
+              <span className="gradient-text">CARA</span>
+              <div className="h-1.5 w-0 group-hover:w-full gradient-bg mt-1 transition-all duration-500 rounded-full mx-auto opacity-0 group-hover:opacity-100"></div>
             </span>
           </Link>
 
           {/* Right - User Actions */}
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon">
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <Button variant="ghost" size="icon" className="hidden sm:flex glass rounded-xl border-white/5">
               <Search className="h-5 w-5" />
             </Button>
             
             {user ? (
-              <>
-                <Link href="/orders">
-                  <Button variant="ghost" size="sm" className="hidden sm:flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm">My Orders</span>
-                  </Button>
-                </Link>
+              <div className="relative group">
+                <Button variant="ghost" size="sm" className="hidden sm:flex items-center gap-3 glass border-white/5 h-11 px-6 rounded-2xl">
+                  <div className="w-6 h-6 gradient-bg rounded-lg flex items-center justify-center">
+                    <User className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <span className="font-bold text-xs uppercase tracking-widest">
+                    {user.name || user.email?.split('@')[0]}
+                  </span>
+                </Button>
                 
-                <div className="relative group">
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline text-xs sm:text-sm">
-                      {user.name || user.email?.split('@')[0]}
-                    </span>
-                  </Button>
-                  
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="p-2">
-                      <div className="px-3 py-2 text-xs text-gray-500 border-b">
-                        {user.email}
-                      </div>
-                      <Link href="/orders">
-                        <Button variant="ghost" size="sm" className="w-full justify-start">
-                          <Package className="h-4 w-4 mr-2" />
-                          My Orders
-                        </Button>
-                      </Link>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="w-full justify-start text-red-600"
-                        onClick={() => signOutCustomer()}
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Sign Out
-                      </Button>
+                <div className="absolute right-0 top-full mt-4 w-60 glass rounded-3xl p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 scale-95 group-hover:scale-100 overflow-hidden translate-y-2 group-hover:translate-y-0">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full -mr-12 -mt-12 blur-2xl"></div>
+                  <div className="relative z-10 space-y-1">
+                    <div className="px-4 py-3 border-b border-white/10 mb-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Authenticated As</p>
+                      <p className="text-xs font-bold truncate">{user.email}</p>
                     </div>
+                    <Link href="/orders">
+                      <Button variant="ghost" size="sm" className="w-full justify-start h-11 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
+                        <Package className="h-4 w-4 mr-3" />
+                        <span className="font-bold text-xs uppercase tracking-widest">Order History</span>
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start h-11 rounded-xl text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-all"
+                      onClick={() => signOutCustomer()}
+                    >
+                      <LogOut className="h-4 w-4 mr-3" />
+                      <span className="font-bold text-xs uppercase tracking-widest">Terminate Session</span>
+                    </Button>
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
-              <Link href="/auth/sign-in">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign In</span>
+              <Link href="/auth/sign-in" className="hidden sm:block">
+                <Button variant="ghost" size="sm" className="flex items-center gap-3 glass border-white/5 h-11 px-6 rounded-2xl hover:scale-105 transition-all">
+                  <div className="w-6 h-6 gradient-bg rounded-lg flex items-center justify-center">
+                    <User className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <span className="font-bold text-xs uppercase tracking-widest">Sign In</span>
                 </Button>
               </Link>
             )}
             
-            <Button variant="ghost" size="icon" className="relative" asChild>
-              <Link href="/cart">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon" className="relative glass border-white/5 h-11 w-11 rounded-2xl hover:scale-110 transition-all">
                 <ShoppingBag className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-black text-white text-xs flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full gradient-bg text-white text-[10px] font-black flex items-center justify-center shadow-lg animate-bounce-slow">
                     {cartCount > 99 ? '99+' : cartCount}
                   </span>
                 )}
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t bg-white">
-            <nav className="flex flex-col space-y-3">
-              <Link href="/products" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                Shop
+          <div className="md:hidden py-8 glass rounded-[2.5rem] mt-4 mb-4 border border-white/10 animate-in slide-in-from-top-4 duration-300 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+            <nav className="flex flex-col space-y-4 px-8 relative z-10">
+              <Link href="/products" className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
+                <span>Shop All</span>
+                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
               </Link>
-              <Link href="/products" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                Categories
+              <Link href="/products" className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
+                <span>Collections</span>
+                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
+              </Link>
+              <Link href="/contact" className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
+                <span>Concierge</span>
+                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
               </Link>
               
-              {user ? (
-                <>
-                  <Link href="/orders" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                    My Orders
-                  </Link>
-                  <div className="border-t pt-3 mt-3 space-y-2">
-                    <div className="px-3 py-2 text-xs text-gray-500">
-                      {user.email}
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="w-full justify-start text-red-600"
-                      onClick={() => signOutCustomer()}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Link href="/orders" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                    My Orders
-                  </Link>
-                  <Link href="/auth/sign-in" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                    Sign In
-                  </Link>
-                </>
+              {!user && (
+                <Link href="/auth/sign-in" className="text-xl font-black uppercase tracking-widest text-primary transition-all py-3 flex items-center justify-between">
+                  <span>Sign In</span>
+                  <User className="h-5 w-5" />
+                </Link>
               )}
-              
-              <Link href="/contact" className="text-gray-700 hover:text-black transition-colors py-2 text-sm font-medium">
-                Contact
-              </Link>
-              <div className="border-t pt-3 mt-3 space-y-2">
-                <Link href="/contact" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors py-2 text-sm">
-                  <Mail className="h-4 w-4" />
-                  <span>Contact Us</span>
-                </Link>
-                <Link href="tel:+1234567890" className="flex items-center space-x-2 text-gray-700 hover:text-black transition-colors py-2 text-sm">
-                  <Phone className="h-4 w-4" />
-                  <span>Call Us</span>
-                </Link>
-              </div>
             </nav>
           </div>
         )}

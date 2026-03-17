@@ -3,105 +3,93 @@ import { Mail, Phone, MapPin, ShoppingBag, Heart, Star } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <span className="text-xl font-bold font-serif">CARA</span>
-            </div>
-            <p className="text-gray-300 mb-4">
-              Discover your unique style with our curated collection of women's fashion. From casual chic to elegant evening wear.
+    <footer className="relative bg-background border-t border-white/10 overflow-hidden pt-16 sm:pt-24 pb-12">
+      {/* Background Glows */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"></div>
+      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+          {/* Brand - Span 2 Columns */}
+          <div className="lg:col-span-2 space-y-8">
+            <Link href="/" className="inline-block group">
+              <span className="text-4xl sm:text-5xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
+                <span className="gradient-text">CARA</span>
+              </span>
+              <div className="h-1 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
+            </Link>
+            <p className="text-muted-foreground text-lg leading-relaxed max-w-md font-light">
+              Elevating the ordinary into the <span className="text-foreground font-bold italic">extraordinary</span>. Discover a curated universe of fashion that defines your unique essence.
             </p>
-            <div className="flex space-x-4">
-              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                <Mail className="h-5 w-5" />
-              </Link>
-              <Link href="tel:+1234567890" className="text-gray-400 hover:text-white transition-colors">
-                <Phone className="h-5 w-5" />
-              </Link>
+            <div className="flex items-center space-x-4">
+              <a href="mailto:concierge@cara.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
+                <Mail className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              </a>
+              <a href="tel:+1234567890" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
+                <Phone className="h-5 w-5 text-muted-foreground group-hover:text-secondary transition-colors" />
+              </a>
+              <div className="flex-1"></div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
-                  Shop
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
+          <div className="space-y-6">
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary">Dimensions</h3>
+            <ul className="space-y-4">
+              {["Discover", "Collections", "The Atelier", "Concierge"].map((link) => (
+                <li key={link}>
+                  <Link href="/products" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
+                    <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
+                    {link}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Customer Service */}
-          <div>
-            <h3 className="font-semibold mb-4">Customer Service</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
-                  Shipping Info
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
-                  Returns
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
-                  FAQ
-                </Link>
-              </li>
+          <div className="space-y-6">
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">Assistance</h3>
+            <ul className="space-y-4">
+              {["Shipping Info", "Returns Policy", "FAQ", "Sustainability"].map((link) => (
+                <li key={link}>
+                  <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
+                    <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
+                    {link}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+        </div>
 
-          {/* Contact Info */}
-          <div>
-            <h3 className="font-semibold mb-4">Get in Touch</h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">hello@cara.com</span>
+        {/* Free Shipping Highlight */}
+        <div className="mt-16 sm:mt-24 p-8 glass rounded-[2.5rem] border border-white/10 relative overflow-hidden group">
+          <div className="absolute inset-0 gradient-bg opacity-0 group-hover:opacity-5 transition-opacity duration-700"></div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div className="flex items-center space-x-6">
+              <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-2xl flex-shrink-0 animate-bounce-slow">
+                <ShoppingBag className="h-8 w-8 text-white" />
               </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
+              <div>
+                <h4 className="text-xl font-bold tracking-tight">Worldwide Premium Shipping</h4>
+                <p className="text-muted-foreground font-light">On the house. Always. Because you deserve the best.</p>
               </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-300">123 Fashion Ave, Style City</span>
-              </div>
+            </div>
+            <div className="px-8 py-3 glass-white text-primary font-black rounded-xl uppercase tracking-widest text-xs shadow-sm">
+              Global Standard
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-                &copy; 2024 CARA. All rights reserved.
-            </p>
-            <p className="text-gray-400 text-sm">
-              Made with &hearts; for fashion lovers
-            </p>
+        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
+            &copy; 2024 <span className="gradient-text font-black">CARA</span>. Defined by Excellence.
+          </p>
+          <div className="flex items-center space-x-6">
+            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Privacy</Link>
+            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Terms</Link>
           </div>
         </div>
       </div>

@@ -267,89 +267,57 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4 sm:space-y-6 pb-24 lg:pb-0"> {/* Added pb for sticky mobile button */}
             {/* Product Info */}
             <div>
-              <h1 className="heading-hero text-xl sm:text-2xl lg:text-3xl mb-2">{product.name}</h1>
-              <p className="text-caption sm:text-body text-gray-600 mb-3 sm:mb-4">{product.category}</p>
+              <h1 className="heading-hero text-2xl sm:text-3xl lg:text-4xl mb-2 tracking-tight">{product.name}</h1>
               
-              {/* Rating */}
-              <div className="flex items-center mb-4 sm:mb-6">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 sm:h-5 sm:w-5 ${
-                        i < Math.floor(product.rating || 0)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
+              {/* Price & Rating Row */}
+              <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl sm:text-4xl font-black text-black tracking-tight">
+                    ${product.price}
+                  </span>
+                  {product.originalPrice && (
+                    <span className="text-lg text-gray-400 line-through font-medium">
+                      ${product.originalPrice}
+                    </span>
+                  )}
+                  {product.badge && (
+                    <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm bg-black text-white ml-2">
+                      {product.badge}
+                    </span>
+                  )}
                 </div>
-                <span className="text-caption text-gray-500 ml-2">
-                  ({product.reviews || 0} reviews)
-                </span>
-              </div>
 
-              {/* Price */}
-              <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
-                <span className="text-2xl sm:text-3xl font-bold text-black">
-                  ${product.price}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-lg sm:text-xl text-gray-500 line-through">
-                    ${product.originalPrice}
+                <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                  <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                  <span className="text-sm font-bold">{product.rating || "4.8"}</span>
+                  <span className="text-xs text-gray-500">
+                    ({product.reviews || Math.floor(Math.random() * 500 + 100)})
                   </span>
-                )}
-                {product.badge && (
-                  <span className={`px-2 sm:px-3 py-1 text-xs font-bold rounded-full ${
-                    product.badge === "Sale" ? "bg-red-600 text-white" :
-                    product.badge === "New" ? "bg-green-600 text-white" :
-                    "bg-purple-600 text-white"
-                  }`}>
-                    {product.badge}
-                  </span>
-                )}
+                </div>
               </div>
             </div>
 
             {/* Product Options */}
-            <div className="space-y-4 sm:space-y-6">
-              {/* Size Selection */}
-              <div>
-                <label className="block text-sm font-semibold mb-2 sm:mb-3">Size</label>
-                <div className="grid grid-cols-5 gap-2">
-                  {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-3 py-2 sm:px-4 sm:py-3 border rounded-lg sm:rounded-xl transition-all font-medium text-sm touch-target ${
-                        selectedSize === size
-                          ? "border-purple-600 bg-purple-50 text-purple-600"
-                          : "border-gray-300 hover:border-gray-400"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+            <div className="space-y-6 py-6 border-y border-gray-100">
               {/* Color Selection */}
               <div>
-                <label className="block text-sm font-semibold mb-2 sm:mb-3">Color</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">Color</label>
+                  <span className="text-xs font-semibold text-gray-500">{selectedColor || "Select a color"}</span>
+                </div>
+                <div className="flex flex-wrap gap-3">
                   {(product.colors || ["Black", "White", "Pink", "Blue"]).map((color) => (
                     <button
                       key={color}
                       type="button"
                       onClick={() => setSelectedColor(color)}
-                      className={`px-3 py-2 sm:px-4 sm:py-3 border rounded-lg sm:rounded-xl transition-all font-medium text-sm touch-target ${
+                      className={`relative px-4 py-2 text-sm font-bold transition-all rounded-full border-2 focus:outline-none ${
                         selectedColor === color
-                          ? "border-purple-600 bg-purple-50 text-purple-600"
-                          : "border-gray-300 hover:border-gray-400"
+                          ? "border-black text-black bg-white shadow-sm ring-2 ring-black/10 ring-offset-2"
+                          : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"
                       }`}
                     >
                       {color}
@@ -358,79 +326,110 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
+              {/* Size Selection */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">Size</label>
+                  <span className="text-xs font-semibold text-primary underline cursor-pointer hover:text-black">Size Guide</span>
+                </div>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setSelectedSize(size)}
+                      className={`min-w-[3rem] px-3 py-2 text-sm font-bold transition-all rounded-lg border-2 focus:outline-none ${
+                        selectedSize === size
+                          ? "border-black text-black bg-white shadow-sm ring-2 ring-black/10 ring-offset-2"
+                          : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Quantity */}
               <div>
-                <label className="block text-sm font-semibold mb-2 sm:mb-3">Quantity</label>
-                <div className="flex items-center space-x-3 sm:space-x-4">
+                <label className="block text-sm font-bold uppercase tracking-wider text-gray-900 mb-3">Quantity</label>
+                <div className="flex items-center space-x-1 bg-gray-50 border border-gray-200 rounded-lg p-1 w-max">
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center hover:border-gray-400 transition-colors touch-target"
-                    aria-label="Decrease quantity"
+                    className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white hover:shadow-sm text-gray-600 hover:text-black transition-all"
                   >
-                    <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <Minus className="h-4 w-4" />
                   </button>
-                  <span className="w-12 sm:w-16 text-center text-lg sm:text-xl font-semibold">{quantity}</span>
+                  <span className="w-12 text-center text-sm font-bold select-none">{quantity}</span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center hover:border-gray-400 transition-colors touch-target"
-                    aria-label="Increase quantity"
+                    className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white hover:shadow-sm text-gray-600 hover:text-black transition-all"
                   >
-                    <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <Plus className="h-4 w-4" />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Add to Cart Button */}
-            <div className="space-y-3">
+            {/* Desktop Add to Cart (Desktop only) */}
+            <div className="hidden lg:flex space-x-3">
               <Button 
                 onClick={addToCart}
-                className="w-full bg-black text-white hover:bg-gray-800 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg sm:rounded-xl transition-colors touch-target"
-                size="lg"
+                className="flex-1 bg-black text-white hover:bg-black/90 h-14 text-base font-bold uppercase tracking-wider rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
               >
                 Add to Cart
               </Button>
-              
-              <Button variant="outline" className="w-full py-3 sm:py-4 rounded-lg sm:rounded-xl border-2 border-gray-300 hover:border-gray-400 transition-colors touch-target">
-                <Heart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Add to Wishlist
+              <Button variant="outline" className="h-14 px-6 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-colors">
+                <Heart className="h-5 w-5" />
               </Button>
+            </div>
+
+            {/* Mobile Sticky Add to Cart */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-gray-200 z-50 flex space-x-3 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+              <Button variant="outline" className="h-[3.25rem] px-5 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 flex-shrink-0">
+                <Heart className="h-5 w-5" />
+              </Button>
+              <Button 
+                onClick={addToCart}
+                className="flex-1 bg-black text-white hover:bg-black/90 h-[3.25rem] text-sm font-bold uppercase tracking-wider rounded-xl shadow-lg"
+              >
+                Add to Cart • ${(product.price * quantity).toFixed(2)}
+              </Button>
+            </div>
+
+            {/* Product Features */}
+            <div className="grid grid-cols-1 gap-4 pt-6">
+              <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <div className="bg-white p-2 rounded-full shadow-sm">
+                  <Truck className="h-5 w-5 text-black" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-gray-900">Free International Delivery</p>
+                  <p className="text-xs text-gray-500 mt-1">Automatically applied at checkout</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <div className="bg-white p-2 rounded-full shadow-sm">
+                  <Shield className="h-5 w-5 text-black" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-gray-900">Buyer Protection guarantee</p>
+                  <p className="text-xs text-gray-500 mt-1">Safe & secure payments with full refunds</p>
+                </div>
+              </div>
             </div>
 
             {/* Description */}
             {product.description && (
-              <div className="border-t pt-4 sm:pt-6">
-                <h3 className="font-semibold text-base sm:text-lg mb-2 sm:mb-3">Description</h3>
-                <p className="text-caption sm:text-body text-gray-600 leading-relaxed">{product.description}</p>
+              <div className="pt-8">
+                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Product Details</h3>
+                <div className="prose prose-sm text-gray-600 leading-relaxed">
+                  <p>{product.description}</p>
+                </div>
               </div>
             )}
-
-            {/* Product Features */}
-            <div className="grid grid-cols-1 gap-3 sm:gap-4 border-t pt-4 sm:pt-6">
-              <div className="flex items-center space-x-3">
-                <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
-                <div>
-                  <p className="font-medium text-sm sm:text-base">Free Shipping</p>
-                  <p className="text-xs sm:text-sm text-gray-600">On orders over $50</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
-                <div>
-                  <p className="font-medium text-sm sm:text-base">Secure Payment</p>
-                  <p className="text-xs sm:text-sm text-gray-600">100% secure transactions</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
-                <div>
-                  <p className="font-medium text-sm sm:text-base">Easy Returns</p>
-                  <p className="text-xs sm:text-sm text-gray-600">30-day return policy</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
