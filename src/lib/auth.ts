@@ -1,4 +1,5 @@
-import { auth } from './firebase';
+"use client"
+import { getFirebaseAuth } from './firebase';
 
 // Single seller credentials (you as the owner)
 const SELLER_EMAIL = 'admin@caara.com';
@@ -6,8 +7,12 @@ const SELLER_PASSWORD = 'caara123';
 
 export const signInAsSeller = async () => {
   try {
-    // In production, you'd use proper Firebase Auth
-    // For now, we'll use localStorage to simulate authentication
+    if (typeof window === 'undefined') return { success: false, error: 'Cannot sign in on server' };
+    
+    const auth = getFirebaseAuth();
+    if (auth) {
+      // Logic for signing in with auth if needed
+    }
     localStorage.setItem('isSeller', 'true');
     localStorage.setItem('sellerEmail', SELLER_EMAIL);
     return { success: true };
@@ -18,14 +23,17 @@ export const signInAsSeller = async () => {
 };
 
 export const signOutSeller = () => {
+  if (typeof window === 'undefined') return;
   localStorage.removeItem('isSeller');
   localStorage.removeItem('sellerEmail');
 };
 
 export const isSellerAuthenticated = () => {
+  if (typeof window === 'undefined') return false;
   return localStorage.getItem('isSeller') === 'true';
 };
 
 export const getSellerEmail = () => {
+  if (typeof window === 'undefined') return null;
   return localStorage.getItem('sellerEmail');
 };

@@ -14,12 +14,33 @@ const firebaseConfig = {
   measurementId: "G-TX6W89T6X5"
 };
 
-console.log('Initializing Firebase with config:', firebaseConfig);
+// Initialize app only once
+let app: any = null;
+if (typeof window !== 'undefined') {
+  console.log('Initializing Firebase with config:', { ...firebaseConfig, apiKey: '***' });
+  app = initializeApp(firebaseConfig);
+}
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-export const storage = getStorage(app);
+// Lazy getters for services
+export const getDb = () => {
+  if (typeof window === 'undefined') return null;
+  return getFirestore(app);
+};
+
+export const getFirebaseAuth = () => {
+  if (typeof window === 'undefined') return null;
+  return getAuth(app);
+};
+
+export const getFirebaseStorage = () => {
+  if (typeof window === 'undefined') return null;
+  return getStorage(app);
+};
+
+// For backward compatibility (use with caution during SSR)
+export const db = typeof window !== 'undefined' ? getFirestore(app) : null as any;
+export const auth = typeof window !== 'undefined' ? getAuth(app) : null as any;
+export const storage = typeof window !== 'undefined' ? getStorage(app) : null as any;
 
 // Initialize analytics only on client side
 let analytics: any = null;

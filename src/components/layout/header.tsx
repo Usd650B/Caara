@@ -4,16 +4,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight } from "lucide-react";
-import { getCurrentUser, signOutCustomer, isCustomerAuthenticated } from "@/lib/customer-auth";
+import { getCurrentUser, signOutCustomer } from "@/lib/customer-auth";
+import { useSettings } from "@/lib/settings";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
   const [user, setUser] = useState<any>(null)
+  const { currency, setCurrency, language, setLanguage, t } = useSettings();
 
   // Update cart count from localStorage
   useEffect(() => {
     const updateCartCount = () => {
+      if (typeof window === 'undefined') return;
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
       setCartCount(count);
@@ -62,13 +65,13 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                Discover
+                {t("Discover")}
               </Link>
               <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                Collections
+                {t("Collections")}
               </Link>
               <Link href="/contact" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                Concierge
+                {t("Concierge")}
               </Link>
             </nav>
           </div>
@@ -83,6 +86,24 @@ export function Header() {
 
           {/* Right - User Actions */}
           <div className="flex items-center space-x-3 sm:space-x-4">
+            
+            {/* Currency & Language Toggles (Desktop only for brevity, or both) */}
+            <div className="hidden lg:flex items-center gap-2 border-r border-gray-200 pr-4 mr-2">
+              <button 
+                onClick={() => setLanguage(language === 'EN' ? 'SW' : 'EN')} 
+                className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors"
+              >
+                {language}
+              </button>
+              <span className="text-gray-300">|</span>
+              <button 
+                onClick={() => setCurrency(currency === 'USD' ? 'TZS' : 'USD')}
+                className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors"
+              >
+                {currency}
+              </button>
+            </div>
+
             <Button variant="ghost" size="icon" className="hidden sm:flex glass rounded-xl border-white/5">
               <Search className="h-5 w-5" />
             </Button>
@@ -108,7 +129,7 @@ export function Header() {
                     <Link href="/orders">
                       <Button variant="ghost" size="sm" className="w-full justify-start h-11 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
                         <Package className="h-4 w-4 mr-3" />
-                        <span className="font-bold text-xs uppercase tracking-widest">Order History</span>
+                        <span className="font-bold text-xs uppercase tracking-widest">{t("Order History")}</span>
                       </Button>
                     </Link>
                     <Button 
@@ -118,7 +139,7 @@ export function Header() {
                       onClick={() => signOutCustomer()}
                     >
                       <LogOut className="h-4 w-4 mr-3" />
-                      <span className="font-bold text-xs uppercase tracking-widest">Terminate Session</span>
+                      <span className="font-bold text-xs uppercase tracking-widest">{t("Terminate Session")}</span>
                     </Button>
                   </div>
                 </div>
@@ -129,7 +150,7 @@ export function Header() {
                   <div className="w-6 h-6 gradient-bg rounded-lg flex items-center justify-center">
                     <User className="h-3.5 w-3.5 text-white" />
                   </div>
-                  <span className="font-bold text-xs uppercase tracking-widest">Sign In</span>
+                  <span className="font-bold text-xs uppercase tracking-widest">{t("Sign In")}</span>
                 </Button>
               </Link>
             )}

@@ -62,6 +62,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SettingsProvider } from "@/lib/settings";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -75,11 +77,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
       >
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <SettingsProvider>
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </SettingsProvider>
       </body>
     </html>
   );

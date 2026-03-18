@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingBag, ShoppingCart, Star, ArrowRight, Heart, Sparkles, TrendingUp, Users, Gift, Zap, Crown, Diamond, Truck } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
+import { useSettings } from "@/lib/settings";
 
 export default function Home() {
+  const { t, formatPrice } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
@@ -26,12 +28,12 @@ export default function Home() {
   const featuredProducts = products.slice(0, 8); // Show more products for better visual impact
 
   const categories = [
-    { id: "all", name: "✨ All", icon: Sparkles, color: "from-purple-500 to-pink-500" },
-    { id: "dresses", name: "👗 Dresses", icon: Diamond, color: "from-pink-500 to-rose-500" },
-    { id: "tops", name: "👕 Tops", icon: Crown, color: "from-blue-500 to-purple-500" },
-    { id: "sets", name: "💃 Sets", icon: Heart, color: "from-green-500 to-teal-500" },
-    { id: "new", name: "⭐ New", icon: Zap, color: "from-yellow-500 to-orange-500" },
-    { id: "trending", name: "🔥 Trending", icon: TrendingUp, color: "from-red-500 to-pink-500" }
+    { id: "all", name: t("All"), icon: Sparkles, color: "from-purple-500 to-pink-500" },
+    { id: "dresses", name: t("Dresses"), icon: Diamond, color: "from-pink-500 to-rose-500" },
+    { id: "tops", name: t("Tops"), icon: Crown, color: "from-blue-500 to-purple-500" },
+    { id: "sets", name: t("Sets"), icon: Heart, color: "from-green-500 to-teal-500" },
+    { id: "new", name: t("New"), icon: Zap, color: "from-yellow-500 to-orange-500" },
+    { id: "trending", name: t("Trending"), icon: TrendingUp, color: "from-red-500 to-pink-500" }
   ];
 
   const testimonials = [
@@ -73,16 +75,16 @@ export default function Home() {
             {/* Animated Badge */}
             <div className="inline-flex items-center space-x-2 glass px-3 py-2 sm:px-6 sm:py-3 rounded-full shadow-xl border border-white/20">
               <Sparkles className="h-3 w-3 sm:h-5 sm:w-5 text-primary animate-pulse" />
-              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">The Art of Being Unforgettable</span>
+              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">{t("The Art of Being Unforgettable")}</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-2 sm:space-y-4">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-tight lg:leading-[1.1]" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-                Every Queen<br className="sm:hidden" /> <span className="gradient-text">Wears CARA</span>
+                {t("Every Queen")}<br className="sm:hidden" /> <span className="gradient-text">{t("Wears CARA")}</span>
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground font-light max-w-2xl mx-auto tracking-wide px-4" style={{ fontFamily: 'var(--font-playfair)' }}>
-                Elevate your style with premium pieces designed for the extraordinary.
+                {t("Elevate your style with premium pieces designed for the extraordinary.")}
               </p>
             </div>
 
@@ -93,7 +95,7 @@ export default function Home() {
                   size="lg" 
                   className="gradient-bg text-white hover:opacity-90 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider shadow-2xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
                 >
-                  Enter the World <ArrowRight className="ml-2 h-4 w-4" />
+                  {t("Enter the World")} <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Button 
@@ -101,7 +103,7 @@ export default function Home() {
                 size="lg" 
                 className="glass border-primary/20 text-foreground hover:bg-primary/10 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
               >
-                Discover More
+                {t("Discover More")}
               </Button>
             </div>
           </div>
@@ -113,9 +115,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-              Define Your Universe
+              {t("Define Your Universe")}
             </h2>
-            <p className="text-muted-foreground text-base sm:text-lg font-light tracking-wide px-4">Every piece tells your story</p>
+            <p className="text-muted-foreground text-base sm:text-lg font-light tracking-wide px-4">{t("Every piece tells your story")}</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
@@ -162,12 +164,12 @@ export default function Home() {
           <div className="text-center mb-8 sm:mb-12">
             <div className="inline-flex items-center space-x-2 glass px-4 py-2 sm:px-6 sm:py-3 rounded-full mb-4">
               <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">CULTURE CREATORS</span>
+              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">{t("Trending Now")}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-              The Collection
+              {t("The Collection")}
             </h2>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-light tracking-wide px-4">Curated pieces that become part of your identity</p>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-light tracking-wide px-4">{t("Curated pieces that become part of your identity")}</p>
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
@@ -181,9 +183,9 @@ export default function Home() {
                   <ShoppingBag className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black mb-2 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-                  The Future Awaits
+                  {t("The Future Awaits")}
                 </h3>
-                <p className="text-muted-foreground mb-6 font-light px-4">Something extraordinary is coming your way</p>
+                <p className="text-muted-foreground mb-6 font-light px-4">{t("Something extraordinary is coming your way")}</p>
                 <Button className="gradient-bg text-white hover:opacity-90 font-semibold tracking-wider px-6 py-3 text-sm sm:text-base" asChild>
                   <Link href="/products">Explore the Universe</Link>
                 </Button>
@@ -209,7 +211,7 @@ export default function Home() {
                       {product.badge === "New" && (
                         <div className="absolute top-2 left-2">
                           <span className="px-2 py-0.5 text-[9px] font-bold gradient-bg text-white rounded uppercase tracking-wider shadow">
-                            NEW
+                            {t("NEW")}
                           </span>
                         </div>
                       )}
@@ -237,7 +239,7 @@ export default function Home() {
                             alert('Added to cart! ✨');
                           }}
                         >
-                          Add
+                          {t("Add")}
                         </Button>
                         <Button 
                           size="icon"
@@ -259,11 +261,11 @@ export default function Home() {
                       <div className="flex items-center justify-between mt-1.5">
                         <div className="flex items-center space-x-1.5 flex-wrap">
                           <span className="text-sm font-black text-primary">
-                            ${product.price}
+                            {formatPrice(product.price)}
                           </span>
                           {product.originalPrice && (
                             <span className="text-[10px] text-muted-foreground line-through font-medium">
-                              ${product.originalPrice}
+                              {formatPrice(product.originalPrice)}
                             </span>
                           )}
                         </div>
@@ -287,9 +289,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-              The CARA Culture
+              {t("The CARA Culture")}
             </h2>
-            <p className="text-muted-foreground text-lg font-light tracking-wide">More than fashion, it's a movement</p>
+            <p className="text-muted-foreground text-lg font-light tracking-wide">{t("More than fashion, it's a movement")}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -326,22 +328,22 @@ export default function Home() {
               <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
                 <Truck className="h-8 w-8 text-primary group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>Global Free Shipping</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Complimentary shipping on all orders worldwide</p>
+              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Global Free Shipping")}</h3>
+              <p className="text-muted-foreground font-light tracking-wide">{t("Complimentary shipping on all orders worldwide")}</p>
             </div>
             <div className="text-center space-y-4 group">
               <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
                 <Diamond className="h-8 w-8 text-primary group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>Premium Quality</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Hand-selected fabrics and artisan craftsmanship</p>
+              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Premium Quality")}</h3>
+              <p className="text-muted-foreground font-light tracking-wide">{t("Hand-selected fabrics and artisan craftsmanship")}</p>
             </div>
             <div className="text-center space-y-4 group">
               <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
                 <Users className="h-8 w-8 text-primary group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>24/7 Support</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Our styling experts are always here for you</p>
+              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("24/7 Support")}</h3>
+              <p className="text-muted-foreground font-light tracking-wide">{t("Our styling experts are always here for you")}</p>
             </div>
           </div>
         </div>
@@ -354,17 +356,17 @@ export default function Home() {
             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl lg:text-6xl font-black text-white mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-                Ready to Become Iconic?
+                {t("Ready to Become Iconic?")}
               </h2>
               <p className="text-white/90 mb-8 max-w-2xl mx-auto text-lg sm:text-xl font-light tracking-wide" style={{ fontFamily: 'var(--font-playfair)' }}>
-                Join the movement. Wear CARA. Create your legacy.
+                {t("Join the movement. Wear CARA. Create your legacy.")}
               </p>
               <Link href="/products">
                 <Button 
                   size="lg" 
                   className="bg-white text-primary hover:bg-white/90 px-8 py-6 text-xl font-bold tracking-wider shadow-2xl transform hover:scale-110 transition-all duration-300 rounded-2xl"
                 >
-                  Begin Your Journey <ArrowRight className="ml-2 h-6 w-6" />
+                  {t("Begin Your Journey")} <ArrowRight className="ml-2 h-6 w-6" />
                 </Button>
               </Link>
             </div>

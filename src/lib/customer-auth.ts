@@ -1,7 +1,6 @@
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
-import { db } from './firebase'
+import { getDb, getFirebaseAuth } from './firebase'
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { auth } from './firebase'
 
 export interface User {
   id: string
@@ -26,13 +25,11 @@ export interface AuthSession {
 
 // Magic Link Authentication
 export const sendMagicLink = async (email: string): Promise<{ success: boolean; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
-    // In a real implementation, this would send an email with a magic link
-    // For demo purposes, we'll simulate this with localStorage
     const magicLinkToken = generateMagicToken()
     const expiresAt = Date.now() + (15 * 60 * 1000) // 15 minutes
     
-    // Store magic link session
     localStorage.setItem('magicLink', JSON.stringify({
       email,
       token: magicLinkToken,
@@ -40,10 +37,7 @@ export const sendMagicLink = async (email: string): Promise<{ success: boolean; 
       createdAt: Date.now()
     }))
     
-    // Simulate sending email (in production, use SendGrid, AWS SES, etc.)
     console.log(`Magic link sent to ${email}: ${window.location.origin}/auth/magic-link?token=${magicLinkToken}&email=${encodeURIComponent(email)}`)
-    
-    // For demo, show the magic link in console
     return { success: true }
   } catch (error) {
     console.error('Error sending magic link:', error)
@@ -52,6 +46,7 @@ export const sendMagicLink = async (email: string): Promise<{ success: boolean; 
 }
 
 export const verifyMagicLink = async (token: string, email: string): Promise<{ success: boolean; user?: User; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
     const magicLinkData = JSON.parse(localStorage.getItem('magicLink') || '{}')
     
@@ -63,13 +58,8 @@ export const verifyMagicLink = async (token: string, email: string): Promise<{ s
       return { success: false, error: 'Magic link has expired' }
     }
     
-    // Create or get user
     const user = await createOrUpdateUser(email)
-    
-    // Clear magic link
     localStorage.removeItem('magicLink')
-    
-    // Create session
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
     
@@ -82,7 +72,11 @@ export const verifyMagicLink = async (token: string, email: string): Promise<{ s
 
 // Google Authentication
 export const signInWithGoogle = async (): Promise<{ success: boolean; user?: User; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
+    const auth = getFirebaseAuth();
+    if (!auth) throw new Error('Firebase Auth not available');
+    
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     
@@ -92,7 +86,6 @@ export const signInWithGoogle = async (): Promise<{ success: boolean; user?: Use
       avatar: firebaseUser.photoURL || undefined
     })
     
-    // Create session
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
     
@@ -105,12 +98,11 @@ export const signInWithGoogle = async (): Promise<{ success: boolean; user?: Use
 
 // Phone OTP Authentication
 export const sendPhoneOTP = async (phone: string): Promise<{ success: boolean; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
-    // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString()
     const expiresAt = Date.now() + (5 * 60 * 1000) // 5 minutes
     
-    // Store OTP session
     localStorage.setItem('phoneOTP', JSON.stringify({
       phone,
       otp,
@@ -118,9 +110,7 @@ export const sendPhoneOTP = async (phone: string): Promise<{ success: boolean; e
       createdAt: Date.now()
     }))
     
-    // In production, use Twilio, AWS SNS, etc.
     console.log(`OTP sent to ${phone}: ${otp}`)
-    
     return { success: true }
   } catch (error) {
     console.error('Error sending OTP:', error)
@@ -129,6 +119,7 @@ export const sendPhoneOTP = async (phone: string): Promise<{ success: boolean; e
 }
 
 export const verifyPhoneOTP = async (phone: string, otp: string): Promise<{ success: boolean; user?: User; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
     const otpData = JSON.parse(localStorage.getItem('phoneOTP') || '{}')
     
@@ -140,13 +131,8 @@ export const verifyPhoneOTP = async (phone: string, otp: string): Promise<{ succ
       return { success: false, error: 'OTP has expired' }
     }
     
-    // Create user with phone number
     const user = await createOrUpdateUser(`phone_${phone}`, { phone })
-    
-    // Clear OTP
     localStorage.removeItem('phoneOTP')
-    
-    // Create session
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
     
@@ -159,14 +145,14 @@ export const verifyPhoneOTP = async (phone: string, otp: string): Promise<{ succ
 
 // Guest to Profile Conversion
 export const convertGuestToProfile = async (email: string, name?: string): Promise<{ success: boolean; user?: User; error?: string }> => {
+  if (typeof window === 'undefined') return { success: false, error: 'Not available on server' };
   try {
-    // Get existing guest orders from localStorage
-    const guestOrders = JSON.parse(localStorage.getItem('orderHistory') || '[]')
+    const db = getDb();
+    if (!db) throw new Error('Firestore not available');
     
-    // Create user profile
+    const guestOrders = JSON.parse(localStorage.getItem('orderHistory') || '[]')
     const user = await createOrUpdateUser(email, { name })
     
-    // Transfer guest orders to user profile
     if (guestOrders.length > 0) {
       await updateDoc(doc(db, 'users', user.id), {
         orderHistory: guestOrders.map((order: any) => order.id),
@@ -174,11 +160,8 @@ export const convertGuestToProfile = async (email: string, name?: string): Promi
       })
     }
     
-    // Create session
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
-    
-    // Clear guest data
     localStorage.removeItem('orderHistory')
     
     return { success: true, user }
@@ -194,6 +177,9 @@ const generateMagicToken = (): string => {
 }
 
 const createOrUpdateUser = async (email: string, additionalData?: { name?: string; phone?: string; avatar?: string }): Promise<User> => {
+  const db = getDb();
+  if (!db) throw new Error('Firestore not available');
+  
   const userRef = doc(db, 'users', email.replace(/[^a-zA-Z0-9]/g, '_'))
   const userDoc = await getDoc(userRef)
   

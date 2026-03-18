@@ -1,9 +1,11 @@
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from './firebase';
+import { collection, getDocs, deleteDoc } from 'firebase/firestore';
+import { getDb } from './firebase';
 
 export const clearAllProducts = async () => {
+  const db = getDb();
+  if (!db) return { success: false, error: 'Firestore not available' };
+  
   try {
-    console.log('Clearing all products from Firestore...');
     const productsCollection = collection(db, 'products');
     const querySnapshot = await getDocs(productsCollection);
     
@@ -12,7 +14,6 @@ export const clearAllProducts = async () => {
     );
     
     await Promise.all(deletePromises);
-    console.log('All products cleared successfully!');
     return { success: true };
   } catch (error) {
     console.error('Error clearing products:', error);

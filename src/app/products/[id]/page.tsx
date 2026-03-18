@@ -7,8 +7,10 @@ import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play } from "lucide
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
+import { useSettings } from "@/lib/settings";
 
 export default function ProductDetailPage() {
+  const { formatPrice, t } = useSettings();
   const params = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -169,7 +171,7 @@ export default function ProductDetailPage() {
           <Link href="/products">
               <Button>
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Products
+                {t("Back to Products")}
               </Button>
             </Link>
         </div>
@@ -276,16 +278,16 @@ export default function ProductDetailPage() {
               <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
                 <div className="flex items-center space-x-3">
                   <span className="text-3xl sm:text-4xl font-black text-black tracking-tight">
-                    ${product.price}
+                    {formatPrice(product.price)}
                   </span>
                   {product.originalPrice && (
                     <span className="text-lg text-gray-400 line-through font-medium">
-                      ${product.originalPrice}
+                      {formatPrice(product.originalPrice)}
                     </span>
                   )}
                   {product.badge && (
                     <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm bg-black text-white ml-2">
-                      {product.badge}
+                      {t(product.badge)}
                     </span>
                   )}
                 </div>
@@ -305,8 +307,8 @@ export default function ProductDetailPage() {
               {/* Color Selection */}
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">Color</label>
-                  <span className="text-xs font-semibold text-gray-500">{selectedColor || "Select a color"}</span>
+                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">{t("Color")}</label>
+                  <span className="text-xs font-semibold text-gray-500">{selectedColor ? t(selectedColor) : t("Select a color")}</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {(product.colors || ["Black", "White", "Pink", "Blue"]).map((color) => (
@@ -320,7 +322,7 @@ export default function ProductDetailPage() {
                           : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"
                       }`}
                     >
-                      {color}
+                      {t(color)}
                     </button>
                   ))}
                 </div>
@@ -329,8 +331,8 @@ export default function ProductDetailPage() {
               {/* Size Selection */}
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">Size</label>
-                  <span className="text-xs font-semibold text-primary underline cursor-pointer hover:text-black">Size Guide</span>
+                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">{t("Size")}</label>
+                  <span className="text-xs font-semibold text-primary underline cursor-pointer hover:text-black">{t("Size Guide")}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((size) => (
@@ -352,7 +354,7 @@ export default function ProductDetailPage() {
 
               {/* Quantity */}
               <div>
-                <label className="block text-sm font-bold uppercase tracking-wider text-gray-900 mb-3">Quantity</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-gray-900 mb-3">{t("Quantity")}</label>
                 <div className="flex items-center space-x-1 bg-gray-50 border border-gray-200 rounded-lg p-1 w-max">
                   <button
                     type="button"
@@ -379,7 +381,7 @@ export default function ProductDetailPage() {
                 onClick={addToCart}
                 className="flex-1 bg-black text-white hover:bg-black/90 h-14 text-base font-bold uppercase tracking-wider rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
               >
-                Add to Cart
+                {t("Add to Cart")}
               </Button>
               <Button variant="outline" className="h-14 px-6 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-colors">
                 <Heart className="h-5 w-5" />
@@ -395,7 +397,7 @@ export default function ProductDetailPage() {
                 onClick={addToCart}
                 className="flex-1 bg-black text-white hover:bg-black/90 h-[3.25rem] text-sm font-bold uppercase tracking-wider rounded-xl shadow-lg"
               >
-                Add to Cart • ${(product.price * quantity).toFixed(2)}
+                {t("Add to Cart")} • {formatPrice(product.price * quantity)}
               </Button>
             </div>
 
@@ -406,8 +408,8 @@ export default function ProductDetailPage() {
                   <Truck className="h-5 w-5 text-black" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-gray-900">Free International Delivery</p>
-                  <p className="text-xs text-gray-500 mt-1">Automatically applied at checkout</p>
+                  <p className="font-bold text-sm text-gray-900">{t("Free International Delivery")}</p>
+                  <p className="text-xs text-gray-500 mt-1">{t("Automatically applied at checkout")}</p>
                 </div>
               </div>
               <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
@@ -415,8 +417,8 @@ export default function ProductDetailPage() {
                   <Shield className="h-5 w-5 text-black" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-gray-900">Buyer Protection guarantee</p>
-                  <p className="text-xs text-gray-500 mt-1">Safe & secure payments with full refunds</p>
+                  <p className="font-bold text-sm text-gray-900">{t("Buyer Protection guarantee")}</p>
+                  <p className="text-xs text-gray-500 mt-1">{t("Safe & secure payments with full refunds")}</p>
                 </div>
               </div>
             </div>
@@ -424,7 +426,7 @@ export default function ProductDetailPage() {
             {/* Description */}
             {product.description && (
               <div className="pt-8">
-                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Product Details</h3>
+                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">{t("Product Details")}</h3>
                 <div className="prose prose-sm text-gray-600 leading-relaxed">
                   <p>{product.description}</p>
                 </div>

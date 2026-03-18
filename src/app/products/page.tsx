@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Heart, ShoppingCart, Star, Filter, Search, ArrowRight, ChevronDown, X, Truck } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
 import Link from "next/link";
+import { useSettings } from "@/lib/settings";
 
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Knitwear"];
 const priceRanges = [
@@ -18,6 +19,7 @@ const priceRanges = [
 const sizes = ["All", "XS", "S", "M", "L", "XL", "XXL"];
 
 export default function ProductsPage() {
+  const { t, formatPrice } = useSettings();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
   const [selectedSize, setSelectedSize] = useState("All");
@@ -75,9 +77,9 @@ export default function ProductsPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-                The <span className="gradient-text">Collection</span>
+                {t("The")} <span className="gradient-text">{t("Collection")}</span>
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base font-light">Discover pieces that define your universe</p>
+              <p className="text-muted-foreground text-sm sm:text-base font-light">{t("Discover pieces that define your universe")}</p>
             </div>
             <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="relative flex-1 sm:flex-none">
@@ -95,11 +97,11 @@ export default function ProductsPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-3 py-2.5 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm font-medium transition-all"
               >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rated</option>
-                <option value="newest">Newest</option>
+                <option value="featured">{t("Featured")}</option>
+                <option value="price-low">{t("Price: Low to High")}</option>
+                <option value="price-high">{t("Price: High to Low")}</option>
+                <option value="rating">{t("Highest Rated")}</option>
+                <option value="newest">{t("Newest")}</option>
               </select>
             </div>
           </div>
@@ -118,7 +120,7 @@ export default function ProductsPage() {
                 onClick={() => setShowFilters(!showFilters)} 
                 className="w-full flex items-center justify-between h-12 rounded-xl glass border-primary/20"
               >
-                <span className="font-bold">Filters & Refine</span>
+                <span className="font-bold">{t("Filters & Refine")}</span>
                 <Filter className="h-4 w-4 text-primary" />
               </Button>
             </div>
@@ -128,7 +130,7 @@ export default function ProductsPage() {
               
               {/* Categories */}
               <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">Category</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Category")}</h3>
                 <div className="space-y-3">
                   {categories.map((category) => (
                     <button
@@ -140,7 +142,7 @@ export default function ProductsPage() {
                           : "text-muted-foreground hover:text-foreground hover:translate-x-1"
                       }`}
                     >
-                      <span className="text-left">{category}</span>
+                      <span className="text-left">{t(category)}</span>
                       {selectedCategory === category && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
                     </button>
                   ))}
@@ -149,7 +151,7 @@ export default function ProductsPage() {
 
               {/* Price Range */}
               <div className="space-y-4 pt-6 border-t border-border">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">Price</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Price Range")}</h3>
                 <div className="space-y-3">
                   {priceRanges.map((range) => (
                     <button
@@ -161,7 +163,7 @@ export default function ProductsPage() {
                           : "text-muted-foreground hover:text-foreground hover:translate-x-1"
                       }`}
                     >
-                      <span className="text-left">{range.label}</span>
+                      <span className="text-left">{t(range.label)}</span>
                       {selectedPriceRange.label === range.label && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
                     </button>
                   ))}
@@ -170,7 +172,7 @@ export default function ProductsPage() {
 
               {/* Size Filter */}
               <div className="space-y-4 pt-6 border-t border-border">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">Size</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Size")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((size) => (
                     <button
@@ -200,7 +202,7 @@ export default function ProductsPage() {
                   variant="outline"
                   className="w-full text-xs font-bold uppercase tracking-wider hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors"
                 >
-                  Clear Filters
+                  {t("Clear Filters")}
                 </Button>
               </div>
             </div>
@@ -212,19 +214,19 @@ export default function ProductsPage() {
             <div className="mb-6 flex flex-wrap gap-2">
               {selectedCategory !== "All" && (
                 <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>{selectedCategory}</span>
+                  <span>{t(selectedCategory)}</span>
                   <button onClick={() => setSelectedCategory("All")} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
                 </div>
               )}
               {selectedPriceRange.label !== "All Prices" && (
                 <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>{selectedPriceRange.label}</span>
+                  <span>{t(selectedPriceRange.label)}</span>
                   <button onClick={() => setSelectedPriceRange(priceRanges[0])} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
                 </div>
               )}
               {selectedSize !== "All" && (
                 <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>Size: {selectedSize}</span>
+                  <span>{t("Size")}: {selectedSize}</span>
                   <button onClick={() => setSelectedSize("All")} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
                 </div>
               )}
@@ -233,11 +235,11 @@ export default function ProductsPage() {
             {/* Product Count & Info */}
             <div className="mb-8 flex items-center justify-between">
               <p className="text-sm text-muted-foreground font-light">
-                Showing <span className="font-bold text-foreground">{sortedProducts.length}</span> extraordinary pieces
+                {t("Showing")} <span className="font-bold text-foreground">{sortedProducts.length}</span> {t("extraordinary pieces")}
               </p>
               <div className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-4 py-2 rounded-full">
                 <Truck className="h-3 w-3" />
-                <span>Free Worldwide Shipping</span>
+                <span>{t("Free Worldwide Shipping")}</span>
               </div>
             </div>
 
@@ -253,10 +255,10 @@ export default function ProductsPage() {
                     <Search className="h-10 w-10 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-black mb-3 text-foreground tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-                    No Matches Found
+                    {t("No Matches Found")}
                   </h3>
                   <p className="text-muted-foreground mb-8 max-w-md mx-auto font-light">
-                    Adjust your filters to discover other extraordinary pieces from our collection.
+                    {t("Adjust your filters to discover other extraordinary pieces from our collection.")}
                   </p>
                   <Button 
                     variant="outline" 
@@ -267,7 +269,7 @@ export default function ProductsPage() {
                     }} 
                     className="h-12 px-8 rounded-xl font-bold uppercase tracking-widest"
                   >
-                    Reset All Filters
+                    {t("Reset All Filters")}
                   </Button>
                 </div>
               ) : (
@@ -291,7 +293,7 @@ export default function ProductsPage() {
                         {product.badge && (
                           <div className="absolute top-2 left-2">
                             <span className="px-2 py-0.5 text-[9px] font-bold gradient-bg text-white rounded uppercase tracking-wider shadow">
-                              {product.badge}
+                              {t(product.badge)}
                             </span>
                           </div>
                         )}
@@ -307,7 +309,7 @@ export default function ProductsPage() {
                               alert('Added to your bag! ✨');
                             }}
                           >
-                            Add
+                            {t("Add")}
                           </Button>
                           <Button 
                             size="icon"
@@ -329,11 +331,11 @@ export default function ProductsPage() {
                         <div className="flex items-center justify-between mt-1.5">
                           <div className="flex items-center space-x-1.5 flex-wrap">
                             <span className="text-sm font-black text-primary">
-                              ${product.price}
+                              {formatPrice(product.price)}
                             </span>
                             {product.originalPrice && (
                               <span className="text-[10px] text-muted-foreground line-through font-medium">
-                                ${product.originalPrice}
+                                {formatPrice(product.originalPrice)}
                               </span>
                             )}
                           </div>

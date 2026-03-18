@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSettings } from "@/lib/settings";
 
 interface CartItem {
   id: string;
@@ -21,6 +22,7 @@ interface CartItem {
 }
 
 export default function CartPage() {
+  const { t, formatPrice } = useSettings();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -114,11 +116,11 @@ export default function CartPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center py-16">
           <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
-          <p className="text-gray-600 mb-6">Looks like you haven&apos;t added anything to your cart yet.</p>
+          <h2 className="text-2xl font-bold mb-2">{t("Your cart is empty")}</h2>
+          <p className="text-gray-600 mb-6">{t("Looks like you haven't added anything to your cart yet.")}</p>
           <Link href="/products">
             <Button>
-              Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
+              {t("Continue Shopping")} <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </div>
@@ -131,9 +133,9 @@ export default function CartPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Your <span className="gradient-text">Shopping Bag</span>
+            {t("Your")} <span className="gradient-text">{t("Shopping Bag")}</span>
           </h1>
-          <p className="text-muted-foreground mt-2 font-light">{getTotalItems()} extraordinary pieces selected</p>
+          <p className="text-muted-foreground mt-2 font-light">{getTotalItems()} {t("extraordinary pieces selected")}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
@@ -169,20 +171,20 @@ export default function CartPage() {
                           <Trash2 className="h-5 w-5" />
                         </button>
                       </div>
-                      <p className="text-sm font-semibold uppercase tracking-widest text-primary/80">{item.category}</p>
+                      <p className="text-sm font-semibold uppercase tracking-widest text-primary/80">{t(item.category)}</p>
                       <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-muted-foreground pt-1">
-                        <span className="glass-white px-3 py-1 rounded-lg">Size: {item.size}</span>
-                        <span className="glass-white px-3 py-1 rounded-lg">Color: {item.color}</span>
+                        <span className="glass-white px-3 py-1 rounded-lg">{t("Size")}: {item.size}</span>
+                        <span className="glass-white px-3 py-1 rounded-lg">{t("Color")}: {t(item.color)}</span>
                       </div>
                     </div>
 
                     {/* Price and Quantity */}
                     <div className="flex items-center justify-between pt-4">
                       <div className="flex items-center space-x-3">
-                        <span className="text-2xl font-black gradient-text">${item.price}</span>
+                        <span className="text-2xl font-black gradient-text">{formatPrice(item.price)}</span>
                         {item.originalPrice && (
                           <span className="text-sm text-muted-foreground line-through font-medium">
-                            ${item.originalPrice}
+                            {formatPrice(item.originalPrice)}
                           </span>
                         )}
                       </div>
@@ -213,11 +215,11 @@ export default function CartPage() {
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl transition-transform duration-1000 group-hover:scale-150"></div>
               <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>Complementary Shipping</h3>
-                  <p className="text-white/80 font-light max-w-sm">Enjoy premium worldwide delivery on all your selections, courtesy of our house.</p>
+                  <h3 className="text-2xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Complementary Shipping")}</h3>
+                  <p className="text-white/80 font-light max-w-sm">{t("Enjoy premium worldwide delivery on all your selections, courtesy of our house.")}</p>
                 </div>
                 <div className="px-8 py-4 bg-white text-primary font-black rounded-2xl shadow-xl uppercase tracking-[0.2em] text-sm animate-pulse">
-                  Always Included
+                  {t("Always Included")}
                 </div>
               </div>
             </div>
@@ -228,22 +230,22 @@ export default function CartPage() {
             <div className="sticky top-32 space-y-6">
               <div className="glass p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                <h2 className="text-2xl font-black mb-8 tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>Summary</h2>
+                <h2 className="text-2xl font-black mb-8 tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Summary")}</h2>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between text-muted-foreground">
-                    <span className="font-light">Subtotal</span>
-                    <span className="font-bold text-foreground text-lg">${getTotalPrice().toFixed(2)}</span>
+                    <span className="font-light">{t("Subtotal")}</span>
+                    <span className="font-bold text-foreground text-lg">{formatPrice(getTotalPrice())}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="font-light text-muted-foreground">Premium Shipping</span>
-                    <span className="text-xs font-black px-3 py-1 bg-green-500/10 text-green-500 rounded-lg uppercase tracking-widest border border-green-500/20">Complimentary</span>
+                    <span className="font-light text-muted-foreground">{t("Premium Shipping")}</span>
+                    <span className="text-xs font-black px-3 py-1 bg-green-500/10 text-green-500 rounded-lg uppercase tracking-widest border border-green-500/20">{t("Complimentary")}</span>
                   </div>
                   
                   <div className="border-t border-white/10 mt-6 pt-6">
                     <div className="flex justify-between items-center group">
-                      <span className="text-xl font-black tracking-tight">Total</span>
-                      <span className="text-3xl font-black gradient-text group-hover:scale-110 transition-transform">${getTotalPrice().toFixed(2)}</span>
+                      <span className="text-xl font-black tracking-tight">{t("Total")}</span>
+                      <span className="text-3xl font-black gradient-text group-hover:scale-110 transition-transform">{formatPrice(getTotalPrice())}</span>
                     </div>
                   </div>
                 </div>
@@ -251,14 +253,14 @@ export default function CartPage() {
                 <div className="mt-10 space-y-4">
                   <Link href="/checkout">
                     <Button className="w-full gradient-bg text-white hover:opacity-90 h-16 rounded-2xl text-lg font-black shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all group">
-                      Checkout Now
+                      {t("Checkout Now")}
                       <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
                   
                   <Link href="/products">
                     <Button variant="ghost" className="w-full h-14 rounded-2xl font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
-                      Discover More
+                      {t("Discover More")}
                     </Button>
                   </Link>
                 </div>
@@ -270,7 +272,7 @@ export default function CartPage() {
                 className="w-full flex items-center justify-center space-x-2 text-sm font-bold text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-widest"
               >
                 <Trash2 className="h-4 w-4" />
-                <span>Empty All Items</span>
+                <span>{t("Empty All Items")}</span>
               </button>
             </div>
           </div>
