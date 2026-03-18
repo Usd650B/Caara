@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play } from "lucide-react";
+import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
@@ -425,7 +425,7 @@ export default function ProductDetailPage() {
 
             {/* Description */}
             {product.description && (
-              <div className="pt-8">
+              <div className="pt-8 mb-12">
                 <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">{t("Product Details")}</h3>
                 <div className="prose prose-sm text-gray-600 leading-relaxed">
                   <p>{product.description}</p>
@@ -434,6 +434,87 @@ export default function ProductDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-16 sm:mt-24 pb-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {t("You Might Also Like")}
+              </h2>
+              <Link href="/products" className="text-xs font-bold uppercase tracking-widest text-primary hover:underline">
+                {t("See All")}
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+              {relatedProducts.map((p) => (
+                <Link key={p.id} href={`/products/${p.id}`} className="group block h-full">
+                  <div className="flex flex-col h-full bg-white rounded-sm overflow-hidden border border-transparent hover:border-muted-foreground/20 transition-all duration-200">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-muted">
+                      {p.image ? (
+                        <img 
+                          src={p.image} 
+                          alt={p.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ShoppingBag className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                      
+                      {p.badge && (
+                        <div className="absolute top-1 left-1">
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-black text-white rounded-xs uppercase tracking-tight shadow-sm">
+                            {t(p.badge)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Wishlist Button */}
+                      <button 
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-white/60 hover:bg-white text-muted-foreground hover:text-red-500 transition-colors shadow-sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          alert('Saved! ❤️');
+                        }}
+                      >
+                        <Heart className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="p-1.5 sm:p-2 flex flex-col flex-1 space-y-1">
+                      <h3 className="text-[11px] sm:text-xs text-muted-foreground font-normal line-clamp-1 group-hover:text-foreground transition-colors">
+                        {p.name}
+                      </h3>
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm sm:text-[15px] font-bold text-foreground">
+                            {formatPrice(p.price)}
+                          </span>
+                          {p.originalPrice && (
+                            <span className="text-[10px] text-muted-foreground line-through">
+                              {formatPrice(p.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs pt-0.5">
+                        <div className="flex items-center text-yellow-400">
+                          <Star className="h-2.5 w-2.5 fill-current" />
+                          <span className="text-[10px] ml-0.5 font-bold text-foreground">4.8</span>
+                        </div>
+                        <span className="text-[9px] text-muted-foreground">(500+)</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -13,8 +13,10 @@ import { getProducts, addProduct, Product, getOrders, Order, deleteOrder } from 
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { MultiMediaUpload } from "@/components/ui/multi-media-upload";
+import { useSettings } from "@/lib/settings";
 
 export default function AdminPage() {
+  const { t } = useSettings();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
@@ -103,62 +105,54 @@ export default function AdminPage() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <DollarSign className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">${stats.totalRevenue}</p>
-              </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-border p-4 shadow-sm">
+          <div className="flex items-center">
+            <div className="p-2 bg-blue-50 rounded-lg">
+              <DollarSign className="h-4 w-4 text-blue-600" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t ? t("Revenue") : "Revenue"}</p>
+              <p className="text-lg font-black text-foreground">${stats.totalRevenue}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <ShoppingCart className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold">{stats.totalOrders}</p>
-              </div>
+        <div className="bg-white rounded-xl border border-border p-4 shadow-sm">
+          <div className="flex items-center">
+            <div className="p-2 bg-green-50 rounded-lg">
+              <ShoppingCart className="h-4 w-4 text-green-600" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t ? t("Orders") : "Orders"}</p>
+              <p className="text-lg font-black text-foreground">{stats.totalOrders}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Package className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Products</p>
-                <p className="text-2xl font-bold">{stats.totalProducts}</p>
-              </div>
+        <div className="bg-white rounded-xl border border-border p-4 shadow-sm">
+          <div className="flex items-center">
+            <div className="p-2 bg-purple-50 rounded-lg">
+              <Package className="h-4 w-4 text-purple-600" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t ? t("Products") : "Products"}</p>
+              <p className="text-lg font-black text-foreground">{stats.totalProducts}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Users className="h-6 w-6 text-orange-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Customers</p>
-                <p className="text-2xl font-bold">{stats.totalCustomers}</p>
-              </div>
+        <div className="bg-white rounded-xl border border-border p-4 shadow-sm">
+          <div className="flex items-center">
+            <div className="p-2 bg-orange-50 rounded-lg">
+              <Users className="h-4 w-4 text-orange-600" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t ? t("Customers") : "Customers"}</p>
+              <p className="text-lg font-black text-foreground">{stats.totalCustomers}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Quick Actions */}

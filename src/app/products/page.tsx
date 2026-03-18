@@ -244,10 +244,10 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
               {isLoading ? (
-                Array.from({ length: 10 }).map((_, index) => (
-                  <div key={index} className="glass rounded-xl aspect-[3/4] animate-pulse"></div>
+                Array.from({ length: 12 }).map((_, index) => (
+                  <div key={index} className="bg-card rounded-md aspect-[3/4] animate-pulse"></div>
                 ))
               ) : sortedProducts.length === 0 ? (
                 <div className="col-span-full py-20 text-center glass rounded-[3rem] p-12">
@@ -274,78 +274,87 @@ export default function ProductsPage() {
                 </div>
               ) : (
                 sortedProducts.map((product) => (
-                  <Link key={product.id} href={`/products/${product.id}`}>
-                    <Card className="group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden bg-card rounded-xl">
-                      <div className="relative overflow-hidden aspect-[3/4]">
+                  <Link key={product.id} href={`/products/${product.id}`} className="group block h-full">
+                    <div className="flex flex-col h-full bg-white rounded-sm overflow-hidden border border-transparent hover:border-muted-foreground/20 transition-all duration-200">
+                      <div className="relative aspect-[3/4] overflow-hidden bg-muted">
                         {product.image ? (
                           <img 
                             src={product.image} 
                             alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           />
                         ) : (
-                          <div className="w-full h-full bg-muted flex items-center justify-center">
-                            <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+                          <div className="w-full h-full flex items-center justify-center">
+                            <ShoppingCart className="h-6 w-6 text-muted-foreground" />
                           </div>
                         )}
                         
-                        {/* Badge */}
+                        {/* SHEIN-style Badge */}
                         {product.badge && (
-                          <div className="absolute top-2 left-2">
-                            <span className="px-2 py-0.5 text-[9px] font-bold gradient-bg text-white rounded uppercase tracking-wider shadow">
+                          <div className="absolute top-1 left-1 flex flex-col gap-1">
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold bg-black text-white rounded-xs uppercase tracking-tight shadow-sm">
                               {t(product.badge)}
                             </span>
                           </div>
                         )}
 
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                        <div className="absolute bottom-2 left-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                        {/* Hover Quick Add Area */}
+                        <div className="absolute inset-x-0 bottom-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-black/5 backdrop-blur-[2px]">
                           <Button 
-                            className="flex-1 bg-white/95 text-black hover:bg-black hover:text-white border-none h-8 text-[10px] font-bold tracking-wider uppercase rounded-lg shadow-lg"
+                            className="w-full bg-white/95 text-black hover:bg-black hover:text-white border-none h-7 text-[10px] font-bold tracking-tight uppercase rounded-sm shadow-sm"
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
-                              // Cart logic here
-                              alert('Added to your bag! ✨');
+                              alert('Added to Bag! ✨');
                             }}
                           >
-                            {t("Add")}
-                          </Button>
-                          <Button 
-                            size="icon"
-                            className="bg-white/95 text-black border-none h-8 w-8 rounded-lg shadow-lg hover:text-primary transition-colors"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert('Saved to favorites! ❤️');
-                            }}
-                          >
-                            <Heart className="h-4 w-4" />
+                            {t("Add to Bag")}
                           </Button>
                         </div>
+
+                        {/* Wishlist Button (Always visible but small) */}
+                        <button 
+                          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/60 hover:bg-white text-muted-foreground hover:text-red-500 transition-colors shadow-sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Saved! ❤️');
+                          }}
+                        >
+                          <Heart className="h-3.5 w-3.5" />
+                        </button>
                       </div>
 
-                      <div className="p-3 bg-card relative">
-                        <h3 className="font-bold text-foreground text-xs leading-tight mb-1 truncate group-hover:text-primary transition-colors">
+                      <div className="p-1.5 sm:p-2 flex flex-col flex-1 space-y-1">
+                        <h3 className="text-[11px] sm:text-xs text-muted-foreground font-normal line-clamp-1 group-hover:text-foreground transition-colors">
                           {product.name}
                         </h3>
-                        <div className="flex items-center justify-between mt-1.5">
-                          <div className="flex items-center space-x-1.5 flex-wrap">
-                            <span className="text-sm font-black text-primary">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm sm:text-[15px] font-bold text-foreground">
                               {formatPrice(product.price)}
                             </span>
                             {product.originalPrice && (
-                              <span className="text-[10px] text-muted-foreground line-through font-medium">
+                              <span className="text-[10px] text-muted-foreground line-through">
                                 {formatPrice(product.originalPrice)}
                               </span>
                             )}
                           </div>
+                          {product.originalPrice && (
+                            <span className="text-[10px] font-bold text-red-500">
+                              -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                            </span>
+                          )}
                         </div>
-                        <div className="flex items-center space-x-1 text-yellow-500 mt-1">
-                          <Star className="h-2.5 w-2.5 fill-current" />
-                          <span className="text-[10px] font-bold text-muted-foreground">4.8 (124)</span>
+                        <div className="flex items-center gap-1 text-xs pt-0.5">
+                          <div className="flex items-center text-yellow-400">
+                            <Star className="h-2.5 w-2.5 fill-current" />
+                            <span className="text-[10px] ml-0.5 font-bold text-foreground">4.8</span>
+                          </div>
+                          <span className="text-[9px] text-muted-foreground">(2k+)</span>
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   </Link>
                 ))
               )}

@@ -7,9 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, Download, Eye, ShoppingBag, Home, X } from "lucide-react";
 import Link from "next/link";
 import { Order } from "@/lib/firestore";
+import { useSettings } from "@/lib/settings";
 import { downloadReceipt, generateReceiptNumber, ReceiptData } from "@/lib/receipt";
 
 export default function OrderHistoryPage() {
+  const { t } = useSettings();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -124,107 +126,92 @@ export default function OrderHistoryPage() {
       ) : (
         <div className="space-y-6">
           {/* Orders Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-black">{orders.length}</div>
-                  <div className="text-sm text-gray-600">Total Orders</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {orders.filter(o => o.status === 'delivered').length}
-                  </div>
-                  <div className="text-sm text-gray-600">Delivered</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {orders.filter(o => o.status === 'processing' || o.status === 'shipped').length}
-                  </div>
-                  <div className="text-sm text-gray-600">In Progress</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-black">
-                    ${orders.reduce((sum, order) => sum + (order.total || 0), 0).toFixed(2)}
-                  </div>
-                  <div className="text-sm text-gray-600">Total Spent</div>
-                </div>
+          <div className="bg-card rounded-2xl border border-border p-4 shadow-sm mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-x divide-border">
+              <div className="text-center px-2">
+                <div className="text-xl font-black text-foreground">{orders.length}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Total Orders")}</div>
               </div>
-            </CardContent>
-          </Card>
+              <div className="text-center px-2">
+                <div className="text-xl font-black text-green-500">
+                  {orders.filter(o => o.status === 'delivered').length}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Delivered")}</div>
+              </div>
+              <div className="text-center px-2">
+                <div className="text-xl font-black text-blue-500">
+                  {orders.filter(o => o.status === 'processing' || o.status === 'shipped').length}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("In Progress")}</div>
+              </div>
+              <div className="text-center px-2">
+                <div className="text-xl font-black text-foreground">
+                  ${orders.reduce((sum, order) => sum + (order.total || 0), 0).toFixed(2)}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Total Spent")}</div>
+              </div>
+            </div>
+          </div>
 
           {/* Orders List */}
           <div className="space-y-4">
             {orders.map((order) => (
-              <Card key={order.id} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
+              <div key={order.id} className="bg-card rounded-xl border border-border hover:shadow-md transition-all duration-300 overflow-hidden">
+                <div className="p-4 sm:p-5">
                   <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     {/* Order Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-lg">Order #{order.id}</h3>
-                        <Badge className={`flex items-center gap-2 ${getStatusColor(order.status)}`}>
-                          {getStatusIcon(order.status)}
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        <h3 className="font-bold text-base tracking-tight">Order #{order.id?.slice(-8).toUpperCase()}</h3>
+                        <Badge className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-sm ${getStatusColor(order.status)}`}>
+                          {order.status}
                         </Badge>
                       </div>
-                      <p className="text-gray-600 mb-1">
-                        Placed on {order.createdAt?.toDate()?.toLocaleDateString()}
-                      </p>
-                      <p className="text-gray-600 mb-2">
-                        {order.items?.length || 0} items • ${order.total?.toFixed(2)}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {order.customerName} • {order.customerEmail}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {order.createdAt?.toDate()?.toLocaleDateString()}</span>
+                        <span className="flex items-center gap-1.5"><Package className="h-3 w-3" /> {order.items?.length || 0} {t("items")}</span>
+                        <span className="font-bold text-foreground">${order.total?.toFixed(2)}</span>
+                      </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Link href={`/order-tracking/${order.id}`}>
-                        <Button variant="outline" size="sm" className="flex items-center gap-2">
-                          <Eye className="h-4 w-4" />
-                          Track Order
+                        <Button variant="outline" size="sm" className="h-9 px-4 text-xs font-bold uppercase tracking-widest rounded-lg">
+                          <Eye className="h-3.5 w-3.5 mr-2" />
+                          {t("Track")}
                         </Button>
                       </Link>
                       <Button 
                         onClick={() => handleDownloadReceipt(order)} 
                         variant="outline" 
                         size="sm" 
-                        className="flex items-center gap-2"
+                        className="h-9 px-4 text-xs font-bold uppercase tracking-widest rounded-lg"
                       >
-                        <Download className="h-4 w-4" />
-                        Receipt
+                        <Download className="h-3.5 w-3.5 mr-2" />
+                        {t("Receipt")}
                       </Button>
                     </div>
                   </div>
 
                   {/* Order Items Preview */}
                   {order.items && order.items.length > 0 && (
-                    <div className="mt-4 pt-4 border-t">
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <Package className="h-4 w-4" />
-                        <span>Items in this order:</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {order.items.slice(0, 3).map((item, index) => (
-                          <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs">
-                            {item.name} ({item.quantity})
-                          </span>
+                    <div className="mt-4 pt-4 border-t border-dashed border-border flex items-center gap-3 overflow-hidden">
+                      <div className="flex -space-x-2">
+                        {order.items.slice(0, 4).map((item, index) => (
+                          <div key={index} className="w-8 h-10 rounded-sm border border-background overflow-hidden relative group">
+                            <img src={item.image} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/5"></div>
+                          </div>
                         ))}
-                        {order.items.length > 3 && (
-                          <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                            +{order.items.length - 3} more
-                          </span>
-                        )}
                       </div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                        {order.items[0].name} {order.items.length > 1 && `+${order.items.length - 1} more`}
+                      </p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
