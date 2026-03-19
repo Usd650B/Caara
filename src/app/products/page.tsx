@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, ShoppingCart, Star, Filter, Search, ArrowRight, ChevronDown, X, Truck } from "lucide-react";
+import { Heart, ShoppingCart, Star, Filter, Search, ArrowRight, ChevronDown, X, Truck, CheckCircle } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
 import Link from "next/link";
 import { useSettings } from "@/lib/settings";
@@ -29,6 +29,58 @@ export default function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+  const [favoritedItems, setFavoritedItems] = useState<Set<string>>(new Set());
+
+  const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      category: product.category,
+      image: product.image,
+      quantity: 1,
+      size: (product.sizes && product.sizes[0]) || "M",
+      color: (product.colors && product.colors[0]) || "Black",
+      rating: product.rating,
+      reviews: product.reviews
+    };
+
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingIndex = existingCart.findIndex((item: any) => 
+      item.id === product.id && item.size === cartItem.size && item.color === cartItem.color
+    );
+
+    if (existingIndex >= 0) existingCart[existingIndex].quantity += 1;
+    else existingCart.push(cartItem);
+
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    window.dispatchEvent(new CustomEvent('cart-updated'));
+
+    setAddedItems(prev => new Set(prev).add(product.id as string));
+    setTimeout(() => {
+      setAddedItems(prev => {
+        const next = new Set(prev);
+        next.delete(product.id as string);
+        return next;
+      });
+    }, 2000);
+  };
+  
+  const toggleFavorite = (e: React.MouseEvent, productId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFavoritedItems(prev => {
+      const next = new Set(prev);
+      if (next.has(productId)) next.delete(productId);
+      else next.add(productId);
+      return next;
+    });
+  };
 
   const loadProducts = async () => {
     setIsLoading(true);
@@ -301,27 +353,27 @@ export default function ProductsPage() {
                         {/* Hover Quick Add Area */}
                         <div className="absolute inset-x-0 bottom-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-black/5 backdrop-blur-[2px]">
                           <Button 
-                            className="w-full bg-white/95 text-black hover:bg-black hover:text-white border-none h-7 text-[10px] font-bold tracking-tight uppercase rounded-sm shadow-sm"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              alert('Added to Bag! ✨');
-                            }}
+                            className={`w-full border-none h-7 text-[10px] font-bold tracking-tight uppercase rounded-sm shadow-sm transition-all ${
+                              addedItems.has(product.id as string) ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-white/95 text-black hover:bg-black hover:text-white'
+                            }`}
+                            onClick={(e) => handleQuickAdd(e, product)}
                           >
-                            {t("Add to Bag")}
+                            {addedItems.has(product.id as string) ? (
+                              <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3" /> {t("Added")}</span>
+                            ) : (
+                              t("Add to Bag")
+                            )}
                           </Button>
                         </div>
 
-                        {/* Wishlist Button (Always visible but small) */}
+                        {/* Wishlist Button */}
                         <button 
-                          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/60 hover:bg-white text-muted-foreground hover:text-red-500 transition-colors shadow-sm"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            alert('Saved! ❤️');
-                          }}
+                          className={`absolute top-2 right-2 p-1.5 rounded-full backdrop-blur-sm transition-colors shadow-sm touch-target ${
+                            favoritedItems.has(product.id as string) ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-white/60 text-muted-foreground hover:bg-white hover:text-red-500'
+                          }`}
+                          onClick={(e) => toggleFavorite(e, product.id as string)}
                         >
-                          <Heart className="h-3.5 w-3.5" />
+                          <Heart className={`h-3.5 w-3.5 ${favoritedItems.has(product.id as string) ? 'fill-red-500' : ''}`} />
                         </button>
                       </div>
 

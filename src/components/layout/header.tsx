@@ -40,10 +40,12 @@ export function Header() {
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('cart-updated', handleStorageChange);
+    window.addEventListener('customer-auth-changed', handleStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('cart-updated', handleStorageChange);
+      window.removeEventListener('customer-auth-changed', handleStorageChange);
     };
   }, []);
 
@@ -186,11 +188,35 @@ export function Header() {
                 <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
               </Link>
               
-              {!user && (
+              {!user ? (
                 <Link href="/auth/sign-in" className="text-xl font-black uppercase tracking-widest text-primary transition-all py-3 flex items-center justify-between">
                   <span>Sign In</span>
                   <User className="h-5 w-5" />
                 </Link>
+              ) : (
+                <div className="pt-4 mt-2 border-t border-white/10 flex flex-col space-y-2">
+                  <div className="flex items-center gap-3 py-2">
+                    <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-lg object-cover" />
+                      ) : (
+                        <User className="h-5 w-5 text-white" />
+                      )}
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="text-sm font-bold truncate">{user.name || user.email?.split('@')[0]}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <Link href="/orders" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between group">
+                    <span>{t("Order History")}</span>
+                    <Package className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
+                  </Link>
+                  <button onClick={() => { signOutCustomer(); setIsMenuOpen(false); }} className="text-lg font-black uppercase tracking-widest text-red-500 hover:text-red-400 transition-all py-3 flex items-center justify-between w-full text-left group">
+                    <span>{t("Sign Out")}</span>
+                    <LogOut className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
+                  </button>
+                </div>
               )}
             </nav>
           </div>

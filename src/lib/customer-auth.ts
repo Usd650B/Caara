@@ -62,6 +62,7 @@ export const verifyMagicLink = async (token: string, email: string): Promise<{ s
     localStorage.removeItem('magicLink')
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
+    window.dispatchEvent(new Event('customer-auth-changed'))
     
     return { success: true, user }
   } catch (error) {
@@ -88,6 +89,7 @@ export const signInWithGoogle = async (): Promise<{ success: boolean; user?: Use
     
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
+    window.dispatchEvent(new Event('customer-auth-changed'))
     
     return { success: true, user }
   } catch (error) {
@@ -135,6 +137,7 @@ export const verifyPhoneOTP = async (phone: string, otp: string): Promise<{ succ
     localStorage.removeItem('phoneOTP')
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
+    window.dispatchEvent(new Event('customer-auth-changed'))
     
     return { success: true, user }
   } catch (error) {
@@ -162,6 +165,7 @@ export const convertGuestToProfile = async (email: string, name?: string): Promi
     
     const session = createAuthSession(user)
     localStorage.setItem('customerAuthSession', JSON.stringify(session))
+    window.dispatchEvent(new Event('customer-auth-changed'))
     localStorage.removeItem('orderHistory')
     
     return { success: true, user }
@@ -239,6 +243,7 @@ export const getCurrentUser = (): User | null => {
 export const signOutCustomer = (): void => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('customerAuthSession')
+    window.dispatchEvent(new Event('customer-auth-changed'))
     window.location.href = '/'
   }
 }

@@ -74,6 +74,16 @@ export default function OrderHistoryPage() {
     }
   };
 
+  const formatDate = (dateValue: any) => {
+    if (!dateValue) return '';
+    if (typeof dateValue.toDate === 'function') return dateValue.toDate().toLocaleDateString();
+    try {
+      return new Date(dateValue).toLocaleDateString();
+    } catch (e) {
+      return '';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -168,7 +178,7 @@ export default function OrderHistoryPage() {
                         </Badge>
                       </div>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {order.createdAt?.toDate()?.toLocaleDateString()}</span>
+                        <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {formatDate(order.createdAt)}</span>
                         <span className="flex items-center gap-1.5"><Package className="h-3 w-3" /> {order.items?.length || 0} {t("items")}</span>
                         <span className="font-bold text-foreground">${order.total?.toFixed(2)}</span>
                       </div>

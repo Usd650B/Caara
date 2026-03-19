@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag } from "lucide-react";
+import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
@@ -20,6 +20,8 @@ export default function ProductDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(3600); // 1 hour countdown
   const [isFlashSale, setIsFlashSale] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   // Countdown timer effect
   useEffect(() => {
@@ -62,6 +64,13 @@ export default function ProductDetailPage() {
       const products = await getProducts();
       const foundProduct = products.find(p => p.id === productId);
       setProduct(foundProduct || null);
+      
+      if (foundProduct) {
+        if (foundProduct.sizes && foundProduct.sizes.length > 0) setSelectedSize(foundProduct.sizes[0]);
+        else setSelectedSize("M");
+        if (foundProduct.colors && foundProduct.colors.length > 0) setSelectedColor(foundProduct.colors[0]);
+        else setSelectedColor("Black");
+      }
       
       // Load related products (excluding current product)
       const related = products
@@ -126,10 +135,8 @@ export default function ProductDetailPage() {
     // Dispatch custom event to update header cart count
     window.dispatchEvent(new CustomEvent('cart-updated'));
     
-    alert('Product added to cart!');
-    
-    // Optional: Redirect to cart
-    // router.push('/cart');
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2500);
   };
 
   // Get product images (use uploaded images or fallback to placeholder)
@@ -379,25 +386,49 @@ export default function ProductDetailPage() {
             <div className="hidden lg:flex space-x-3">
               <Button 
                 onClick={addToCart}
-                className="flex-1 bg-black text-white hover:bg-black/90 h-14 text-base font-bold uppercase tracking-wider rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
+                className={`flex-1 transition-all h-14 text-base font-bold uppercase tracking-wider rounded-xl shadow-xl hover:-translate-y-1 ${
+                  isAdded ? 'bg-green-500 hover:bg-green-600 text-white shadow-green-500/20' : 'bg-black text-white hover:bg-black/90 hover:shadow-2xl'
+                }`}
               >
-                {t("Add to Cart")}
+                {isAdded ? (
+                  <span className="flex items-center justify-center gap-2"><CheckCircle className="h-5 w-5" /> {t("Added")}</span>
+                ) : (
+                  t("Add to Cart")
+                )}
               </Button>
-              <Button variant="outline" className="h-14 px-6 rounded-xl border-2 border-gray-200 hover:border-black hover:bg-gray-50 transition-colors">
-                <Heart className="h-5 w-5" />
+              <Button 
+                variant="outline" 
+                onClick={() => setIsFavorited(!isFavorited)}
+                className={`h-14 px-6 rounded-xl border-2 transition-colors ${
+                  isFavorited ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-black hover:bg-gray-50'
+                }`}
+              >
+                <Heart className={`h-5 w-5 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
               </Button>
             </div>
 
             {/* Mobile Sticky Add to Cart */}
             <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-gray-200 z-50 flex space-x-3 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-              <Button variant="outline" className="h-[3.25rem] px-5 rounded-xl border-2 border-gray-200 bg-white hover:bg-gray-50 flex-shrink-0">
-                <Heart className="h-5 w-5" />
+              <Button 
+                variant="outline" 
+                onClick={() => setIsFavorited(!isFavorited)}
+                className={`h-[3.25rem] px-5 rounded-xl border-2 flex-shrink-0 transition-colors ${
+                  isFavorited ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white hover:bg-gray-50'
+                }`}
+              >
+                <Heart className={`h-5 w-5 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
               </Button>
               <Button 
                 onClick={addToCart}
-                className="flex-1 bg-black text-white hover:bg-black/90 h-[3.25rem] text-sm font-bold uppercase tracking-wider rounded-xl shadow-lg"
+                className={`flex-1 transition-all h-[3.25rem] text-sm font-bold uppercase tracking-wider rounded-xl shadow-lg ${
+                  isAdded ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-black/90'
+                }`}
               >
-                {t("Add to Cart")} • {formatPrice(product.price * quantity)}
+                {isAdded ? (
+                  <span className="flex items-center justify-center gap-2"><CheckCircle className="h-4 w-4" /> {t("Added")}</span>
+                ) : (
+                  <>{t("Add to Cart")} • {formatPrice(product.price * quantity)}</>
+                )}
               </Button>
             </div>
 

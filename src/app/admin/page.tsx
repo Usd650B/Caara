@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Search, Edit, Trash2, Package, ShoppingCart, Users, LogOut, X, Eye, Menu, Home, BarChart3, FileText, DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
-import { getProducts, addProduct, Product, getOrders, Order, deleteOrder } from "@/lib/firestore";
+import { getProducts, addProduct, updateProduct, deleteProduct, Product, getOrders, Order, deleteOrder } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { MultiMediaUpload } from "@/components/ui/multi-media-upload";
@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const router = useRouter();
 
   const loadProducts = async () => {
@@ -57,6 +58,24 @@ export default function AdminPage() {
     }
   };
 
+  const handleEditProduct = async (product: Product) => {
+    // Replace with a real update in Firebase later, or just reuse a combined Add/Edit for now.
+    // For simplicity, we just set editing product to render the same modal but in edit mode
+    setEditingProduct(product);
+    setShowAddProduct(true);
+  };
+
+  const submitEditProduct = async (productId: string, updatedData: Partial<Product>) => {
+    const result = await updateProduct(productId, updatedData);
+    if (result.success) {
+      setShowAddProduct(false);
+      setEditingProduct(null);
+      loadProducts();
+    } else {
+      alert("Failed to update product: " + (result.error || "Unknown error"));
+    }
+  };
+
   const handleSignOut = () => {
     signOutSeller();
     router.push("/admin/login");
@@ -70,6 +89,17 @@ export default function AdminPage() {
         alert('All products cleared successfully!');
       } else {
         alert('Failed to clear products');
+      }
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      const result = await deleteProduct(productId);
+      if (result.success) {
+        loadProducts();
+      } else {
+        alert('Failed to delete product');
       }
     }
   };
@@ -258,11 +288,11 @@ export default function AdminPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-2xl font-bold">${product.price}</span>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <Trash2 className="h-4 w-4" />
+                    <Button variant="outline" size="sm" onClick={() => handleDeleteProduct(product.id as string)}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
                 </div>
@@ -372,33 +402,147 @@ export default function AdminPage() {
     </div>
   );
 
-  const AddProductModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Add New Product</h3>
-          <Button variant="ghost" onClick={() => setShowAddProduct(false)}>
-            <X className="h-4 w-4" />
-          </Button>
+  const AddProductModal = () => {
+    const [formData, setFormData] = useState({
+      name: editingProduct?.name || "",
+      price: editingProduct?.price || 0,
+      category: editingProduct?.category || "Dresses",
+      image: editingProduct?.image || "",
+      description: editingProduct?.description || "",
+    });
+
+    const isEdit = !!editingProduct;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formData.image) {
+        alert("Please upload an image first.");
+        return;
+      }
+      
+      const payload = {
+        name: formData.name,
+        price: Number(formData.price),
+        category: formData.category,
+        image: formData.image,
+        description: formData.description,
+        sizes: editingProduct?.sizes || ["S", "M", "L"],
+        colors: editingProduct?.colors || ["Black", "White"],
+        stock: editingProduct?.stock || 100,
+        status: editingProduct?.status || 'active' as const
+      };
+
+      if (isEdit && editingProduct?.id) {
+        submitEditProduct(editingProduct.id, payload);
+      } else {
+        handleAddProduct(payload);
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto m-4">
+          <div className="flex justify-between items-center mb-6 border-b pb-4">
+            <h3 className="text-xl font-bold">{isEdit ? "Edit Product" : "Add New Product"}</h3>
+            <Button variant="ghost" size="icon" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="product-name">Product Name</Label>
+                  <Input 
+                    id="product-name" 
+                    value={formData.name} 
+                    onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                    required 
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="product-price">Price ($)</Label>
+                    <Input 
+                      id="product-price" 
+                      type="number" 
+                      min="0" 
+                      step="0.01" 
+                      value={formData.price} 
+                      onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} 
+                      required 
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="product-category">Category</Label>
+                    <select 
+                      id="product-category"
+                      value={formData.category}
+                      onChange={e => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                    >
+                      <option value="Dresses">Dresses</option>
+                      <option value="Tops">Tops</option>
+                      <option value="Bottoms">Bottoms</option>
+                      <option value="Outerwear">Outerwear</option>
+                      <option value="Knitwear">Knitwear</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="product-desc">Description</Label>
+                  <textarea 
+                    id="product-desc" 
+                    value={formData.description} 
+                    onChange={e => setFormData({ ...formData, description: e.target.value })} 
+                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black h-24 resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Product Image</Label>
+                {formData.image ? (
+                  <div className="relative aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden border">
+                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    <Button 
+                      type="button"
+                      variant="destructive" 
+                      size="sm" 
+                      className="absolute top-2 right-2"
+                      onClick={() => setFormData({ ...formData, image: "" })}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="p-4 border-2 border-dashed rounded-lg bg-gray-50 flex flex-col items-center justify-center h-64">
+                    <ImageUpload
+                      onImageUpload={(url) => setFormData({ ...formData, image: url })}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-6 border-t">
+              <Button type="button" variant="outline" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-black text-white hover:bg-gray-800">
+                {isEdit ? "Save Changes" : "Create Product"}
+              </Button>
+            </div>
+          </form>
         </div>
-        <ImageUpload
-          onImageUpload={(url) => {
-            handleAddProduct({
-              name: "New Product",
-              price: 0,
-              category: "Clothing",
-              image: url,
-              description: "",
-              sizes: ["S", "M", "L", "XL"],
-              colors: ["Black", "White", "Red", "Blue"],
-              stock: 100,
-              status: 'active'
-            });
-          }}
-        />
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

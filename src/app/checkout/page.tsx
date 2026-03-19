@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Product, createOrder } from "@/lib/firestore";
 import { calculateShippingCost, getFreeShippingThreshold } from "@/lib/shipping";
+import { getCurrentUser } from "@/lib/customer-auth";
 
 interface CartItem extends Product {
   quantity: number;
@@ -20,6 +21,7 @@ interface CartItem extends Product {
 
 export default function CheckoutPage() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [user, setUser] = useState<any>(null);
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [formData, setFormData] = useState({
     email: "",
@@ -42,6 +44,19 @@ export default function CheckoutPage() {
     if (savedCart) {
       const cartItems = JSON.parse(savedCart);
       setItems(cartItems);
+    }
+
+    // Pre-fill user data if logged in
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      setUser(currentUser);
+      setFormData(prev => ({
+        ...prev,
+        email: currentUser.email || prev.email,
+        firstName: currentUser.name?.split(' ')[0] || prev.firstName,
+        lastName: currentUser.name?.split(' ').slice(1).join(' ') || prev.lastName,
+        phone: currentUser.phone || prev.phone,
+      }));
     }
   }, []);
 
@@ -148,7 +163,9 @@ export default function CheckoutPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
             Complete <span className="gradient-text">Your Order</span>
           </h1>
-          <p className="text-muted-foreground mt-2 font-light">Secure checkout as a guest</p>
+          <p className="text-muted-foreground mt-2 font-light">
+            {user ? `Secure checkout for ${user.name || user.email}` : "Secure checkout as a guest"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
