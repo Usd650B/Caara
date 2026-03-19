@@ -72,6 +72,9 @@ export function Header() {
               <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Collections")}
               </Link>
+              <Link href="/track" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+                {t("Track Order")}
+              </Link>
               <Link href="/contact" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Concierge")}
               </Link>
@@ -185,6 +188,10 @@ export function Header() {
               </Link>
               <Link href="/contact" className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
                 <span>Concierge</span>
+                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
+              </Link>
+              <Link href="/track" className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
+                <span>Track Order</span>
                 <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
               </Link>
               

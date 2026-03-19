@@ -55,6 +55,12 @@ export function Footer() {
           <div className="space-y-6">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Assistance")}</h3>
             <ul className="space-y-4">
+              <li>
+                <Link href="/track" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
+                  <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
+                  {t("Track Order")}
+                </Link>
+              </li>
               {["Shipping Info", "Returns Policy", "FAQ", "Sustainability"].map((link) => (
                 <li key={link}>
                   <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
