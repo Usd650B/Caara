@@ -123,12 +123,6 @@ export default function TrackOrderPage() {
             </form>
           </CardContent>
         </Card>
-
-        <div className="mt-8 text-center">
-          <Link href="/auth/sign-in" className="text-sm font-semibold text-gray-500 hover:text-black hover:underline transition-colors">
-            Have an account? Sign in to view all your orders
-          </Link>
-        </div>
       </div>
     </div>
   );

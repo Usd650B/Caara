@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight } from "lucide-react";
-import { getCurrentUser, signOutCustomer } from "@/lib/customer-auth";
+import { getCurrentUser, signOutCustomer, signInWithGoogle } from "@/lib/customer-auth";
 import { useSettings } from "@/lib/settings";
 
 export function Header() {
@@ -12,6 +12,15 @@ export function Header() {
   const [cartCount, setCartCount] = useState(0)
   const [user, setUser] = useState<any>(null)
   const { currency, setCurrency, language, setLanguage, t } = useSettings();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // Auth state listener will catch the change and update 'user'
+    } catch (error) {
+      console.error("Failed to sign in with Google:", error);
+    }
+  };
 
   // Update cart count from localStorage
   useEffect(() => {
@@ -150,14 +159,20 @@ export function Header() {
                 </div>
               </div>
             ) : (
-              <Link href="/auth/sign-in" className="hidden sm:block">
-                <Button variant="ghost" size="sm" className="flex items-center gap-3 glass border-white/5 h-11 px-6 rounded-2xl hover:scale-105 transition-all">
-                  <div className="w-6 h-6 gradient-bg rounded-lg flex items-center justify-center">
-                    <User className="h-3.5 w-3.5 text-white" />
-                  </div>
-                  <span className="font-bold text-xs uppercase tracking-widest">{t("Sign In")}</span>
-                </Button>
-              </Link>
+              <Button 
+                onClick={handleGoogleSignIn}
+                variant="ghost" 
+                size="icon" 
+                className="hidden sm:flex items-center justify-center glass border-white/5 h-11 w-11 rounded-2xl hover:scale-110 transition-all bg-white shadow-md group"
+                title="Sign in with Google"
+              >
+                <svg className="h-5 w-5 transform group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+              </Button>
             )}
             
             <Link href="/cart">
@@ -196,10 +211,17 @@ export function Header() {
               </Link>
               
               {!user ? (
-                <Link href="/auth/sign-in" className="text-xl font-black uppercase tracking-widest text-primary transition-all py-3 flex items-center justify-between">
+                <button onClick={() => { handleGoogleSignIn(); setIsMenuOpen(false); }} className="text-xl font-black uppercase tracking-widest text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 w-full text-left">
                   <span>Sign In</span>
-                  <User className="h-5 w-5" />
-                </Link>
+                  <div className="bg-white p-1.5 rounded-full shadow-sm">
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                  </div>
+                </button>
               ) : (
                 <div className="pt-4 mt-2 border-t border-white/10 flex flex-col space-y-2">
                   <div className="flex items-center gap-3 py-2">
