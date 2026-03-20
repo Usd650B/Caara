@@ -63,48 +63,109 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+      <section className="relative min-h-[85vh] sm:min-h-screen flex items-center overflow-hidden bg-[#fafafa]">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#f3f4f6] hidden lg:block"></div>
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[10%] w-[30%] h-[30%] bg-secondary/5 rounded-full blur-[100px] animate-pulse delay-700"></div>
 
-        {/* Content */}
-        <div className="text-center max-w-7xl mx-auto w-full relative z-10">
-          <div className="space-y-4 sm:space-y-6 md:space-y-8">
-            {/* Animated Badge */}
-            <div className="inline-flex items-center space-x-2 glass px-3 py-2 sm:px-6 sm:py-3 rounded-full shadow-xl border border-white/20">
-              <Sparkles className="h-3 w-3 sm:h-5 sm:w-5 text-primary animate-pulse" />
-              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">{t("The Art of Being Unforgettable")}</span>
-            </div>
+        <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+            {/* Text Content */}
+            <div className="space-y-8 sm:space-y-10 text-left order-2 lg:order-1 max-w-2xl">
+              <div className="inline-flex items-center space-x-3 px-4 py-2 bg-white rounded-full shadow-sm border border-black/5 animate-fade-in">
+                <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-black/80">
+                  {t("Spring Collection 2026")}
+                </span>
+              </div>
 
-            {/* Main Heading */}
-            <div className="space-y-2 sm:space-y-4">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-tight lg:leading-[1.1]" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-                {t("Every Queen")}<br className="sm:hidden" /> <span className="gradient-text">{t("Wears CARA")}</span>
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-muted-foreground font-light max-w-2xl mx-auto tracking-wide px-4" style={{ fontFamily: 'var(--font-playfair)' }}>
-                {t("Elevate your style with premium pieces designed for the extraordinary.")}
-              </p>
-            </div>
+              <div className="space-y-4 sm:space-y-6">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1] tracking-tighter text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+                  {t("Every Queen")}<br />
+                  <span className="relative inline-block mt-2">
+                    <span className="relative z-10 gradient-text italic">{t("Wears CARA")}</span>
+                    <span className="absolute bottom-2 left-0 w-full h-3 bg-primary/10 -z-10 rotate-[-1deg]"></span>
+                  </span>
+                </h1>
+                <p className="text-lg sm:text-xl text-black/60 max-w-lg leading-relaxed font-light" style={{ fontFamily: 'var(--font-poppins)' }}>
+                  {t("Discover the art of being unforgettable with our premium pieces designed for the extraordinary woman.")}
+                </p>
+              </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
-              <Link href="/products">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Link href="/products" className="w-full sm:w-auto">
+                  <Button 
+                    size="lg" 
+                    className="w-full sm:w-auto bg-black text-white hover:bg-black/90 px-10 py-7 text-sm font-bold uppercase tracking-[0.2em] rounded-none transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl"
+                  >
+                    {t("Shop The Looks")}
+                  </Button>
+                </Link>
                 <Button 
+                  variant="outline" 
                   size="lg" 
-                  className="gradient-bg text-white hover:opacity-90 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider shadow-2xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+                  className="w-full sm:w-auto border-black/10 hover:bg-black hover:text-white px-10 py-7 text-sm font-bold uppercase tracking-[0.2em] rounded-none transition-all duration-300"
                 >
-                  {t("Enter the World")} <ArrowRight className="ml-2 h-4 w-4" />
+                  {t("View Campaign")}
                 </Button>
-              </Link>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="glass border-primary/20 text-foreground hover:bg-primary/10 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold tracking-wider transform hover:scale-105 transition-all duration-300 w-full sm:w-auto"
-              >
-                {t("Discover More")}
-              </Button>
+              </div>
+
+              {/* Stats/Highlights */}
+              <div className="grid grid-cols-3 gap-8 pt-12 border-t border-black/5">
+                <div>
+                  <div className="text-2xl font-bold">12k+</div>
+                  <div className="text-[10px] uppercase tracking-widest text-black/40 font-bold">{t("Happy Queens")}</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">450+</div>
+                  <div className="text-[10px] uppercase tracking-widest text-black/40 font-bold">{t("Unique Styles")}</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">24h</div>
+                  <div className="text-[10px] uppercase tracking-widest text-black/40 font-bold">{t("Global Ship")}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Visual Content */}
+            <div className="relative order-1 lg:order-2 h-[450px] sm:h-[600px] lg:h-[800px] group">
+              {/* Main Image Container */}
+              <div className="relative w-full h-full overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-tl-[10rem] lg:rounded-br-[10rem] shadow-2xl">
+                <img 
+                  src="/images/hero-woman.png" 
+                  alt={t("CARA Fashion Collection")}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000 ease-out"
+                />
+                
+                {/* Floating Elements on Image */}
+                <div className="absolute bottom-8 left-8 p-6 glass rounded-2xl border border-white/40 shadow-xl backdrop-blur-md hidden sm:block animate-bounce-slow">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
+                      <img src="https://images.unsplash.com/photo-1494790108757-1c987281c12d?w=100&h=100&fit=crop" alt="User" />
+                    </div>
+                    <div>
+                      <div className="flex text-yellow-500 mb-0.5">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-current" />)}
+                      </div>
+                      <p className="text-xs font-bold text-black uppercase tracking-tighter">"Absolutely Divine Quality"</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Badge Overlay */}
+                <div className="absolute top-8 right-8 w-24 h-24 sm:w-32 sm:h-32 bg-primary rounded-full flex items-center justify-center text-center transform -rotate-12 shadow-2xl">
+                  <div className="text-white">
+                    <div className="text-[10px] sm:text-xs font-bold uppercase tracking-tighter leading-none">{t("New")}</div>
+                    <div className="text-xl sm:text-2xl font-black">{t("Drop")}</div>
+                    <div className="text-[10px] sm:text-xs font-bold">{t("2026")}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative Geometric Shapes */}
+              <div className="absolute -top-6 -right-6 w-32 h-32 border-[16px] border-primary/10 rounded-full -z-10"></div>
+              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary/10 rounded-[3rem] -z-10 rotate-45"></div>
             </div>
           </div>
         </div>
@@ -158,18 +219,73 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="inline-flex items-center space-x-2 glass px-4 py-2 sm:px-6 sm:py-3 rounded-full mb-4">
-              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              <span className="text-xs sm:text-sm font-semibold gradient-text uppercase tracking-widest">{t("Trending Now")}</span>
+      {/* Lifestyle Gallery Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#fafafa]">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7 relative h-[500px] sm:h-[700px] overflow-hidden rounded-[2.5rem] group shadow-2xl">
+              <img 
+                src="/images/woman-2.png" 
+                alt="CARA Lifestyle" 
+                className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-1000 ease-out"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
+              <div className="absolute bottom-12 left-12 space-y-4">
+                <span className="text-white/80 text-sm font-bold uppercase tracking-[0.3em]">{t("STREET STYLE '26")}</span>
+                <h3 className="text-4xl sm:text-5xl font-black text-white leading-none tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
+                  {t("Urban Confidence.")}
+                </h3>
+              </div>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-              {t("The Collection")}
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-light tracking-wide px-4">{t("Curated pieces that become part of your identity")}</p>
+            
+            <div className="lg:col-span-5 space-y-12 lg:pl-12">
+              <div className="space-y-6">
+                <div className="w-12 h-[2px] bg-primary"></div>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+                  {t("Made For The Iconic You.")}
+                </h2>
+                <p className="text-black/50 text-xl font-light leading-relaxed">
+                  {t("Whether it's the boardroom or the boulevard, CARA ensures you're never just another face in the crowd. Our latest city-ready collection is here.")}
+                </p>
+                <div className="pt-4">
+                  <Link href="/products" className="inline-block border-b-2 border-black pb-2 text-sm font-bold uppercase tracking-widest hover:border-primary transition-colors">
+                    {t("Explore The Edit")}
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-lg transform hover:-translate-y-2 transition-transform duration-500">
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop" alt="Look 1" className="w-full h-full object-cover" />
+                </div>
+                <div className="aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-lg mt-8 transform hover:-translate-y-2 transition-transform duration-500 delay-100">
+                  <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&h=500&fit=crop" alt="Look 2" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 space-y-4 md:space-y-0">
+            <div className="space-y-4 max-w-2xl">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 bg-primary/5 text-primary rounded-full">
+                <TrendingUp className="h-4 w-4" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">{t("Seasonal Essentials")}</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {t("The Collection")}
+              </h2>
+              <p className="text-black/50 text-lg max-w-xl font-light tracking-wide">{t("Curated pieces that blend contemporary trends with timeless elegance.")}</p>
+            </div>
+            
+            <Link href="/products" className="group flex items-center space-x-2 text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">
+              <span>{t("Browse All Products")}</span>
+              <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
@@ -294,91 +410,110 @@ export default function Home() {
       </section>
 
       {/* Culture Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)] opacity-[0.03]"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
+      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-[#0f0f0f] text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-primary/10 rounded-full blur-[150px] -z-0"></div>
+        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[150px] -z-0"></div>
+        
+        <div className="max-w-screen-2xl mx-auto relative z-10">
+          <div className="text-center mb-24 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
               {t("The CARA Culture")}
             </h2>
-            <p className="text-muted-foreground text-lg font-light tracking-wide">{t("More than fashion, it's a movement")}</p>
+            <div className="h-1 w-24 bg-primary mx-auto mb-8"></div>
+            <p className="text-white/60 text-xl font-light tracking-widest uppercase">{t("Fashion. Attitude. Legacy.")}</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass p-8 rounded-3xl text-center space-y-4 hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-3 group-hover:rotate-0 transition-transform">
-                <span className="text-white text-3xl font-black">B</span>
-              </div>
-              <h3 className="text-xl font-bold tracking-tight">Be Bold</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Dare to stand out, embrace your uniqueness</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div className="space-y-6 group">
+              <div className="text-7xl font-black text-white/5 group-hover:text-primary/20 transition-colors duration-500" style={{ fontFamily: 'var(--font-playfair)' }}>01</div>
+              <h3 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Be Bold")}</h3>
+              <p className="text-white/50 text-lg font-light leading-relaxed">
+                {t("Dare to stand out from the crowd. Our pieces are designed for those who aren't afraid to make a statement.")}
+              </p>
+              <div className="w-12 h-[2px] bg-white/10 group-hover:w-full transition-all duration-700"></div>
             </div>
-            <div className="glass p-8 rounded-3xl text-center space-y-4 hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 -rotate-3 group-hover:rotate-0 transition-transform">
-                <span className="text-white text-3xl font-black">E</span>
-              </div>
-              <h3 className="text-xl font-bold tracking-tight">Be Extraordinary</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Elevate every moment, make it count</p>
+            
+            <div className="space-y-6 group">
+              <div className="text-7xl font-black text-white/5 group-hover:text-primary/20 transition-colors duration-500" style={{ fontFamily: 'var(--font-playfair)' }}>02</div>
+              <h3 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Be Extraordinary")}</h3>
+              <p className="text-white/50 text-lg font-light leading-relaxed">
+                {t("Elevate every moment from ordinary to iconic. Your style is your superpower in every room you enter.")}
+              </p>
+              <div className="w-12 h-[2px] bg-white/10 group-hover:w-full transition-all duration-700"></div>
             </div>
-            <div className="glass p-8 rounded-3xl text-center space-y-4 hover:shadow-2xl transition-all duration-500 group">
-              <div className="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-6 group-hover:rotate-0 transition-transform">
-                <span className="text-white text-3xl font-black">Y</span>
-              </div>
-              <h3 className="text-xl font-bold tracking-tight">Be You</h3>
-              <p className="text-muted-foreground font-light tracking-wide">Authenticity is your greatest power</p>
+            
+            <div className="space-y-6 group">
+              <div className="text-7xl font-black text-white/5 group-hover:text-primary/20 transition-colors duration-500" style={{ fontFamily: 'var(--font-playfair)' }}>03</div>
+              <h3 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Be You")}</h3>
+              <p className="text-white/50 text-lg font-light leading-relaxed">
+                {t("Authenticity is the ultimate luxury. We create fashion that amplifies your true self, never masks it.")}
+              </p>
+              <div className="w-12 h-[2px] bg-white/10 group-hover:w-full transition-all duration-700"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
-                <Truck className="h-8 w-8 text-primary group-hover:text-white" />
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white border-t border-black/5">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div className="flex flex-col items-center text-center space-y-6 group">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 border border-black/5 group-hover:bg-black group-hover:text-white">
+                <Truck className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Global Free Shipping")}</h3>
-              <p className="text-muted-foreground font-light tracking-wide">{t("Complimentary shipping on all orders worldwide")}</p>
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em]" style={{ fontFamily: 'var(--font-poppins)' }}>{t("Global Concierge Shipping")}</h3>
+                <p className="text-black/40 text-sm font-light leading-relaxed max-w-[250px] mx-auto">{t("Complimentary express shipping on all orders worldwide, handled with care.")}</p>
+              </div>
             </div>
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
-                <Diamond className="h-8 w-8 text-primary group-hover:text-white" />
+            <div className="flex flex-col items-center text-center space-y-6 group">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 border border-black/5 group-hover:bg-black group-hover:text-white">
+                <Diamond className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Premium Quality")}</h3>
-              <p className="text-muted-foreground font-light tracking-wide">{t("Hand-selected fabrics and artisan craftsmanship")}</p>
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em]" style={{ fontFamily: 'var(--font-poppins)' }}>{t("Artisan Craftsmanship")}</h3>
+                <p className="text-black/40 text-sm font-light leading-relaxed max-w-[250px] mx-auto">{t("Each piece is a testament to quality, using only the finest sustainable fabrics.")}</p>
+              </div>
             </div>
-            <div className="text-center space-y-4 group">
-              <div className="w-16 h-16 glass rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
-                <Users className="h-8 w-8 text-primary group-hover:text-white" />
+            <div className="flex flex-col items-center text-center space-y-6 group">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 border border-black/5 group-hover:bg-black group-hover:text-white">
+                <Users className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("24/7 Support")}</h3>
-              <p className="text-muted-foreground font-light tracking-wide">{t("Our styling experts are always here for you")}</p>
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em]" style={{ fontFamily: 'var(--font-poppins)' }}>{t("Personal Stylist Support")}</h3>
+                <p className="text-black/40 text-sm font-light leading-relaxed max-w-[250px] mx-auto">{t("Our experts are available 24/7 to help you curate your perfect wardrobe.")}</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="gradient-bg rounded-[3rem] p-8 sm:p-12 md:p-16 shadow-2xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl lg:text-6xl font-black text-white mb-4 tracking-tight" style={{ fontFamily: 'var(--font-playfair)', letterSpacing: '-0.02em' }}>
-                {t("Ready to Become Iconic?")}
-              </h2>
-              <p className="text-white/90 mb-8 max-w-2xl mx-auto text-lg sm:text-xl font-light tracking-wide" style={{ fontFamily: 'var(--font-playfair)' }}>
-                {t("Join the movement. Wear CARA. Create your legacy.")}
+      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-white border-t border-black/5">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="bg-black text-white rounded-[3rem] p-12 sm:p-20 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/20 rounded-full blur-[120px] -z-0 translate-x-1/2 -translate-y-1/2"></div>
+            <div className="relative z-10 space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-5xl md:text-7xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
+                  {t("The Throne Awaits.")}
+                </h2>
+                <p className="text-white/60 text-xl font-light tracking-widest uppercase">{t("Become a CARA Queen Today")}</p>
+              </div>
+              <p className="text-white/40 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+                {t("Join our exclusive community and get early access to limited drops, private sales, and personalized styling recommendations.")}
               </p>
-              <Link href="/products">
-                <Button 
-                  size="lg" 
-                  className="bg-white text-primary hover:bg-white/90 px-8 py-6 text-xl font-bold tracking-wider shadow-2xl transform hover:scale-110 transition-all duration-300 rounded-2xl"
-                >
-                  {t("Begin Your Journey")} <ArrowRight className="ml-2 h-6 w-6" />
-                </Button>
-              </Link>
+              <div className="pt-8">
+                <Link href="/products">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-black hover:bg-white/90 px-12 py-8 text-sm font-bold uppercase tracking-[0.3em] rounded-none transition-all duration-500 transform hover:scale-110"
+                  >
+                    {t("Enter The Dynasty")} <ArrowRight className="ml-4 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
