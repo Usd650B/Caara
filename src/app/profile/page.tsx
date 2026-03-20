@@ -111,7 +111,7 @@ export default function ProfilePage() {
                     </div>
                     <div className="space-y-1">
                        <p className="text-[10px] font-black text-black/20 uppercase tracking-widest">Communications Node</p>
-                       <p className="text-sm font-bold text-black">+255 700 000 000</p>
+                       <p className="text-sm font-bold text-black">+255749097220</p>
                     </div>
                     <div className="pt-6 border-t border-black/5">
                       <Button variant="outline" className="w-full h-12 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-all">

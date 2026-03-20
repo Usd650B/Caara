@@ -66,25 +66,25 @@ export default function ContactPage() {
         {/* Contact Options */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           <Card className="text-center">
-            <CardContent className="p-6">
-              <Mail className="h-8 w-8 text-black mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Email Us</h3>
-              <p className="text-gray-600 mb-6">We&apos;re preparing amazing products for you. Check back soon!</p>
-              <Link href="/products">
-                <Button>
-                  Browse All Categories
-                </Button>
-              </Link>
-            </CardContent>
+              <CardContent className="p-6">
+                <Mail className="h-8 w-8 text-black mx-auto mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Email Us</h3>
+                <p className="text-gray-600 mb-6 text-sm">shabanimnango99@gmail.com</p>
+                <Link href="mailto:shabanimnango99@gmail.com">
+                  <Button className="w-full">
+                    Send Email
+                  </Button>
+                </Link>
+              </CardContent>
           </Card>
 
           <Card className="text-center">
             <CardContent className="p-6">
               <Phone className="h-8 w-8 text-black mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">Call Us</h3>
-              <p className="text-gray-600 mb-4">+1 (555) 123-4567</p>
-              <Button variant="outline" className="w-full">
-                <a href="tel:+15551234567">Call Now</a>
+              <p className="text-gray-600 mb-4 font-bold tracking-widest">+255 749 097 220</p>
+              <Button variant="outline" className="w-full" asChild>
+                <a href="tel:+255749097220">Call Now</a>
               </Button>
             </CardContent>
           </Card>

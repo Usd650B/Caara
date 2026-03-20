@@ -447,11 +447,11 @@ export default function AdminPage() {
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Official Intelligence Email</Label>
-                <Input defaultValue="admin@cara.os" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="shabanimnango99@gmail.com" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Communication Node</Label>
-                <Input defaultValue="+255 700 000 000" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="+255749097220" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Physical Jurisdiction</Label>
@@ -573,11 +573,11 @@ export default function AdminPage() {
            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-black/5">
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Display Identification</Label>
-                <Input defaultValue="Admin OS" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="Shabani Mnango" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Credential Email</Label>
-                <Input defaultValue="root@cara.os" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="shabanimnango99@gmail.com" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Authority Rank</Label>

@@ -26,10 +26,10 @@ export function Footer() {
               {t("Elevating the ordinary into the extraordinary. Discover a curated universe of fashion that defines your unique essence.")}
             </p>
             <div className="flex items-center space-x-4">
-              <a href="mailto:concierge@cara.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
+              <a href="mailto:shabanimnango99@gmail.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
                 <Mail className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
               </a>
-              <a href="tel:+1234567890" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
+              <a href="tel:+255749097220" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
                 <Phone className="h-5 w-5 text-muted-foreground group-hover:text-secondary transition-colors" />
               </a>
               <div className="flex-1"></div>
