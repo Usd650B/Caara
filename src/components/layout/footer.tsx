@@ -18,9 +18,9 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-8">
             <Link href="/" className="inline-block group">
               <span className="text-4xl sm:text-5xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
-                <span className="gradient-text">CARA</span>
+                <span className="gradient-text">CAARA</span>
               </span>
-              <div className="h-1 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
+              <div className="h-1.5 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
             </Link>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-md font-light">
               {t("Elevating the ordinary into the extraordinary. Discover a curated universe of fashion that defines your unique essence.")}
@@ -95,7 +95,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
-            &copy; 2024 <span className="gradient-text font-black">CARA</span>. Defined by Excellence.
+            &copy; 2024 <span className="gradient-text font-black">CAARA</span>. Defined by Excellence.
           </p>
           <div className="flex items-center space-x-6">
             <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Privacy</Link>

@@ -93,7 +93,7 @@ export function Header() {
           {/* Center - Logo */}
           <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group">
             <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter transition-all duration-500 group-hover:scale-110">
-              <span className="gradient-text">CARA</span>
+              <span className="gradient-text">CAARA</span>
               <div className="h-1.5 w-0 group-hover:w-full gradient-bg mt-1 transition-all duration-500 rounded-full mx-auto opacity-0 group-hover:opacity-100"></div>
             </span>
           </Link>

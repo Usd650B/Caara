@@ -132,6 +132,17 @@ export default function AdminPage() {
   const TrendingUp = ({ className }: { className?: string }) => <Zap className={className} />;
   const TrendingDown = ({ className }: { className?: string }) => <Activity className={className} />;
 
+  const tabs = [
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'products', label: 'Inventory', icon: Box },
+    { id: 'orders', label: 'Fulfillment', icon: ClipboardList },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
+
+  const currentTabTitle = tabs.find(t => t.id === activeTab)?.label || 'CAARA';
+
   const DashboardContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -139,7 +150,7 @@ export default function AdminPage() {
           <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
             System Intelligence
           </h2>
-          <p className="text-black/40 text-sm font-medium mt-2">Real-time performance metrics and business overview for OS CARA.</p>
+          <p className="text-black/40 text-sm font-medium mt-2">Real-time performance metrics and business overview for OS CAARA.</p>
         </div>
         <div className="flex items-center space-x-3">
           <Button variant="outline" className="h-14 px-6 border-black/5 rounded-2xl hover:bg-black hover:text-white transition-all font-black text-[10px] uppercase tracking-widest">
@@ -218,6 +229,17 @@ export default function AdminPage() {
         </div>
 
         <div className="space-y-12">
+          <div className="bg-black text-white p-12 rounded-[3.5rem] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-12 opacity-[0.05] group-hover:scale-110 transition-transform duration-1000">
+               <Globe className="h-64 w-64" />
+            </div>
+            <div className="relative z-10 space-y-4">
+               <h3 className="text-sm font-black uppercase tracking-[0.4em] text-white/40">Organization Identity</h3>
+               <h4 className="text-4xl font-black tracking-tighter uppercase">Caara International</h4>
+               <p className="text-white/30 text-[10px] font-medium max-w-sm tracking-wide">Strategic logistics and brand identity node for the worldwide CAARA fashion network.</p>
+            </div>
+          </div>
+          
           <div className="bg-black text-white rounded-[2.5rem] p-10 shadow-2xl shadow-black/20 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-10 opacity-[0.05] group-hover:scale-110 transition-transform duration-700">
               <Sparkles className="h-40 w-40" />
@@ -443,7 +465,7 @@ export default function AdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Organization Identity</Label>
-                <Input defaultValue="OS CARA Official" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="OS CAARA Official" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Official Intelligence Email</Label>
@@ -514,7 +536,7 @@ export default function AdminPage() {
                ))}
              </div>
              <Button variant="outline" className="w-full h-12 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest">
-               Security Audit
+                Security Audit
              </Button>
           </section>
 
@@ -654,9 +676,9 @@ export default function AdminPage() {
       };
 
       if (isEdit && editingProduct?.id) {
-        submitEditProduct(editingProduct.id, payload);
+        await submitEditProduct(editingProduct.id, payload);
       } else {
-        handleAddProduct(payload);
+        await handleAddProduct(payload);
       }
     };
 
@@ -766,103 +788,128 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col lg:flex-row">
+      <div className="lg:hidden p-4 border-b bg-white flex justify-between items-center sticky top-0 z-50">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white">
+            <span className="font-black italic">C</span>
+          </div>
+          <span className="font-black text-xl tracking-tighter">OS CAARA</span>
+        </div>
+        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="rounded-xl h-12 w-12"><Menu className="h-6 w-6" /></Button>
+      </div>
+
       {/* Sidebar - Consistent with Intelligence Aesthetic */}
       <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-[60] w-80 bg-white border-r border-black/5 transform transition-transform duration-500 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex flex-col h-full p-10">
           <div className="flex items-center justify-between mb-14">
             <div className="flex items-center space-x-4 group cursor-pointer">
               <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10 group-hover:scale-110 transition-transform">
-                <Activity className="h-6 w-6" />
+                <span className="font-black text-xl italic">C</span>
               </div>
-              <span className="text-2xl font-black tracking-tighter">OS CARA</span>
+              <span className="text-2xl font-black tracking-tighter">OS CAARA</span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="lg:hidden rounded-xl h-10 w-10"><X className="h-5 w-5" /></Button>
           </div>
-          
-          <nav className="flex-1 space-y-10">
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20 mb-6 px-4">Core Nodes</p>
-              {[
-                { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
-                { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '/admin/analytics' },
-              ].map((item) => (
-                item.href ? (
-                  <Link key={item.id} href={item.href} className="flex items-center px-6 py-4 text-sm font-black uppercase tracking-widest rounded-2xl transition-all text-black/30 hover:text-black hover:bg-black/[0.02]">
-                    <item.icon className="mr-4 h-5 w-5" />{item.label}
-                  </Link>
-                ) : (
-                  <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center px-6 py-4 text-sm font-black uppercase tracking-widest rounded-2xl transition-all ${activeTab === item.id ? "bg-black text-white shadow-2xl shadow-black/20" : "text-black/30 hover:text-black hover:bg-black/[0.02]"}`}>
-                    <item.icon className="mr-4 h-5 w-5" />{item.label}
-                  </button>
-                )
-              ))}
-            </div>
 
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20 mb-6 px-4">Administration</p>
-              {[
-                { id: 'products', label: 'Inventory', icon: Box },
-                { id: 'orders', label: 'Fulfillment', icon: ClipboardList },
-              ].map((item) => (
-                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center px-6 py-4 text-sm font-black uppercase tracking-widest rounded-2xl transition-all ${activeTab === item.id ? "bg-black text-white shadow-2xl shadow-black/20" : "text-black/30 hover:text-black hover:bg-black/[0.02]"}`}>
-                  <item.icon className="mr-4 h-5 w-5" />{item.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20 mb-6 px-4">Executive</p>
-              {[
-                { id: 'profile', label: 'Profile', icon: User },
-                { id: 'settings', label: 'Settings', icon: Settings },
-              ].map((item) => (
-                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center px-6 py-4 text-sm font-black uppercase tracking-widest rounded-2xl transition-all ${activeTab === item.id ? "bg-black text-white shadow-2xl shadow-black/20" : "text-black/30 hover:text-black hover:bg-black/[0.02]"}`}>
-                  <item.icon className="mr-4 h-5 w-5" />{item.label}
+          <nav className="flex-1 space-y-6">
+            <div className="space-y-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
+                  className={`w-full flex items-center space-x-4 px-6 h-14 rounded-2xl transition-all duration-300 group ${
+                    activeTab === tab.id 
+                    ? 'bg-black text-white shadow-xl shadow-black/10' 
+                    : 'text-black/40 hover:bg-black/5 hover:text-black'
+                  }`}
+                >
+                  <tab.icon className={`h-4 w-4 transition-transform duration-500 ${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{tab.label}</span>
                 </button>
               ))}
             </div>
           </nav>
-          
-          <div className="pt-10 border-t border-black/5">
-            <button onClick={handleSignOut} className="w-full flex items-center px-6 py-4 text-sm font-black uppercase tracking-widest rounded-2xl text-red-500 hover:bg-red-50 transition-all">
-              <LogOut className="mr-4 h-5 w-5" />Terminate Session
-            </button>
+
+          <div className="pt-10 border-t border-black/5 space-y-4">
+             <div className="flex items-center space-x-4 px-6 text-black/30">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-black/20">Operational</span>
+             </div>
+             <Button onClick={handleSignOut} variant="ghost" className="w-full justify-start space-x-4 px-6 h-14 rounded-2xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all">
+               <LogOut className="h-4 w-4" />
+               <span className="text-[10px] font-black uppercase tracking-widest">Terminate Account</span>
+             </Button>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Node */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <header className="h-24 bg-white/80 backdrop-blur-md border-b border-black/5 px-10 md:px-14 flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-6 lg:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="rounded-2xl h-12 w-12 hover:bg-black/5"><Menu className="h-5 w-5" /></Button>
-            <span className="font-black text-2xl tracking-tighter">CARA</span>
-          </div>
-          <div className="hidden lg:flex items-center space-x-3 text-[10px] font-black uppercase tracking-widest text-black/20">
-            <span>Root Control</span>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-black">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</span>
-          </div>
-          <div className="flex items-center space-x-8">
-            <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs font-black text-black">ADMINISTRATOR</span>
-              <span className="text-[10px] font-black text-black/20 uppercase tracking-[0.2em]">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</span>
-            </div>
-            <div className="w-14 h-14 rounded-2xl bg-black border border-white/10 flex items-center justify-center text-white font-black text-xs shadow-xl shadow-black/10">AD</div>
-          </div>
+      {/* Main Stream */}
+      <main className="flex-1 min-w-0 overflow-y-auto">
+        <header className="h-24 bg-[#fafafa]/80 backdrop-blur-md border-b border-black/5 px-8 md:px-12 flex items-center justify-between sticky top-0 z-40">
+           <div>
+             <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black/20 mb-1">
+               <span>OS CAARA</span>
+               <ChevronRight className="h-3 w-3" />
+               <span className="text-black">{currentTabTitle}</span>
+             </div>
+             <h1 className="text-xl font-black tracking-tighter uppercase">{currentTabTitle} Node</h1>
+           </div>
+           
+           <div className="flex items-center space-x-6">
+             <div className="hidden md:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
+                <span className="text-[9px] font-black uppercase tracking-widest">Global Protocol V4</span>
+             </div>
+             <div className="w-10 h-10 bg-black rounded-xl shadow-xl shadow-black/20 flex items-center justify-center text-white text-xs font-black">
+                SM
+             </div>
+           </div>
         </header>
 
-        <main className="flex-1 p-10 lg:p-14">
+        <div className="max-w-7xl mx-auto p-8 md:p-12">
           {activeTab === "dashboard" && <DashboardContent />}
           {activeTab === "products" && <ProductsContent />}
           {activeTab === "orders" && <OrdersContent />}
           {activeTab === "settings" && <SettingsContent />}
           {activeTab === "profile" && <ProfileContent />}
-        </main>
-        
-        {showAddProduct && <AddProductModal />}
-      </div>
+          {activeTab === "analytics" && (
+            <div className="text-center py-32 space-y-6 bg-white rounded-[3rem] border border-black/5 p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+              <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mx-auto text-black/10">
+                <BarChart3 className="h-10 w-10" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-black">Advanced Analytics Hub</h3>
+                <p className="text-black/40 text-[10px] font-black uppercase tracking-widest mt-2 px-10">Access high-level strategic data and predictive performance projection modules.</p>
+              </div>
+              <Link href="/admin/analytics">
+                <Button className="bg-black text-white h-14 px-10 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+                  Connect to Intelligence Stream
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Global Footer Identifier */}
+        <div className="px-8 md:px-12 pb-12">
+           <div className="flex items-center justify-between pt-8 border-t border-black/5">
+              <div className="flex items-center gap-6">
+                 <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-black/20">Operational</span>
+                 </div>
+                 <div className="text-[9px] font-black uppercase tracking-widest text-black/20">© 2026 CAARA SYSTEMS ADM</div>
+              </div>
+              <div className="flex items-center gap-4">
+                 <Lock className="h-3 w-3 text-black/10" />
+                 <span className="text-[9px] font-black uppercase tracking-widest text-black/10">End-to-End Encryption Active</span>
+              </div>
+           </div>
+        </div>
+      </main>
+
+      {showAddProduct && <AddProductModal />}
     </div>
   );
 }

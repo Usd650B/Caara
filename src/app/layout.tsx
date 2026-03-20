@@ -9,12 +9,12 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-poppins" });
 
 export const metadata: Metadata = {
-  title: "CARA - Where Every Queen Wears CARA",
-  description: "Discover the CARA collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
-  keywords: ["fashion", "clothing", "CARA", "premium", "style", "elegance", "women's fashion"],
-  authors: [{ name: "CARA Fashion" }],
-  creator: "CARA Fashion",
-  publisher: "CARA Fashion",
+  title: "Caara - Where Every Queen Wears Caara",
+  description: "Discover the Caara collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
+  keywords: ["fashion", "clothing", "Caara", "premium", "style", "elegance", "women's fashion"],
+  authors: [{ name: "Caara Fashion" }],
+  creator: "Caara Fashion",
+  publisher: "Caara Fashion",
   formatDetection: {
     email: false,
     address: false,
@@ -25,16 +25,16 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "CARA - Where Every Queen Wears CARA",
-    description: "Discover the CARA collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
+    title: "Caara - Where Every Queen Wears Caara",
+    description: "Discover the Caara collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
     url: "https://caara-two.vercel.app",
-    siteName: "CARA Fashion",
+    siteName: "Caara Fashion",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "CARA Fashion Collection",
+        alt: "Caara Fashion Collection",
       },
     ],
     locale: "en_US",
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CARA - Where Every Queen Wears CARA",
-    description: "Discover the CARA collection - Premium fashion that defines your universe.",
+    title: "Caara - Where Every Queen Wears Caara",
+    description: "Discover the Caara collection - Premium fashion that defines your universe.",
     images: ["/og-image.jpg"],
   },
   robots: {

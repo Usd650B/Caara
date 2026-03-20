@@ -227,7 +227,7 @@ export default function OrderTrackingPage() {
                        {[
                          { label: 'Authorized Entity', value: order.customerName },
                          { label: 'Identifier Node', value: order.customerEmail },
-                         { label: 'Verified Protocol', value: 'SSL/CARA-SEC-V2' }
+                         { label: 'Verified Protocol', value: 'SSL/CAARA-SEC-V2' }
                        ].map(item => (
                          <div key={item.label} className="border-b border-black/5 pb-4 last:border-0 last:pb-0">
                            <p className="text-[9px] font-black text-black/20 uppercase tracking-widest mb-1">{item.label}</p>

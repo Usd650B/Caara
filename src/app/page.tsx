@@ -84,7 +84,7 @@ export default function Home() {
                 <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1] tracking-tighter text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
                   {t("Every Queen")}<br />
                   <span className="relative inline-block mt-2">
-                    <span className="relative z-10 gradient-text italic">{t("Wears CARA")}</span>
+                    <span className="relative z-10 gradient-text italic">{t("Wears CAARA")}</span>
                     <span className="absolute bottom-2 left-0 w-full h-3 bg-primary/10 -z-10 rotate-[-1deg]"></span>
                   </span>
                 </h1>
@@ -134,7 +134,7 @@ export default function Home() {
               <div className="relative w-full h-full overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-tl-[10rem] lg:rounded-br-[10rem] shadow-2xl">
                 <img 
                   src="/images/hero-woman.png" 
-                  alt={t("CARA Fashion Collection")}
+                  alt={t("CAARA Fashion Collection")}
                   className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000 ease-out"
                 />
                 
@@ -226,7 +226,7 @@ export default function Home() {
             <div className="lg:col-span-7 relative h-[500px] sm:h-[700px] overflow-hidden rounded-[2.5rem] group shadow-2xl">
               <img 
                 src="/images/woman-2.png" 
-                alt="CARA Lifestyle" 
+                alt="CAARA Lifestyle" 
                 className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-1000 ease-out"
               />
               <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
@@ -245,7 +245,7 @@ export default function Home() {
                   {t("Made For The Iconic You.")}
                 </h2>
                 <p className="text-black/50 text-xl font-light leading-relaxed">
-                  {t("Whether it's the boardroom or the boulevard, CARA ensures you're never just another face in the crowd. Our latest city-ready collection is here.")}
+                  {t("Whether it's the boardroom or the boulevard, CAARA ensures you're never just another face in the crowd. Our latest city-ready collection is here.")}
                 </p>
                 <div className="pt-4">
                   <Link href="/products" className="inline-block border-b-2 border-black pb-2 text-sm font-bold uppercase tracking-widest hover:border-primary transition-colors">
@@ -417,7 +417,7 @@ export default function Home() {
         <div className="max-w-screen-2xl mx-auto relative z-10">
           <div className="text-center mb-24 max-w-3xl mx-auto">
             <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
-              {t("The CARA Culture")}
+              {t("The CAARA Culture")}
             </h2>
             <div className="h-1 w-24 bg-primary mx-auto mb-8"></div>
             <p className="text-white/60 text-xl font-light tracking-widest uppercase">{t("Fashion. Attitude. Legacy.")}</p>
@@ -499,7 +499,7 @@ export default function Home() {
                 <h2 className="text-5xl md:text-7xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
                   {t("The Throne Awaits.")}
                 </h2>
-                <p className="text-white/60 text-xl font-light tracking-widest uppercase">{t("Become a CARA Queen Today")}</p>
+                <p className="text-white/60 text-xl font-light tracking-widest uppercase">{t("Become a CAARA Queen Today")}</p>
               </div>
               <p className="text-white/40 max-w-2xl mx-auto text-lg font-light leading-relaxed">
                 {t("Join our exclusive community and get early access to limited drops, private sales, and personalized styling recommendations.")}

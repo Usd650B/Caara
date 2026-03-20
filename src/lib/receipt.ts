@@ -18,7 +18,7 @@ export const generateReceiptPDF = (receiptData: ReceiptData): string => {
     <html>
     <head>
       <meta charset="utf-8">
-      <title>CARA Order Receipt</title>
+      <title>Caara Order Receipt</title>
       <style>
         body {
           font-family: 'Georgia', serif;
@@ -124,7 +124,7 @@ export const generateReceiptPDF = (receiptData: ReceiptData): string => {
     <body>
       <div class="receipt-container">
         <div class="header">
-          <div class="logo">CARA</div>
+          <div class="logo">CAARA</div>
           <div>Order Receipt</div>
         </div>
         
@@ -202,11 +202,11 @@ export const generateReceiptPDF = (receiptData: ReceiptData): string => {
         ` : ''}
 
         <div class="footer">
-          <div>Thank you for shopping at CARA!</div>
-          <div>Every Queen Wear CARA</div>
+          <div>Thank you for shopping at Caara!</div>
+          <div>Every Queen Wears Caara</div>
           <div style="margin-top: 10px;">
             This is a computer-generated receipt and does not require a signature.<br>
-            For questions about your order, please contact us at support@cara.com
+            For questions about your order, please contact us at shabanimnango99@gmail.com
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ export const downloadReceipt = (receiptData: ReceiptData) => {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `CARA-Receipt-${receiptData.order.id}.html`
+  link.download = `Caara-Receipt-${receiptData.order.id}.html`
   
   // Trigger download
   document.body.appendChild(link)
