@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Heart, ShoppingCart, Star, Filter, Search, ArrowRight, ChevronDown, X, Truck, CheckCircle } from "lucide-react";
+import { Heart, ShoppingCart, Star, Filter, Search, ChevronDown, X, Truck, ShieldCheck, Zap, Minus, Plus, Diamond } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
-import Link from "next/link";
 import { useSettings } from "@/lib/settings";
 
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Knitwear"];
@@ -16,7 +14,7 @@ const priceRanges = [
   { label: "$100 - $200", min: 100, max: 200 },
   { label: "Over $200", min: 200, max: Infinity }
 ];
-const sizes = ["All", "XS", "S", "M", "L", "XL", "XXL"];
+const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export default function ProductsPage() {
   const { t, formatPrice } = useSettings();
@@ -28,14 +26,29 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [favoritedItems, setFavoritedItems] = useState<Set<string>>(new Set());
+  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
+  const [drawerSize, setDrawerSize] = useState<string>("M");
+  const [drawerQuantity, setDrawerQuantity] = useState<number>(1);
 
   const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     e.stopPropagation();
     
+    addToCart(product, (product.sizes && product.sizes[0]) || "M", 1);
+    
+    setAddedItems(prev => new Set(prev).add(product.id as string));
+    setTimeout(() => {
+      setAddedItems(prev => {
+        const next = new Set(prev);
+        next.delete(product.id as string);
+        return next;
+      });
+    }, 2000);
+  };
+
+  const addToCart = (product: Product, size: string, quantity: number) => {
     const cartItem = {
       id: product.id,
       name: product.name,
@@ -43,8 +56,8 @@ export default function ProductsPage() {
       originalPrice: product.originalPrice,
       category: product.category,
       image: product.image,
-      quantity: 1,
-      size: (product.sizes && product.sizes[0]) || "M",
+      quantity: quantity,
+      size: size,
       color: (product.colors && product.colors[0]) || "Black",
       rating: product.rating,
       reviews: product.reviews
@@ -55,20 +68,11 @@ export default function ProductsPage() {
       item.id === product.id && item.size === cartItem.size && item.color === cartItem.color
     );
 
-    if (existingIndex >= 0) existingCart[existingIndex].quantity += 1;
+    if (existingIndex >= 0) existingCart[existingIndex].quantity += quantity;
     else existingCart.push(cartItem);
 
     localStorage.setItem('cart', JSON.stringify(existingCart));
     window.dispatchEvent(new CustomEvent('cart-updated'));
-
-    setAddedItems(prev => new Set(prev).add(product.id as string));
-    setTimeout(() => {
-      setAddedItems(prev => {
-        const next = new Set(prev);
-        next.delete(product.id as string);
-        return next;
-      });
-    }, 2000);
   };
   
   const toggleFavorite = (e: React.MouseEvent, productId: string) => {
@@ -101,313 +105,415 @@ export default function ProductsPage() {
     return matchesCategory && matchesSearch && matchesPriceRange && matchesSize;
   });
 
-  // Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
-      case "price-low":
-        return a.price - b.price;
-      case "price-high":
-        return b.price - a.price;
-      case "rating":
-        return (b.rating || 0) - (a.rating || 0);
-      case "newest":
-        return (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0);
-      default:
-        return 0;
+      case "price-low": return a.price - b.price;
+      case "price-high": return b.price - a.price;
+      case "rating": return (b.rating || 0) - (a.rating || 0);
+      case "newest": return (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0);
+      default: return 0;
     }
   });
 
-  const toggleDropdown = (dropdown: string) => {
-    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  const openDrawer = (product: Product) => {
+    setActiveProduct(product);
+    setDrawerSize((product.sizes && product.sizes[0]) || "M");
+    setDrawerQuantity(1);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeDrawer = () => {
+    setActiveProduct(null);
+    document.body.style.overflow = "auto";
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Fixed Header */}
-      <div className="sticky top-0 z-40 glass border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="container mx-auto">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-                {t("The")} <span className="gradient-text">{t("Collection")}</span>
-              </h1>
-              <p className="text-muted-foreground text-sm sm:text-base font-light">{t("Discover pieces that define your universe")}</p>
-            </div>
-            <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              <div className="relative flex-1 sm:flex-none">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary w-full sm:w-48 md:w-64 text-sm transition-all"
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Product Aside/Drawer */}
+      {activeProduct && (
+        <div 
+          className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-300"
+          onClick={closeDrawer}
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div 
+            className="relative w-full max-w-2xl bg-white h-full shadow-2xl animate-in slide-in-from-right duration-500 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={closeDrawer}
+              className="absolute top-6 right-6 p-2 hover:bg-black/5 rounded-full transition-colors z-10"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <div className="flex flex-col h-full">
+              <div className="w-full aspect-[4/5] bg-muted relative">
+                <img 
+                  src={activeProduct.image} 
+                  alt={activeProduct.name}
+                  className="w-full h-full object-cover"
                 />
+                {activeProduct.badge && (
+                  <div className="absolute top-6 left-6">
+                    <span className="px-3 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest leading-none">
+                      {t(activeProduct.badge)}
+                    </span>
+                  </div>
+                )}
               </div>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2.5 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm font-medium transition-all"
-              >
-                <option value="featured">{t("Featured")}</option>
-                <option value="price-low">{t("Price: Low to High")}</option>
-                <option value="price-high">{t("Price: High to Low")}</option>
-                <option value="rating">{t("Highest Rated")}</option>
-                <option value="newest">{t("Newest")}</option>
-              </select>
+
+              <div className="p-8 sm:p-12 space-y-10 flex-1">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2 text-primary font-bold text-xs uppercase tracking-widest">
+                    <Diamond className="h-3 w-3" />
+                    <span>{t(activeProduct.category)}</span>
+                    <span className="text-black/20 text-[10px]">•</span>
+                    <span className="text-black/40">{t("Verified Product")}</span>
+                  </div>
+                  <h2 className="text-4xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
+                    {activeProduct.name}
+                  </h2>
+                  <div className="flex items-end space-x-4">
+                    <span className="text-3xl font-black text-black">
+                      {formatPrice(activeProduct.price)}
+                    </span>
+                    {activeProduct.originalPrice && (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg text-black/30 line-through">
+                          {formatPrice(activeProduct.originalPrice)}
+                        </span>
+                        <span className="text-sm font-bold text-red-500 bg-red-50 px-2 py-0.5">
+                          -{Math.round(((activeProduct.originalPrice - activeProduct.price) / activeProduct.originalPrice) * 100)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 py-4 border-y border-black/5">
+                  <div className="flex text-yellow-500">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`h-4 w-4 ${i < (activeProduct?.rating || 5) ? 'fill-current' : 'text-black/10'}`} />
+                    ))}
+                  </div>
+                  <span className="text-sm font-bold text-black/60">{activeProduct.rating || 4.8} / 5.0</span>
+                  <span className="text-black/20 text-xs">•</span>
+                  <span className="text-xs font-bold uppercase tracking-widest underline cursor-pointer hover:text-primary transition-colors">{t("Read reviews")}</span>
+                </div>
+
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+                      <span>{t("Select Size")}</span>
+                      <button className="text-black/40 hover:text-black underline">{t("Size Guide")}</button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {sizes.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => setDrawerSize(s)}
+                          disabled={activeProduct?.sizes && !activeProduct.sizes.includes(s)}
+                          className={`w-14 h-14 flex items-center justify-center text-xs font-bold transition-all ${
+                            drawerSize === s 
+                              ? 'bg-black text-white shadow-xl scale-110' 
+                              : 'bg-white border border-black/10 text-black hover:border-black disabled:opacity-30 disabled:cursor-not-allowed'
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <span className="text-xs font-bold uppercase tracking-widest block">{t("Quantity")}</span>
+                    <div className="flex items-center space-x-6">
+                      <div className="flex items-center border border-black/10 p-1">
+                        <button 
+                          onClick={() => setDrawerQuantity(Math.max(1, drawerQuantity - 1))}
+                          className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </button>
+                        <span className="w-12 text-center font-bold">{drawerQuantity}</span>
+                        <button 
+                          onClick={() => setDrawerQuantity(drawerQuantity + 1)}
+                          className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <span className="text-xs text-black/40 font-bold">{t("In Stock")}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col space-y-4 pt-4">
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-black text-white h-16 text-sm font-bold uppercase tracking-[0.2em] rounded-none hover:bg-black/90 transition-all shadow-xl active:scale-[0.98]"
+                    onClick={() => {
+                      if(activeProduct) addToCart(activeProduct, drawerSize, drawerQuantity);
+                      closeDrawer();
+                    }}
+                  >
+                    {t("Add to Bag")} — {formatPrice(activeProduct.price * drawerQuantity)}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full h-16 border-black/10 text-sm font-bold uppercase tracking-[0.2em] rounded-none transition-all hover:bg-black hover:text-white"
+                    onClick={(e) => toggleFavorite(e, activeProduct?.id as string)}
+                  >
+                    <Heart className={`mr-2 h-5 w-5 ${favoritedItems.has(activeProduct?.id as string) ? 'fill-red-500 text-red-500' : ''}`} />
+                    {favoritedItems.has(activeProduct?.id as string) ? t("Saved") : t("Save to Collection")}
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 py-8 border-t border-black/5">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-black/5 rounded-full flex items-center justify-center">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest block">{t("Premium Quality")}</span>
+                      <span className="text-[10px] text-black/40">{t("Certified Artisan")}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-black/5 rounded-full flex items-center justify-center">
+                      <Zap className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest block">{t("Express Ship")}</span>
+                      <span className="text-[10px] text-black/40">{t("Fast Delivery")}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hero Header Area */}
+      <div className="bg-white border-b border-black/5 py-12 px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-[30%] h-full bg-[#f3f4f6] -skew-x-12 translate-x-1/2"></div>
+        <div className="max-w-screen-2xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+              <span className="w-8 h-[1px] bg-primary"></span>
+              <span>{t("Royal Assortment")}</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+              {t("The Collection")}
+            </h1>
+            <p className="text-black/50 text-xl font-light max-w-xl leading-relaxed">
+              {t("Explore curated pieces designed to elevate your aesthetic.")}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto md:pb-2">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30 h-4 w-4" />
+              <input
+                type="text"
+                placeholder={t("Search the vault...")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-4 py-4 bg-white border border-black/5 w-full md:w-80 text-sm focus:ring-1 focus:ring-black shadow-sm font-medium transition-all"
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
-          {/* Filters Sidebar */}
-          <div className="lg:w-72">
-            {/* Mobile Filter Toggle */}
-            <div className="lg:hidden mb-6">
-              <Button 
-                variant="outline" 
-                onClick={() => setShowFilters(!showFilters)} 
-                className="w-full flex items-center justify-between h-12 rounded-xl glass border-primary/20"
-              >
-                <span className="font-bold">{t("Filters & Refine")}</span>
-                <Filter className="h-4 w-4 text-primary" />
-              </Button>
-            </div>
-
-            {/* Desktop Filters */}
-            <div className={`${showFilters ? 'block' : 'hidden'} lg:block bg-card rounded-2xl border border-border shadow-sm p-6 space-y-8 sticky top-32 overflow-y-auto max-h-[calc(100vh-8rem)] scrollbar-hide`}>
-              
-              {/* Categories */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Category")}</h3>
-                <div className="space-y-3">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`w-full flex items-center justify-between text-sm transition-all ${
-                        selectedCategory === category
-                          ? "text-primary font-bold"
-                          : "text-muted-foreground hover:text-foreground hover:translate-x-1"
-                      }`}
-                    >
-                      <span className="text-left">{t(category)}</span>
-                      {selectedCategory === category && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Range */}
-              <div className="space-y-4 pt-6 border-t border-border">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Price Range")}</h3>
-                <div className="space-y-3">
-                  {priceRanges.map((range) => (
-                    <button
-                      key={range.label}
-                      onClick={() => setSelectedPriceRange(range)}
-                      className={`w-full flex items-center justify-between text-sm transition-all ${
-                        selectedPriceRange.label === range.label
-                          ? "text-primary font-bold"
-                          : "text-muted-foreground hover:text-foreground hover:translate-x-1"
-                      }`}
-                    >
-                      <span className="text-left">{t(range.label)}</span>
-                      {selectedPriceRange.label === range.label && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Size Filter */}
-              <div className="space-y-4 pt-6 border-t border-border">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">{t("Size")}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`min-w-[40px] px-3 py-1.5 rounded-md text-xs font-semibold transition-all border ${
-                        selectedSize === size
-                          ? "bg-primary text-white border-primary shadow-sm"
-                          : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary hover:bg-primary/5"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Clear Filters */}
-              <div className="pt-6 border-t border-border">
-                <Button
-                  onClick={() => {
-                    setSelectedCategory("All");
-                    setSelectedPriceRange(priceRanges[0]);
-                    setSelectedSize("All");
-                    setSearchTerm("");
-                  }}
-                  variant="outline"
-                  className="w-full text-xs font-bold uppercase tracking-wider hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors"
-                >
-                  {t("Clear Filters")}
-                </Button>
-              </div>
+      {/* Sorting & Stats Bar */}
+      <div className="sticky top-[0px] z-30 bg-white/80 backdrop-blur-md border-b border-black/5 px-4 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-6 overflow-x-auto scrollbar-hide">
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2 text-[11px] font-bold uppercase tracking-widest hover:text-primary transition-colors border-r border-black/5 pr-6"
+            >
+              <Filter className="h-4 w-4" />
+              <span>{showFilters ? t("Hide Filters") : t("Show Filters")}</span>
+            </button>
+            <div className="flex items-center space-x-2 text-[11px] font-bold uppercase tracking-widest text-black/40 pr-6 border-r border-black/5">
+              <span>{isLoading ? t("Searching...") : `${filteredProducts.length} ${t("Selected Pieces")}`}</span>
             </div>
           </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-black/30 hidden sm:block">{t("Sort By")}</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-transparent text-[11px] font-bold uppercase tracking-widest focus:outline-none cursor-pointer"
+            >
+              <option value="featured">{t("Featured Drop")}</option>
+              <option value="price-low">{t("Price: Ascending")}</option>
+              <option value="price-high">{t("Price: Descending")}</option>
+              <option value="rating">{t("Royal Rating")}</option>
+              <option value="newest">{t("Just Landed")}</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-          {/* Products Grid */}
-          <div className="flex-1">
-            {/* Active Filters Display */}
-            <div className="mb-6 flex flex-wrap gap-2">
-              {selectedCategory !== "All" && (
-                <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>{t(selectedCategory)}</span>
-                  <button onClick={() => setSelectedCategory("All")} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex flex-col lg:flex-row gap-12">
+          {showFilters && (
+            <div className="lg:w-72 space-y-12 shrink-0 animate-in slide-in-from-left duration-500">
+              <div className="space-y-6">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center justify-between">
+                  {t("Category Selection")}
+                  <ChevronDown className="h-3 w-3" />
+                </h3>
+                <div className="flex flex-wrap lg:flex-col gap-2 lg:gap-3">
+                  {categories.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setSelectedCategory(c)}
+                      className={`text-sm tracking-wide text-left transition-all ${
+                        selectedCategory === c 
+                          ? 'text-primary font-bold translate-x-2' 
+                          : 'text-black/50 hover:text-black hover:translate-x-1'
+                      }`}
+                    >
+                      {t(c)}
+                    </button>
+                  ))}
                 </div>
-              )}
-              {selectedPriceRange.label !== "All Prices" && (
-                <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>{t(selectedPriceRange.label)}</span>
-                  <button onClick={() => setSelectedPriceRange(priceRanges[0])} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
-                </div>
-              )}
-              {selectedSize !== "All" && (
-                <div className="glass-white px-4 py-2 rounded-full flex items-center text-xs font-bold text-primary shadow-sm">
-                  <span>{t("Size")}: {selectedSize}</span>
-                  <button onClick={() => setSelectedSize("All")} className="ml-2 hover:opacity-50"><X className="h-3 w-3" /></button>
-                </div>
-              )}
-            </div>
-
-            {/* Product Count & Info */}
-            <div className="mb-8 flex items-center justify-between">
-              <p className="text-sm text-muted-foreground font-light">
-                {t("Showing")} <span className="font-bold text-foreground">{sortedProducts.length}</span> {t("extraordinary pieces")}
-              </p>
-              <div className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-4 py-2 rounded-full">
-                <Truck className="h-3 w-3" />
-                <span>{t("Free Worldwide Shipping")}</span>
               </div>
-            </div>
 
-            {/* Products Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
-              {isLoading ? (
-                Array.from({ length: 12 }).map((_, index) => (
-                  <div key={index} className="bg-card rounded-md aspect-[3/4] animate-pulse"></div>
-                ))
-              ) : sortedProducts.length === 0 ? (
-                <div className="col-span-full py-20 text-center glass rounded-[3rem] p-12">
-                  <div className="w-20 h-20 gradient-bg rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl rotate-12">
-                    <Search className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black mb-3 text-foreground tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-                    {t("No Matches Found")}
-                  </h3>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto font-light">
-                    {t("Adjust your filters to discover other extraordinary pieces from our collection.")}
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setSelectedCategory("All");
-                      setSelectedPriceRange(priceRanges[0]);
-                      setSelectedSize("All");
-                    }} 
-                    className="h-12 px-8 rounded-xl font-bold uppercase tracking-widest"
-                  >
-                    {t("Reset All Filters")}
-                  </Button>
+              <div className="space-y-6">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center justify-between">
+                  {t("Price Tier")}
+                  <ChevronDown className="h-3 w-3" />
+                </h3>
+                <div className="flex flex-wrap lg:flex-col gap-2 lg:gap-3">
+                  {priceRanges.map((r) => (
+                    <button
+                      key={r.label}
+                      onClick={() => setSelectedPriceRange(r)}
+                      className={`text-sm tracking-wide text-left transition-all ${
+                        selectedPriceRange.label === r.label 
+                          ? 'text-primary font-bold translate-x-2' 
+                          : 'text-black/50 hover:text-black hover:translate-x-1'
+                      }`}
+                    >
+                      {t(r.label)}
+                    </button>
+                  ))}
                 </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center justify-between">
+                  {t("Size Profile")}
+                  <ChevronDown className="h-3 w-3" />
+                </h3>
+                <div className="grid grid-cols-4 lg:grid-cols-3 gap-2">
+                  {["All", ...sizes].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      className={`h-10 flex items-center justify-center text-[10px] font-bold border transition-all ${
+                        selectedSize === s 
+                          ? 'bg-black text-white border-black' 
+                          : 'bg-white border-black/5 text-black hover:border-black'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                variant="outline" 
+                className="w-full text-[10px] font-bold uppercase tracking-[0.2em] h-12 rounded-none border-black/5 hover:bg-black hover:text-white transition-all"
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSelectedPriceRange(priceRanges[0]);
+                  setSelectedSize("All");
+                  setSearchTerm("");
+                }}
+              >
+                {t("Clear Filters")}
+              </Button>
+            </div>
+          )}
+
+          <div className="flex-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-12">
+              {isLoading ? (
+                Array.from({ length: 15 }).map((_, i) => (
+                  <div key={i} className="space-y-4 animate-pulse">
+                    <div className="aspect-[3/4] bg-muted w-full"></div>
+                    <div className="h-4 bg-muted w-[60%]"></div>
+                    <div className="h-4 bg-muted w-[40%]"></div>
+                  </div>
+                ))
               ) : (
-                sortedProducts.map((product) => (
-                  <Link key={product.id} href={`/products/${product.id}`} className="group block h-full">
-                    <div className="flex flex-col h-full bg-white rounded-sm overflow-hidden border border-transparent hover:border-muted-foreground/20 transition-all duration-200">
-                      <div className="relative aspect-[3/4] overflow-hidden bg-muted">
-                        {product.image ? (
-                          <img 
-                            src={product.image} 
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <ShoppingCart className="h-6 w-6 text-muted-foreground" />
-                          </div>
-                        )}
-                        
-                        {/* SHEIN-style Badge */}
-                        {product.badge && (
-                          <div className="absolute top-1 left-1 flex flex-col gap-1">
-                            <span className="px-1.5 py-0.5 text-[9px] font-bold bg-black text-white rounded-xs uppercase tracking-tight shadow-sm">
-                              {t(product.badge)}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Hover Quick Add Area */}
-                        <div className="absolute inset-x-0 bottom-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-black/5 backdrop-blur-[2px]">
-                          <Button 
-                            className={`w-full border-none h-7 text-[10px] font-bold tracking-tight uppercase rounded-sm shadow-sm transition-all ${
-                              addedItems.has(product.id as string) ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-white/95 text-black hover:bg-black hover:text-white'
-                            }`}
-                            onClick={(e) => handleQuickAdd(e, product)}
-                          >
-                            {addedItems.has(product.id as string) ? (
-                              <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3" /> {t("Added")}</span>
-                            ) : (
-                              t("Add to Bag")
-                            )}
-                          </Button>
+                sortedProducts.map((p) => (
+                  <div 
+                    key={p.id} 
+                    className="group space-y-4 animate-fade-in cursor-pointer"
+                    onClick={() => openDrawer(p)}
+                  >
+                    <div className="relative aspect-[3/4] bg-muted overflow-hidden">
+                      <img 
+                        src={p.image} 
+                        alt={p.name}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      {p.badge && (
+                        <div className="absolute top-2 left-2">
+                          <span className="px-2 py-0.5 bg-black text-white text-[8px] font-bold uppercase tracking-wider">
+                            {t(p.badge)}
+                          </span>
                         </div>
+                      )}
 
-                        {/* Wishlist Button */}
-                        <button 
-                          className={`absolute top-2 right-2 p-1.5 rounded-full backdrop-blur-sm transition-colors shadow-sm touch-target ${
-                            favoritedItems.has(product.id as string) ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-white/60 text-muted-foreground hover:bg-white hover:text-red-500'
-                          }`}
-                          onClick={(e) => toggleFavorite(e, product.id as string)}
+                      <div className="absolute bottom-4 left-4 right-4 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <Button 
+                          className="w-full h-10 bg-white text-black hover:bg-black hover:text-white rounded-none text-[10px] font-bold uppercase tracking-widest shadow-xl border-none"
+                          onClick={(e) => handleQuickAdd(e, p)}
                         >
-                          <Heart className={`h-3.5 w-3.5 ${favoritedItems.has(product.id as string) ? 'fill-red-500' : ''}`} />
-                        </button>
+                          <ShoppingCart className="h-3 w-3 mr-2" />
+                          {addedItems.has(p.id as string) ? t("Added") : t("Quick Add")}
+                        </Button>
                       </div>
 
-                      <div className="p-1.5 sm:p-2 flex flex-col flex-1 space-y-1">
-                        <h3 className="text-[11px] sm:text-xs text-muted-foreground font-normal line-clamp-1 group-hover:text-foreground transition-colors">
-                          {product.name}
-                        </h3>
-                        <div className="flex flex-col gap-0.5">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm sm:text-[15px] font-bold text-foreground">
-                              {formatPrice(product.price)}
-                            </span>
-                            {product.originalPrice && (
-                              <span className="text-[10px] text-muted-foreground line-through">
-                                {formatPrice(product.originalPrice)}
-                              </span>
-                            )}
-                          </div>
-                          {product.originalPrice && (
-                            <span className="text-[10px] font-bold text-red-500">
-                              -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 text-xs pt-0.5">
-                          <div className="flex items-center text-yellow-400">
-                            <Star className="h-2.5 w-2.5 fill-current" />
-                            <span className="text-[10px] ml-0.5 font-bold text-foreground">4.8</span>
-                          </div>
-                          <span className="text-[9px] text-muted-foreground">(2k+)</span>
-                        </div>
+                      <button 
+                        className={`absolute top-2 right-2 p-1.5 rounded-full transition-all shadow-sm ${
+                          favoritedItems.has(p?.id as string) ? 'bg-red-50 text-red-500 scale-110' : 'bg-white/60 text-black/40 hover:bg-white hover:text-red-500'
+                        }`}
+                        onClick={(e) => toggleFavorite(e, p?.id as string)}
+                      >
+                        <Heart className={`h-3.5 w-3.5 ${favoritedItems.has(p?.id as string) ? 'fill-red-500' : ''}`} />
+                      </button>
+                    </div>
+
+                    <div className="space-y-1">
+                      <h3 className="text-xs font-bold text-black/80 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
+                        {p.name}
+                      </h3>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-black text-black">
+                          {formatPrice(p.price)}
+                        </span>
+                        {p.originalPrice && (
+                          <span className="text-xs text-black/30 line-through">
+                            {formatPrice(p.originalPrice)}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))
               )}
             </div>
