@@ -140,6 +140,12 @@ export function Header() {
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Authenticated As</p>
                       <p className="text-xs font-bold truncate">{user.email}</p>
                     </div>
+                    <Link href="/profile">
+                      <Button variant="ghost" size="sm" className="w-full justify-start h-11 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
+                        <User className="h-4 w-4 mr-3" />
+                        <span className="font-bold text-xs uppercase tracking-widest">{t("Profile Architecture")}</span>
+                      </Button>
+                    </Link>
                     <Link href="/orders">
                       <Button variant="ghost" size="sm" className="w-full justify-start h-11 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
                         <Package className="h-4 w-4 mr-3" />
@@ -237,6 +243,10 @@ export function Header() {
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground truncate">{user.email}</p>
                     </div>
                   </div>
+                  <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
+                    <span>{t("Profile Architecture")}</span>
+                    <User className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
+                  </Link>
                   <Link href="/orders" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between group">
                     <span>{t("Order History")}</span>
                     <Package className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />

@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, Download, Eye, ShoppingBag, Home, X } from "lucide-react";
+import { 
+  ArrowLeft, Package, Truck, CheckCircle, Clock, 
+  Download, Eye, ShoppingBag, X, Activity, 
+  ChevronRight, Sparkles, Diamond, Search
+} from "lucide-react";
 import Link from "next/link";
 import { Order } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
@@ -14,6 +16,7 @@ export default function OrderHistoryPage() {
   const { t } = useSettings();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadOrderHistory = () => {
@@ -23,7 +26,6 @@ export default function OrderHistoryPage() {
       }
       setIsLoading(false);
     };
-
     loadOrderHistory();
   }, []);
 
@@ -36,196 +38,160 @@ export default function OrderHistoryPage() {
       shipping: order.shipping || 0,
       total: order.total || 0
     };
-    
     downloadReceipt(receiptData);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800';
-      case 'shipped':
-        return 'bg-purple-100 text-purple-800';
-      case 'delivered':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4" />;
-      case 'processing':
-        return <Package className="h-4 w-4" />;
-      case 'shipped':
-        return <Truck className="h-4 w-4" />;
-      case 'delivered':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'cancelled':
-        return <X className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
-
-  const formatDate = (dateValue: any) => {
-    if (!dateValue) return '';
-    if (typeof dateValue.toDate === 'function') return dateValue.toDate().toLocaleDateString();
-    try {
-      return new Date(dateValue).toLocaleDateString();
-    } catch (e) {
-      return '';
-    }
+  const getStatusNode = (status: string) => {
+    const configs: any = {
+      pending: { color: 'bg-yellow-500', label: 'Awaiting Authorization' },
+      processing: { color: 'bg-blue-500', label: 'Preparing Manifest' },
+      shipped: { color: 'bg-purple-500', label: 'Logistics Deployment' },
+      delivered: { color: 'bg-green-500', label: 'Mission Accomplished' },
+      cancelled: { color: 'bg-red-500', label: 'Manifest Voided' },
+    };
+    const config = configs[status] || { color: 'bg-black/10', label: status };
+    return (
+      <div className="flex items-center space-x-2">
+        <div className={`w-1.5 h-1.5 rounded-full ${config.color} animate-pulse`} />
+        <span className="text-[9px] font-black uppercase tracking-widest text-black/40">{config.label}</span>
+      </div>
+    );
   };
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
       </div>
     );
   }
 
+  const filteredOrders = orders.filter(o => 
+    o.id?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    o.items?.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <Link href="/">
-            <Button variant="ghost">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-          </Button>
-          </Link>
-          <div className="flex gap-2">
-            <Link href="/products">
-              <Button className="flex items-center gap-2">
-                <ShoppingBag className="h-4 w-4" />
-                Shop More
-              </Button>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-[#fafafa]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-24 space-y-12">
+        {/* Navigation */}
+        <div className="flex justify-between items-center">
+           <Link href="/profile" className="group inline-flex items-center text-[10px] font-black uppercase tracking-widest text-black/30 hover:text-black transition-colors">
+             <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+             Return to Profile
+           </Link>
+           <Link href="/products">
+             <Button variant="outline" className="h-10 px-6 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest">
+               Execute Acquisition
+             </Button>
+           </Link>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">My Orders</h1>
-        <p className="text-gray-600 text-lg">View and manage your order history</p>
-      </div>
 
-      {orders.length === 0 ? (
-        <Card>
-          <CardContent className="text-center py-12">
-            <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold mb-2">No Orders Yet</h2>
-            <p className="text-gray-600 mb-6">You haven't placed any orders yet. Start shopping to see your order history here!</p>
-            <Link href="/products">
-              <Button className="flex items-center gap-2">
-                <ShoppingBag className="h-4 w-4" />
-                Start Shopping
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-6">
-          {/* Orders Summary */}
-          <div className="bg-card rounded-2xl border border-border p-4 shadow-sm mb-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-x divide-border">
-              <div className="text-center px-2">
-                <div className="text-xl font-black text-foreground">{orders.length}</div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Total Orders")}</div>
+        {/* Hero Node */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+           <div className="space-y-4">
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-black uppercase" style={{ fontFamily: 'var(--font-playfair)' }}>
+                Manifest <br/> History
+              </h1>
+              <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.3em] max-w-sm">Chronological record of all acquisitions and logistics missions authorized via OS CARA.</p>
+           </div>
+           
+           <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-black/5 shadow-sm">
+              <div className="px-6 py-4 text-center border-r border-black/5">
+                <p className="text-2xl font-black text-black">{orders.length}</p>
+                <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Total Manifests</p>
               </div>
-              <div className="text-center px-2">
-                <div className="text-xl font-black text-green-500">
-                  {orders.filter(o => o.status === 'delivered').length}
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Delivered")}</div>
+              <div className="px-6 py-4 text-center">
+                <p className="text-2xl font-black text-green-500">${orders.reduce((s, o) => s + (o.total || 0), 0).toFixed(0)}</p>
+                <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Capital Allocated</p>
               </div>
-              <div className="text-center px-2">
-                <div className="text-xl font-black text-blue-500">
-                  {orders.filter(o => o.status === 'processing' || o.status === 'shipped').length}
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("In Progress")}</div>
-              </div>
-              <div className="text-center px-2">
-                <div className="text-xl font-black text-foreground">
-                  ${orders.reduce((sum, order) => sum + (order.total || 0), 0).toFixed(2)}
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{t("Total Spent")}</div>
-              </div>
-            </div>
+           </div>
+        </div>
+
+        {orders.length === 0 ? (
+          <div className="bg-white rounded-[3rem] border border-black/5 p-20 text-center space-y-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+             <div className="w-20 h-20 bg-black/5 rounded-[2rem] flex items-center justify-center mx-auto text-black/20">
+               <Package className="h-10 w-10" />
+             </div>
+             <div className="space-y-2">
+                <h2 className="text-2xl font-black uppercase tracking-tight">Vault Empty</h2>
+                <p className="text-black/40 text-sm max-w-xs mx-auto">No acquisitions have been recorded under your digital identification node.</p>
+             </div>
+             <Button asChild className="bg-black text-white px-10 h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] transition-all">
+               <Link href="/products">Initialize First Acquisition</Link>
+             </Button>
           </div>
+        ) : (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+            {/* Search Protocol */}
+            <div className="relative max-w-md">
+               <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-black/20" />
+               <input 
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Locate manifest by ID or asset name..."
+                className="w-full pl-14 pr-6 h-14 bg-white border border-black/5 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest focus:ring-0 shadow-sm"
+               />
+            </div>
 
-          {/* Orders List */}
-          <div className="space-y-4">
-            {orders.map((order) => (
-              <div key={order.id} className="bg-card rounded-xl border border-border hover:shadow-md transition-all duration-300 overflow-hidden">
-                <div className="p-4 sm:p-5">
-                  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                    {/* Order Info */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-bold text-base tracking-tight">Order #{order.id?.slice(-8).toUpperCase()}</h3>
-                        <Badge className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-sm ${getStatusColor(order.status)}`}>
-                          {order.status}
-                        </Badge>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> {formatDate(order.createdAt)}</span>
-                        <span className="flex items-center gap-1.5"><Package className="h-3 w-3" /> {order.items?.length || 0} {t("items")}</span>
-                        <span className="font-bold text-foreground">${order.total?.toFixed(2)}</span>
-                      </div>
+            {/* Manifest List */}
+            <div className="grid grid-cols-1 gap-6">
+              {filteredOrders.map((order) => (
+                <div key={order.id} className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgb(0,0,0,0.05)] transition-all duration-700">
+                  <div className="p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
+                    <div className="space-y-6 flex-1">
+                       <div className="flex flex-wrap items-center gap-4">
+                          <span className="text-sm font-black text-black uppercase tracking-tight">#{order.id?.slice(-8).toUpperCase()}</span>
+                          {getStatusNode(order.status)}
+                       </div>
+                       
+                       <div className="flex gap-4">
+                          <div className="flex -space-x-3">
+                             {order.items?.slice(0, 3).map((item, i) => (
+                               <div key={i} className="w-16 h-20 bg-black/[0.03] rounded-xl overflow-hidden border-2 border-white shadow-lg relative group/item">
+                                 <img src={item.image} className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-700" alt="" />
+                               </div>
+                             ))}
+                             {order.items && order.items.length > 3 && (
+                               <div className="w-16 h-20 bg-black text-white rounded-xl flex items-center justify-center text-[10px] font-black border-2 border-white shadow-lg">
+                                  +{order.items.length - 3}
+                               </div>
+                             )}
+                          </div>
+                          <div className="space-y-1">
+                             <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Creation Node: {new Date(order.createdAt as any).toLocaleDateString()}</p>
+                             <p className="text-lg font-black text-black uppercase tracking-tight">{order.items?.[0]?.name} {order.items && order.items.length > 1 && `+ ${order.items.length - 1} Assets`}</p>
+                          </div>
+                       </div>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-wrap gap-2">
-                      <Link href={`/order-tracking/${order.id}`}>
-                        <Button variant="outline" size="sm" className="h-9 px-4 text-xs font-bold uppercase tracking-widest rounded-lg">
-                          <Eye className="h-3.5 w-3.5 mr-2" />
-                          {t("Track")}
-                        </Button>
-                      </Link>
-                      <Button 
-                        onClick={() => handleDownloadReceipt(order)} 
-                        variant="outline" 
-                        size="sm" 
-                        className="h-9 px-4 text-xs font-bold uppercase tracking-widest rounded-lg"
-                      >
-                        <Download className="h-3.5 w-3.5 mr-2" />
-                        {t("Receipt")}
-                      </Button>
+                    <div className="flex flex-col md:items-end gap-6 border-t md:border-t-0 md:border-l border-black/5 pt-8 md:pt-0 md:pl-10">
+                       <div className="text-right">
+                          <p className="text-[9px] font-black uppercase tracking-widest text-black/20">Authorized Allocation</p>
+                          <p className="text-2xl font-black text-black">${order.total?.toFixed(2)}</p>
+                       </div>
+                       <div className="flex flex-wrap gap-3">
+                          <Link href={`/order-tracking/${order.id}`}>
+                            <Button variant="outline" className="h-12 px-6 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest bg-black/[0.01] hover:bg-black hover:text-white transition-all">
+                               Track Logic
+                            </Button>
+                          </Link>
+                          <Button 
+                            onClick={() => handleDownloadReceipt(order)}
+                            className="h-12 px-6 rounded-xl bg-black text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-black/10 hover:scale-[1.05] transition-all"
+                          >
+                            <Download className="h-3.5 w-3.5 mr-2" />
+                            Receipt.pdf
+                          </Button>
+                       </div>
                     </div>
                   </div>
-
-                  {/* Order Items Preview */}
-                  {order.items && order.items.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-dashed border-border flex items-center gap-3 overflow-hidden">
-                      <div className="flex -space-x-2">
-                        {order.items.slice(0, 4).map((item, index) => (
-                          <div key={index} className="w-8 h-10 rounded-sm border border-background overflow-hidden relative group">
-                            <img src={item.image} alt="" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/5"></div>
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                        {order.items[0].name} {order.items.length > 1 && `+${order.items.length - 1} more`}
-                      </p>
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
