@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { 
   ArrowLeft, 
   Package, 
@@ -16,8 +14,12 @@ import {
   MapPin,
   Phone,
   Mail,
-  Edit,
+  Edit2,
   Save,
+  ChevronRight,
+  ShieldCheck,
+  FileText,
+  Activity,
   X
 } from "lucide-react"
 import Link from "next/link"
@@ -30,9 +32,8 @@ export default function AdminOrderDetailPage() {
   
   const [order, setOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditingNotes, setIsEditingNotes] = useState(false)
   const [notes, setNotes] = useState("")
-  const [status, setStatus] = useState("")
 
   useEffect(() => {
     const loadOrder = async () => {
@@ -42,7 +43,6 @@ export default function AdminOrderDetailPage() {
           if (orderData) {
             setOrder(orderData)
             setNotes(orderData.notes || "")
-            setStatus(orderData.status)
           }
         } catch (error) {
           console.error("Error loading order:", error)
@@ -51,384 +51,268 @@ export default function AdminOrderDetailPage() {
         }
       }
     }
-
     loadOrder()
   }, [orderId])
 
   const handleStatusUpdate = async (newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled") => {
     if (!order) return
-    
     try {
       await updateOrder(orderId, { status: newStatus })
       setOrder({ ...order, status: newStatus })
-      setStatus(newStatus)
     } catch (error) {
       console.error("Error updating status:", error)
-      alert("Failed to update status")
     }
   }
 
   const handleNotesUpdate = async () => {
     if (!order) return
-    
     try {
       await updateOrder(orderId, { notes })
       setOrder({ ...order, notes })
-      setIsEditing(false)
+      setIsEditingNotes(false)
     } catch (error) {
-      console.error("Error updating notes:", error)
-      alert("Failed to update notes")
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
-      case "processing":
-        return "bg-blue-100 text-blue-800 border-blue-200"
-      case "shipped":
-        return "bg-purple-100 text-purple-800 border-purple-200"
-      case "delivered":
-        return "bg-green-100 text-green-800 border-green-200"
-      case "cancelled":
-        return "bg-red-100 text-red-800 border-red-200"
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "pending":
-        return <Clock className="h-4 w-4" />
-      case "processing":
-        return <Package className="h-4 w-4" />
-      case "shipped":
-        return <Truck className="h-4 w-4" />
-      case "delivered":
-        return <CheckCircle className="h-4 w-4" />
-      case "cancelled":
-        return <XCircle className="h-4 w-4" />
-      default:
-        return <Clock className="h-4 w-4" />
+       console.error("Error updating notes:", error)
     }
   }
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
       </div>
     )
   }
 
   if (!order) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Order Not Found</h1>
-          <p className="text-gray-600 mb-6">The order you're looking for doesn't exist.</p>
-          <Button asChild>
-            <Link href="/admin">Back to Dashboard</Link>
-          </Button>
+      <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6">
+          <X className="h-10 w-10 text-black/20" />
         </div>
+        <h1 className="text-3xl font-black tracking-tight mb-2">Order Not Located</h1>
+        <p className="text-black/40 text-sm max-w-xs mb-8">The requested order manifest could not be retrieved from the central vault.</p>
+        <Button asChild className="bg-black text-white px-8 rounded-xl font-bold h-12">
+          <Link href="/admin">Return to Dashboard</Link>
+        </Button>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/admin">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Order Details</h1>
-              <p className="text-gray-600 text-base sm:text-lg">Order ID: {order.id}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge className={`flex items-center gap-2 ${getStatusColor(order.status)}`}>
-              {getStatusIcon(order.status)}
-              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </Badge>
+      <header className="h-24 bg-white/80 backdrop-blur-md border-b border-black/5 px-8 md:px-12 flex items-center justify-between sticky top-0 z-40">
+        <div className="flex items-center space-x-6">
+          <Link href="/admin" className="p-3 hover:bg-black/5 rounded-xl transition-colors">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <div>
+             <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black/20 mb-1">
+               <span>Manifest</span>
+               <ChevronRight className="h-3 w-3" />
+               <span className="text-black">Audit Control</span>
+             </div>
+             <h1 className="text-xl font-black tracking-tighter">Order #{order.id?.slice(-8).toUpperCase()}</h1>
           </div>
         </div>
-      </div>
+        <div className="flex items-center space-x-4">
+           <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${
+              order.status === 'delivered' ? 'bg-green-50 text-green-600' :
+              order.status === 'cancelled' ? 'bg-red-50 text-red-600' :
+              'bg-blue-50 text-blue-600'
+           }`}>
+             <div className={`w-1.5 h-1.5 rounded-full mr-2 ${
+                order.status === 'delivered' ? 'bg-green-500' :
+                order.status === 'cancelled' ? 'bg-red-500' :
+                'bg-blue-500 animate-pulse'
+             }`} />
+             {order.status}
+           </div>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Order Items */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Order Items ({order.items?.length || 0})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {order.items?.map((item: OrderItem, index: number) => (
-                  <div key={`${item.productId}-${item.size || 'default'}-${item.color || 'default'}-${index}`} className="flex gap-4 p-4 border rounded-lg">
-                    {/* Product Image */}
-                    <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
-                      {item.image ? (
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                          <Package className="h-8 w-8 text-gray-400" />
+      <main className="max-w-7xl mx-auto p-8 md:p-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Manifest Logic */}
+          <div className="lg:col-span-2 space-y-12">
+            {/* Asset List */}
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30">Acquired Assets ({order.items?.length || 0})</h2>
+              </div>
+              <div className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+                <div className="divide-y divide-black/5">
+                  {order.items?.map((item: OrderItem, index: number) => (
+                    <div key={index} className="p-8 flex items-center gap-8 group hover:bg-black/[0.01] transition-colors">
+                      <div className="w-24 h-32 bg-black/[0.03] rounded-2xl overflow-hidden shadow-sm">
+                        {item.image && (
+                          <img src={item.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="" />
+                        )}
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <div className="flex justify-between items-start">
+                          <h3 className="text-lg font-black text-black">{item.name}</h3>
+                          <span className="text-lg font-black">${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
-                      <div className="flex flex-wrap gap-2 text-sm text-gray-600 mb-2">
-                        {item.size && <span className="bg-gray-100 px-2 py-1 rounded">Size: {item.size}</span>}
-                        {item.color && <span className="bg-gray-100 px-2 py-1 rounded">Color: {item.color}</span>}
-                        <span className="bg-gray-100 px-2 py-1 rounded">Qty: {item.quantity}</span>
+                        <div className="flex flex-wrap gap-4 text-[10px] font-black uppercase tracking-widest text-black/40">
+                          {item.size && <span className="bg-black/5 px-3 py-1 rounded-lg">SIZE: {item.size}</span>}
+                          {item.color && <span className="bg-black/5 px-3 py-1 rounded-lg">COLOR: {item.color}</span>}
+                          <span className="bg-black/5 px-3 py-1 rounded-lg">QTY: {item.quantity}</span>
+                        </div>
                       </div>
-                      <p className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</p>
                     </div>
-
-                    {/* Delivery Info */}
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600 mb-1">Unit Price</p>
-                      <p className="font-semibold">${item.price.toFixed(2)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Customer Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Customer Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Contact Details</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-gray-500" />
-                      <span>{order.customerName}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-gray-500" />
-                      <span>{order.customerEmail}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-gray-500" />
-                      <span>{order.customerPhone}</span>
-                    </div>
-                    {order.customerWhatsapp && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-gray-500" />
-                        <span>WhatsApp: {order.customerWhatsapp}</span>
-                      </div>
-                    )}
-                  </div>
+                  ))}
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Shipping Address</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-start gap-2">
-                      <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
+                <div className="bg-black/[0.02] p-8 border-t border-black/5">
+                   <div className="flex justify-between items-center max-w-xs ml-auto">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Total Manifest Value</p>
+                      <p className="text-3xl font-black text-black">${order.total.toFixed(2)}</p>
+                   </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Customer Entity */}
+            <section className="space-y-6">
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30">Customer Profile</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white rounded-[2.5rem] border border-black/5 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8">
+                   <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center text-white text-xl font-black">
+                        {order.customerName[0]}
+                      </div>
                       <div>
-                        <p>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
-                        <p>{order.shippingAddress?.address}</p>
-                        <p>{order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.zipCode}</p>
+                        <h4 className="text-xl font-black text-black">{order.customerName}</h4>
+                        <p className="text-sm text-black/40 font-medium">Verified Identity</p>
                       </div>
-                    </div>
+                   </div>
+                   <div className="space-y-4 pt-4 border-t border-black/5">
+                      <div className="flex items-center space-x-3 group">
+                        <Mail className="h-4 w-4 text-black/20 group-hover:text-black transition-colors" />
+                        <span className="text-sm font-bold">{order.customerEmail}</span>
+                      </div>
+                      <div className="flex items-center space-x-3 group">
+                        <Phone className="h-4 w-4 text-black/20 group-hover:text-black transition-colors" />
+                        <span className="text-sm font-bold">{order.customerPhone}</span>
+                      </div>
+                   </div>
+                </div>
+
+                <div className="bg-white rounded-[2.5rem] border border-black/5 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-6">
+                  <div className="flex items-center justify-between">
+                     <h4 className="text-[10px] font-black uppercase tracking-widest text-black/30">Delivery Node</h4>
+                     <MapPin className="h-4 w-4 text-black/20" />
+                  </div>
+                  <div className="space-y-1 font-black text-black text-lg leading-tight uppercase tracking-tight">
+                    <p>{order.shippingAddress?.address}</p>
+                    <p>{order.shippingAddress?.city}, {order.shippingAddress?.state}</p>
+                    <p className="text-black/40 text-sm mt-4 font-black">{order.shippingAddress?.zipCode}</p>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </section>
+          </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Order Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>${order.subtotal?.toFixed(2) || '0.00'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>${order.shipping?.toFixed(2) || '0.00'}</span>
-                </div>
-                <div className="border-t pt-3">
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>Total</span>
-                    <span>${order.total?.toFixed(2) || '0.00'}</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Status Management */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Status Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Button 
-                  onClick={() => handleStatusUpdate("processing")}
-                  disabled={order.status === "processing"}
-                  className="w-full"
-                  variant={order.status === "processing" ? "default" : "outline"}
-                >
-                  <Package className="mr-2 h-4 w-4" />
-                  Mark as Processing
-                </Button>
-                <Button 
-                  onClick={() => handleStatusUpdate("shipped")}
-                  disabled={order.status === "shipped"}
-                  className="w-full"
-                  variant={order.status === "shipped" ? "default" : "outline"}
-                >
-                  <Truck className="mr-2 h-4 w-4" />
-                  Mark as Shipped
-                </Button>
-                <Button 
-                  onClick={() => handleStatusUpdate("delivered")}
-                  disabled={order.status === "delivered"}
-                  className="w-full"
-                  variant={order.status === "delivered" ? "default" : "outline"}
-                >
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Mark as Delivered
-                </Button>
-                <Button 
-                  onClick={() => handleStatusUpdate("cancelled")}
-                  disabled={order.status === "cancelled"}
-                  className="w-full"
-                  variant="destructive"
-                >
-                  <XCircle className="mr-2 h-4 w-4" />
-                  Cancel Order
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Order Notes */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Order Notes
-                {!isEditing ? (
-                  <Button size="sm" onClick={() => setIsEditing(true)}>
-                    <Edit className="h-4 w-4" />
+          {/* Action Control Deck */}
+          <div className="space-y-12">
+            <section className="space-y-6">
+               <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30">Status Protocol</h2>
+               <div className="bg-white rounded-[2.5rem] border border-black/5 p-8 shadow-[0_20px_40px_rgb(0,0,0,0.04)] space-y-4">
+                 {[
+                   { label: 'Process Dispatch', status: 'processing', icon: Package },
+                   { label: 'Dispatch to Logistics', status: 'shipped', icon: Truck },
+                   { label: 'Confirm Delivery', status: 'delivered', icon: CheckCircle },
+                 ].map((action) => (
+                   <Button 
+                    key={action.status}
+                    onClick={() => handleStatusUpdate(action.status as any)}
+                    disabled={order.status === action.status}
+                    className={`w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all relative overflow-hidden group ${
+                      order.status === action.status 
+                        ? 'bg-black text-white' 
+                        : 'bg-black/[0.03] text-black hover:bg-black hover:text-white'
+                    }`}
+                   >
+                     <action.icon className="h-4 w-4 mr-3" />
+                     {action.label}
+                   </Button>
+                 ))}
+                 <Button 
+                    onClick={() => handleStatusUpdate("cancelled")}
+                    disabled={order.status === "cancelled"}
+                    className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-none transition-all"
+                  >
+                    <XCircle className="h-4 w-4 mr-3" />
+                    Void Manifest
                   </Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={handleNotesUpdate}>
-                      <Save className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isEditing ? (
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full p-2 border rounded-lg"
-                  rows={4}
-                  placeholder="Add order notes..."
-                />
-              ) : (
-                <p className="text-sm text-gray-600">
-                  {order.notes || "No notes added yet."}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+               </div>
+            </section>
 
-          {/* Order Timeline */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium">Order Placed</p>
-                    <p className="text-xs text-gray-500">
-                      {order.createdAt?.toDate()?.toLocaleString()}
-                    </p>
-                  </div>
+            <section className="space-y-6">
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30">Manifest Intelligence</h2>
+              <div className="bg-white rounded-[2.5rem] border border-black/5 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-6">
+                <div className="flex items-center justify-between">
+                   <span className="text-[10px] font-black uppercase tracking-widest text-black/40">Internal Notes</span>
+                   {!isEditingNotes ? (
+                     <button onClick={() => setIsEditingNotes(true)} className="p-2 hover:bg-black/5 rounded-lg transition-colors">
+                       <Edit2 className="h-3.5 w-3.5" />
+                     </button>
+                   ) : (
+                     <div className="flex gap-2">
+                       <button onClick={handleNotesUpdate} className="p-2 hover:bg-green-50 text-green-600 rounded-lg transition-colors">
+                         <Save className="h-3.5 w-3.5" />
+                       </button>
+                       <button onClick={() => setIsEditingNotes(false)} className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors">
+                         <X className="h-3.5 w-3.5" />
+                       </button>
+                     </div>
+                   )}
                 </div>
-                {order.status !== "pending" && (
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">Processing</p>
-                      <p className="text-xs text-gray-500">Order is being prepared</p>
-                    </div>
-                  </div>
-                )}
-                {order.status === "shipped" && (
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">Shipped</p>
-                      <p className="text-xs text-gray-500">Order is on the way</p>
-                    </div>
-                  </div>
-                )}
-                {order.status === "delivered" && (
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">Delivered</p>
-                      <p className="text-xs text-gray-500">Order has been delivered</p>
-                    </div>
-                  </div>
+                {isEditingNotes ? (
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    className="w-full h-32 p-4 bg-black/[0.02] border-black/5 rounded-2xl font-medium text-sm focus:ring-0 resize-none"
+                    placeholder="Enter audit notes..."
+                  />
+                ) : (
+                  <p className="text-sm font-medium leading-relaxed text-black/60 italic">
+                    {order.notes || "No audit notes recorded for this manifest."}
+                  </p>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </section>
+
+            <section className="space-y-6">
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30">Chronological Logs</h2>
+              <div className="bg-white rounded-[2.5rem] border border-black/5 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
+                  <Activity className="h-24 w-24" />
+                </div>
+                <div className="space-y-6 relative z-10">
+                   {[
+                     { label: 'Manifest Initialized', date: order.createdAt?.toDate()?.toLocaleString(), active: true },
+                     { label: 'Payment Node Verified', date: 'Authorized via System', active: order.status !== 'pending' },
+                     { label: 'Logistics Handover', date: order.status === 'shipped' || order.status === 'delivered' ? 'In Transit' : 'Pending', active: order.status === 'shipped' || order.status === 'delivered' },
+                     { label: 'Final Fulfillment', date: order.status === 'delivered' ? 'Completed' : 'Awaiting', active: order.status === 'delivered' },
+                   ].map((log, i) => (
+                     <div key={i} className="flex gap-4 group">
+                        <div className="flex flex-col items-center">
+                           <div className={`w-3 h-3 rounded-full border-2 transition-colors ${log.active ? 'bg-black border-black' : 'border-black/10'}`} />
+                           {i < 3 && <div className={`w-[2px] flex-1 my-2 transition-colors ${log.active ? 'bg-black' : 'bg-black/5'}`} />}
+                        </div>
+                        <div>
+                           <p className={`text-xs font-black uppercase tracking-widest ${log.active ? 'text-black' : 'text-black/20'}`}>{log.label}</p>
+                           <p className="text-[10px] font-medium text-black/30 mt-1">{log.date}</p>
+                        </div>
+                     </div>
+                   ))}
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
