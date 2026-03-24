@@ -16,6 +16,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadProducts = async () => {
     setIsLoading(true);
@@ -35,9 +36,12 @@ export default function Home() {
     { id: "Jewellery", name: t("Exquisite Jewels"), icon: Diamond },
   ];
 
-  const filteredProducts = activeCategory === "All" 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = activeCategory === "All" || p.category === activeCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         p.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: 'var(--font-poppins)' }}>
@@ -110,21 +114,30 @@ export default function Home() {
 
         {/* Collections Spotlight */}
         <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
+           <div 
+             onClick={() => { setActiveCategory("Wigs"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
+             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
+           >
               <img src="/images/wig_hero.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Wigs" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
                  <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Luxury Wigs</h4>
                  <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Lace Fronts • Silk Base</p>
               </div>
            </div>
-           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
+           <div 
+             onClick={() => { setActiveCategory("Hair Accessories"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
+             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
+           >
               <img src="/images/hair_acc.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Accessories" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
                  <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Style Accents</h4>
                  <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Silk • Pearls • Gold</p>
               </div>
            </div>
-           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
+           <div 
+             onClick={() => { setActiveCategory("Jewellery"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
+             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
+           >
               <img src="/images/jewelry.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Jewelry" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
                  <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Exquisite Jewels</h4>
@@ -145,12 +158,14 @@ export default function Home() {
               <p className="text-black/30 text-[9px] font-bold uppercase tracking-widest">{t("Ready to Ship")}</p>
             </div>
           </div>
-          {/* Search — full width on mobile */}
-          <div className="relative flex-1 max-w-[200px] sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black/20 h-3.5 w-3.5" />
+          {/* Search — more visible border + focus state */}
+          <div className="relative flex-1 max-w-[200px] sm:max-w-xs group">
+            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${searchTerm ? 'text-black' : 'text-black/30'}`} />
             <input 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={t("Search products...")}
-              className="w-full pl-9 pr-4 h-10 bg-[#f9f9f9] border-none rounded-xl text-[9px] font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-black/10"
+              className="w-full pl-11 pr-4 h-12 bg-white border-2 border-black/[0.03] group-hover:border-black/10 focus:border-black rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all focus:outline-none shadow-sm"
             />
           </div>
         </div>
