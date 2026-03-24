@@ -79,7 +79,10 @@ export default function Home() {
                 Modern essentials carefully curated for you. Elevate your everyday style effortlessly.
               </p>
             </div>
-            <Button className="bg-white text-black hover:bg-black hover:text-white px-8 h-12 text-[10px] font-black uppercase tracking-widest transition-all rounded-lg shadow-xl w-fit">
+            <Button 
+              onClick={() => document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-white text-black hover:bg-black hover:text-white px-8 h-12 text-[10px] font-black uppercase tracking-widest transition-all rounded-lg shadow-xl w-fit"
+            >
               Explore Now
             </Button>
           </div>
@@ -107,7 +110,7 @@ export default function Home() {
       </section>
 
       {/* Main Grid - High Density/Cleaner spacing */}
-      <section className="px-4 py-12 max-w-screen-2xl mx-auto space-y-10">
+      <section id="explore-section" className="px-4 py-12 max-w-screen-2xl mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 pt-2 border-b border-gray-100">
            <div className="space-y-1 text-left">
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">New Generation</h2>
