@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 
@@ -10,9 +9,11 @@ interface ImageUploadProps {
   onImageUpload: (url: string) => void;
   currentImage?: string;
   className?: string;
+  /** compact = icon-only slot style (for extra photo grid) */
+  compact?: boolean;
 }
 
-export function ImageUpload({ onImageUpload, currentImage, className }: ImageUploadProps) {
+export function ImageUpload({ onImageUpload, currentImage, className, compact }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,124 +22,96 @@ export function ImageUpload({ onImageUpload, currentImage, className }: ImageUpl
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
       return;
     }
 
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image size should be less than 5MB');
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image size should be less than 10MB");
       return;
     }
 
     setIsUploading(true);
 
+    // Instant local preview
+    const reader = new FileReader();
+    reader.onload = (e) => setPreview(e.target?.result as string);
+    reader.readAsDataURL(file);
+
     try {
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      // Upload to Firebase Storage
       const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
-      
-      try {
-        const snapshot = await uploadBytes(storageRef, file);
-        const downloadUrl = await getDownloadURL(snapshot.ref);
-        
-        onImageUpload(downloadUrl);
-        setIsUploading(false);
-      } catch (storageError) {
-        console.error('Firebase Storage error:', storageError);
-        
-        // Fallback: Use base64 encoding for now
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const base64String = e.target?.result as string;
-          onImageUpload(base64String);
-          setIsUploading(false);
-        };
-        reader.readAsDataURL(file);
-      }
-
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image');
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      onImageUpload(downloadUrl);
+    } catch (err) {
+      console.error("Firebase Storage error:", err);
+      // fallback: use base64
+      const b64Reader = new FileReader();
+      b64Reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        onImageUpload(base64);
+      };
+      b64Reader.readAsDataURL(file);
+    } finally {
       setIsUploading(false);
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemove = () => {
     setPreview(null);
-    onImageUpload('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    onImageUpload("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="flex items-center space-x-4">
-        {preview ? (
-          <div className="relative">
-            <img
-              src={preview}
-              alt="Product preview"
-              className="w-32 h-32 object-cover rounded-lg border"
-            />
-            <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              className="absolute -top-2 -right-2 h-6 w-6"
-              onClick={handleRemoveImage}
-            >
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        ) : (
-          <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50">
-            <ImageIcon className="h-8 w-8 text-gray-400 mb-2" />
-            <span className="text-xs text-gray-500">No image</span>
-          </div>
-        )}
-      </div>
+  const inputId = `image-upload-${Math.random().toString(36).slice(2)}`;
 
-      <div>
-          <label htmlFor="image-upload-input" className="sr-only">Upload Image</label>
-          <input
-            id="image-upload-input"
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-            title="Upload product image"
-            placeholder="Select image file"
-          />
-        <Button
+  return (
+    <div className={`space-y-2 ${className ?? ""}`}>
+      <input
+        id={inputId}
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+        aria-label="Upload product image"
+      />
+
+      {compact ? (
+        /* ── Compact slot (for extra photo grid) ── */
+        <button
           type="button"
-          variant="outline"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
+          className="w-full h-full flex flex-col items-center justify-center gap-1.5 p-2 group"
         >
           {isUploading ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
-              Uploading...
-            </>
+            <Loader2 className="h-5 w-5 animate-spin text-black/30" />
           ) : (
             <>
-              <Upload className="h-4 w-4 mr-2" />
-              {preview ? 'Change Image' : 'Upload Image'}
+              <ImageIcon className="h-5 w-5 text-black/20 group-hover:text-black transition-colors" />
+              <span className="text-[8px] font-black uppercase tracking-widest text-black/20 group-hover:text-black transition-colors">
+                Add Photo
+              </span>
             </>
           )}
-        </Button>
-      </div>
+        </button>
+      ) : (
+        /* ── Full upload button (for main image area) ── */
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+          className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-black/80 transition-colors disabled:opacity-50"
+        >
+          {isUploading ? (
+            <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Uploading...</>
+          ) : (
+            <><Upload className="h-3.5 w-3.5" /> {preview ? "Change Photo" : "Upload Photo"}</>
+          )}
+        </button>
+      )}
     </div>
   );
 }

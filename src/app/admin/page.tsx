@@ -20,6 +20,7 @@ import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
 import { getProducts, addProduct, updateProduct, deleteProduct, Product, getOrders, Order, deleteOrder } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { VideoUpload } from "@/components/ui/video-upload";
 import { useSettings } from "@/lib/settings";
 import Link from "next/link";
 
@@ -756,7 +757,9 @@ export default function AdminPage() {
                             </>
                           ) : (
                             <ImageUpload
+                              compact
                               onImageUpload={(url) => {
+                                if (!url) return;
                                 const updated = [...formData.images];
                                 updated[idx] = url;
                                 setFormData({ ...formData, images: updated.filter(Boolean) });
@@ -768,19 +771,13 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Video URL */}
+                  {/* Video Upload */}
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Video URL (optional)</Label>
-                    <Input
-                      type="url"
-                      value={formData.video}
-                      onChange={e => setFormData({ ...formData, video: e.target.value })}
-                      className="h-12 bg-black/[0.01] border-black/5 rounded-2xl font-medium text-sm"
-                      placeholder="e.g. https://youtu.be/... or Firebase Storage URL"
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Video (optional)</Label>
+                    <VideoUpload
+                      currentVideo={formData.video}
+                      onVideoUpload={(url) => setFormData({ ...formData, video: url })}
                     />
-                    {formData.video && (
-                      <video src={formData.video} controls className="w-full rounded-2xl mt-2 max-h-48" />
-                    )}
                   </div>
                 </div>
               </form>
