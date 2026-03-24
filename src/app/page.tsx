@@ -30,11 +30,9 @@ export default function Home() {
 
   const categories = [
     { id: "All", name: t("All"), icon: Sparkles },
-    { id: "Dresses", name: t("Dresses"), icon: Diamond },
-    { id: "Tops", name: t("Tops"), icon: Crown },
-    { id: "Bottoms", name: t("Bottoms"), icon: Heart },
-    { id: "Accessories", name: t("Accessories"), icon: Star },
-    { id: "Shoes", name: t("Shoes"), icon: Zap },
+    { id: "Wigs", name: t("Premium Wigs"), icon: Crown },
+    { id: "Hair Accessories", name: t("Hair Accessories"), icon: Star },
+    { id: "Jewellery", name: t("Exquisite Jewels"), icon: Diamond },
   ];
 
   const filteredProducts = activeCategory === "All" 
@@ -65,20 +63,20 @@ export default function Home() {
       <section className="px-3 pt-3 pb-2 sm:py-6 max-w-screen-2xl mx-auto">
         <div className="relative h-[240px] sm:h-[450px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg">
           <img 
-            src="/images/banner.png" 
+            src="/images/wig_hero.png" 
             className="w-full h-full object-cover" 
-            alt="SheDoo Trends"
+            alt="SheDoo Glow"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&h=600&fit=crop";
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1620331313184-257dc64572ef?w=1200";
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-16 sm:justify-center space-y-3">
             <div className="space-y-1.5">
               <h1 className="text-2xl sm:text-5xl font-black text-white tracking-tight uppercase leading-none">
-                SheDoo Trends
+                SheDoo Glow
               </h1>
               <p className="text-white/80 text-xs sm:text-base max-w-md font-medium hidden sm:block">
-                {t("Quality clothes for you. Look good every day.")}
+                {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}
               </p>
             </div>
             <Button 
@@ -108,6 +106,31 @@ export default function Home() {
               {cat.name}
             </button>
           ))}
+        </div>
+
+        {/* Collections Spotlight */}
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+              <img src="/images/wig_hero.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Wigs" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Luxury Wigs</h4>
+                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Lace Fronts • Silk Base</p>
+              </div>
+           </div>
+           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+              <img src="/images/hair_acc.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Accessories" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Style Accents</h4>
+                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Silk • Pearls • Gold</p>
+              </div>
+           </div>
+           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+              <img src="/images/jewelry.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Jewelry" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Exquisite Jewels</h4>
+                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Elegance Redefined</p>
+              </div>
+           </div>
         </div>
       </section>
 

@@ -126,7 +126,7 @@ export default function AdminPage() {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const categories = ["Dresses", "Tops", "Bottoms", "Accessories", "Shoes", "Outerwear"];
+  const categories = ["Wigs", "Hair Accessories", "Jewellery"];
 
   const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }: any) => (
     <div className="bg-white rounded-[2rem] border border-black/5 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] transition-all duration-500">
@@ -735,7 +735,7 @@ export default function AdminPage() {
                         onChange={e => setFormData({ ...formData, name: e.target.value })} 
                         required 
                         className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold"
-                        placeholder="e.g. Executive Silhouette Dress"
+                        placeholder="e.g. Luxury Brazilian Lace Wig"
                       />
                     </div>
 
@@ -758,8 +758,8 @@ export default function AdminPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Intelligence Background</Label>
-                      <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-36 p-5 bg-black/[0.01] border-black/5 rounded-2xl font-medium text-sm focus:ring-0 resize-none" placeholder="Enter product narrative specifications..." />
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Narrative</Label>
+                      <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-36 p-5 bg-black/[0.01] border-black/5 rounded-2xl font-medium text-sm focus:ring-0 resize-none" placeholder="Enter styling tips, material details, and unique product features..." />
                     </div>
                   </div>
 
