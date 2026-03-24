@@ -55,7 +55,28 @@ const translations: Record<string, string> = {
   "Checkout": "Nenda Kulipa",
   "Subtotal": "Jumla Ndogo",
   "Total": "Jumla",
-  "Shipping": "Usafirishaji"
+  "Shipping": "Usafirishaji",
+  "Quality clothes for you. Look good every day.": "Nguo bora kwako. Pendeza kila siku.",
+  "Explore Now": "Gundua Sasa",
+  "New Products": "Bidhaa Mpya",
+  "Ready to Ship": "Tayari Kusafirishwa",
+  "Search products...": "Tafuta bidhaa...",
+  "Free Delivery over 49$": "Usafirishaji Bure zaidi ya $49",
+  "Secure Pay": "Malipo Salama",
+  "New Daily Drops": "Bidhaa Mpya Kila Siku",
+  "All": "Zote",
+  "Dresses": "Magauni",
+  "Tops": "Tops",
+  "Bottoms": "Suruali na Sketi",
+  "Accessories": "Urembo",
+  "Shoes": "Viatu",
+  "Shop the best fashion for your everyday life.": "Nunua nguo bora kwa maisha yako ya kila siku.",
+  "Popular": "Maarufu",
+  "Help": "Msaada",
+  "Free Delivery Everywhere": "Usafirishaji Bure Kila Mahali",
+  "We deliver for free because we care about you.": "Tunakuletea bure kwa sababu tunakujali.",
+  "Privacy": "Sera ya Faragha",
+  "Terms": "Vigezo"
 };
 
 export function SettingsProvider({ children }: { children: ReactNode }) {

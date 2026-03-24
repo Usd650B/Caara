@@ -76,14 +76,14 @@ export default function Home() {
                 SheDoo <br className="sm:hidden" /> Trends
               </h1>
               <p className="text-white/80 text-xs sm:text-base max-w-md font-medium">
-                Modern essentials carefully curated for you. Elevate your everyday style effortlessly.
+                {t("Quality clothes for you. Look good every day.")}
               </p>
             </div>
             <Button 
               onClick={() => document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' })}
               className="bg-white text-black hover:bg-black hover:text-white px-8 h-12 text-[10px] font-black uppercase tracking-widest transition-all rounded-lg shadow-xl w-fit"
             >
-              Explore Now
+              {t("Explore Now")}
             </Button>
           </div>
         </div>
@@ -113,10 +113,10 @@ export default function Home() {
       <section id="explore-section" className="px-4 py-12 max-w-screen-2xl mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 pt-2 border-b border-gray-100">
            <div className="space-y-1 text-left">
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">New Generation</h2>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">{t("New Products")}</h2>
               <div className="flex items-center gap-2">
                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                 <p className="text-black/30 text-[9px] font-bold uppercase tracking-widest">Global Stock Hub Ready</p>
+                 <p className="text-black/30 text-[9px] font-bold uppercase tracking-widest">{t("Ready to Ship")}</p>
               </div>
            </div>
            
@@ -124,7 +124,7 @@ export default function Home() {
               <div className="relative flex-1 sm:w-80">
                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-black/20 h-4 w-4" />
                  <input 
-                   placeholder="Scout trends..." 
+                   placeholder={t("Search products...")}
                    className="w-full pl-12 pr-6 h-12 bg-[#f9f9f9] border-none rounded-xl text-[9px] font-black uppercase tracking-widest focus:ring-0"
                  />
               </div>

@@ -23,7 +23,7 @@ export function Footer() {
               <div className="h-1.5 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
             </Link>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-sm font-light">
-              {t("Elevating the ordinary into the extraordinary. Discover a curated universe of fashion that defines your unique essence.")}
+              {t("Shop the best fashion for your everyday life.")}
             </p>
             <div className="flex items-center space-x-4">
               <a href="mailto:shabanimnango99@gmail.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
@@ -40,7 +40,7 @@ export function Footer() {
           <div className="space-y-6">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary">{t("Explore")}</h3>
             <ul className="space-y-4">
-              {["Discover", "Collections", "The Atelier", "Concierge"].map((link) => (
+              {["Discover", "Collections", "Popular", "Concierge"].map((link) => (
                 <li key={link}>
                   <Link href="/products" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
                     <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
@@ -53,7 +53,7 @@ export function Footer() {
 
           {/* Customer Service */}
           <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Support")}</h3>
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Help")}</h3>
             <ul className="space-y-4">
               <li>
                 <Link href="/track" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
@@ -82,8 +82,8 @@ export function Footer() {
                 <ShoppingBag className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h4 className="text-xl font-bold tracking-tight">{t("Worldwide Premium Shipping")}</h4>
-                <p className="text-muted-foreground font-light">{t("On the house. Always. Because you deserve the best.")}</p>
+                <h4 className="text-xl font-bold tracking-tight">{t("Free Delivery Everywhere")}</h4>
+                <p className="text-muted-foreground font-light">{t("We deliver for free because we care about you.")}</p>
               </div>
             </div>
             <div className="px-8 py-3 glass-white text-primary font-black rounded-xl uppercase tracking-widest text-xs shadow-sm">
@@ -98,8 +98,8 @@ export function Footer() {
             &copy; 2026 <span className="gradient-text font-black">SheDoo</span>. All rights reserved.
           </p>
           <div className="flex items-center space-x-6">
-            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Privacy</Link>
-            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Terms</Link>
+            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">{t("Privacy")}</Link>
+            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">{t("Terms")}</Link>
           </div>
         </div>
       </div>
