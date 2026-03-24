@@ -654,7 +654,7 @@ export default function AdminPage() {
     const [formData, setFormData] = useState({
       name: editingProduct?.name || "",
       price: editingProduct?.price || 0,
-      category: editingProduct?.category || "Dresses",
+      category: editingProduct?.category || "Wigs",
       image: editingProduct?.image || "",
       images: editingProduct?.images || [] as string[],
       video: editingProduct?.video || "",
@@ -664,9 +664,12 @@ export default function AdminPage() {
 
     const isEdit = !!editingProduct;
 
-    const handleSubmit = async (e: React.FormEvent) => {
+      const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!formData.image) return;
+      if (!formData.image) {
+        alert("Primary product image is required.");
+        return;
+      }
       
       const payload = {
         name: formData.name,
@@ -676,8 +679,8 @@ export default function AdminPage() {
         images: formData.images,
         video: formData.video,
         description: formData.description,
-        sizes: editingProduct?.sizes || ["S", "M", "L"],
-        colors: editingProduct?.colors || ["Black", "White"],
+        sizes: editingProduct?.sizes || ["Standard", "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\""],
+        colors: editingProduct?.colors || ["Natural Black", "Honey Blonde", "Platinum", "Jet Black"],
         stock: Number(formData.stock),
         status: editingProduct?.status || 'active' as const
       };
@@ -777,7 +780,10 @@ export default function AdminPage() {
                         <div className="w-16 h-16 bg-black/[0.03] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-all">
                            <Box className="h-6 w-6" />
                         </div>
-                        <ImageUpload onImageUpload={(url) => setFormData({ ...formData, image: url })} />
+                        <ImageUpload 
+                          currentImage={formData.image}
+                          onImageUpload={(url) => setFormData({ ...formData, image: url })} 
+                        />
                       </div>
                     )}
                   </div>
@@ -804,6 +810,7 @@ export default function AdminPage() {
                           ) : (
                             <ImageUpload
                               compact
+                              currentImage={formData.images[idx]}
                               onImageUpload={(url) => {
                                 if (!url) return;
                                 const updated = [...formData.images];
