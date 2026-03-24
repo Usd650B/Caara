@@ -129,151 +129,128 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 sm:py-12 lg:py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-            {t("Your")} <span className="gradient-text">{t("Shopping Bag")}</span>
-          </h1>
-          <p className="text-muted-foreground mt-2 font-light">{getTotalItems()} {t("extraordinary pieces selected")}</p>
+    <div className="min-h-screen bg-white py-12 sm:py-20">
+      <div className="container mx-auto px-4 max-w-6xl">
+        {/* Minimalist Header */}
+        <div className="mb-16">
+          <h1 className="text-5xl font-black tracking-tighter text-black uppercase">{t("Your Bag")}</h1>
+          <p className="text-black/30 text-[10px] font-black uppercase tracking-[0.3em] mt-4">
+            {getTotalItems()} Items Selected for Deployment
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
-          {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          {/* Cart Items - 8 Columns */}
+          <div className="lg:col-span-8 space-y-12">
             {cartItems.map((item, index) => (
-              <div key={`${item.id}-${item.size}-${item.color}-${index}`} className="glass overflow-hidden rounded-[2rem] group hover:shadow-2xl transition-all duration-500">
-                <div className="flex flex-col sm:flex-row gap-6 p-6">
-                  {/* Product Image */}
-                  <div className="w-full sm:w-32 h-40 bg-muted rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
+              <div key={`${item.id}-${item.size}-${item.color}-${index}`} className="group relative pb-12 border-b border-black/5">
+                <div className="flex flex-col sm:flex-row gap-8">
+                  {/* Product Image - Calibrated Size */}
+                  <div className="w-full sm:w-40 aspect-[3/4] bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0">
                     {item.image ? (
                       <img 
                         src={item.image} 
                         alt={item.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full gradient-bg flex items-center justify-center">
-                        <ShoppingBag className="h-10 w-10 text-white" />
+                      <div className="w-full h-full bg-black/5 flex items-center justify-center">
+                        <ShoppingBag className="h-8 w-8 text-black/20" />
                       </div>
                     )}
                   </div>
 
-                  {/* Product Details */}
-                  <div className="flex-1 flex flex-col justify-between py-1">
-                    <div className="space-y-1">
+                  {/* Product Details - Clean Layout */}
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div className="space-y-4">
                       <div className="flex justify-between items-start">
-                        <h3 className="font-bold text-xl sm:text-2xl tracking-tight leading-tight">{item.name}</h3>
+                        <div className="space-y-1">
+                           <p className="text-[9px] font-black uppercase tracking-widest text-black/20">{t(item.category)}</p>
+                           <h3 className="text-2xl font-black tracking-tight text-black uppercase">{item.name}</h3>
+                        </div>
                         <button
                           onClick={() => removeItem(item.id, item.size, item.color)}
-                          className="text-muted-foreground hover:text-primary p-2 glass rounded-xl transition-all hover:scale-110"
+                          className="w-10 h-10 flex items-center justify-center text-black/20 hover:text-black transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
                       </div>
-                      <p className="text-sm font-semibold uppercase tracking-widest text-primary/80">{t(item.category)}</p>
-                      <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-muted-foreground pt-1">
-                        <span className="glass-white px-3 py-1 rounded-lg">{t("Size")}: {item.size}</span>
-                        <span className="glass-white px-3 py-1 rounded-lg">{t("Color")}: {t(item.color)}</span>
+                      
+                      <div className="flex items-center gap-6">
+                        <div className="flex flex-col">
+                           <span className="text-[9px] font-black uppercase tracking-widest text-black/20 mb-1">Variant</span>
+                           <span className="text-xs font-bold uppercase tracking-widest text-black">{t(item.color)} / {item.size}</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Price and Quantity */}
-                    <div className="flex items-center justify-between pt-4">
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl font-black gradient-text">{formatPrice(item.price)}</span>
-                        {item.originalPrice && (
-                          <span className="text-sm text-muted-foreground line-through font-medium">
-                            {formatPrice(item.originalPrice)}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-4 glass-white p-1 rounded-2xl border border-white/10">
+                    <div className="flex items-center justify-between mt-8">
+                      {/* Quantity Controller - Minimalist */}
+                      <div className="flex items-center bg-gray-50 border border-gray-100 rounded-xl p-1">
                         <button
                           onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/20 transition-all font-bold text-primary"
+                          className="w-10 h-10 flex items-center justify-center text-black/40 hover:text-black transition-all"
                         >
-                          <Minus className="h-4 w-4" />
+                          <Minus className="h-3 w-3" />
                         </button>
-                        <span className="w-8 text-center font-black text-lg">{item.quantity}</span>
+                        <span className="w-8 text-center font-black text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/20 transition-all font-bold text-primary"
+                          className="w-10 h-10 flex items-center justify-center text-black/40 hover:text-black transition-all"
                         >
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-3 w-3" />
                         </button>
+                      </div>
+
+                      <div className="text-right">
+                         <span className="text-2xl font-black text-black tracking-tighter">{formatPrice(item.price)}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
-            
-            {/* Promotion Section */}
-            <div className="gradient-bg p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl transition-transform duration-1000 group-hover:scale-150"></div>
-              <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Complementary Shipping")}</h3>
-                  <p className="text-white/80 font-light max-w-sm">{t("Enjoy premium worldwide delivery on all your selections, courtesy of our house.")}</p>
-                </div>
-                <div className="px-8 py-4 bg-white text-primary font-black rounded-2xl shadow-xl uppercase tracking-[0.2em] text-sm animate-pulse">
-                  {t("Always Included")}
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-32 space-y-6">
-              <div className="glass p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                <h2 className="text-2xl font-black mb-8 tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>{t("Summary")}</h2>
+          {/* Checkout Column - 4 Columns */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-32 space-y-8">
+              <div className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30 mb-10">Order Summary</h2>
                 
-                <div className="space-y-4">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span className="font-light">{t("Subtotal")}</span>
-                    <span className="font-bold text-foreground text-lg">{formatPrice(getTotalPrice())}</span>
+                <div className="space-y-6">
+                  <div className="flex justify-between text-black/40 text-[10px] font-black uppercase tracking-widest">
+                    <span>Subtotal Value</span>
+                    <span className="text-black">{formatPrice(getTotalPrice())}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-light text-muted-foreground">{t("Premium Shipping")}</span>
-                    <span className="text-xs font-black px-3 py-1 bg-green-500/10 text-green-500 rounded-lg uppercase tracking-widest border border-green-500/20">{t("Complimentary")}</span>
+                  <div className="flex justify-between items-center text-black/40 text-[10px] font-black uppercase tracking-widest">
+                    <span>Logistics</span>
+                    <span className="text-green-600">Free</span>
                   </div>
                   
-                  <div className="border-t border-white/10 mt-6 pt-6">
-                    <div className="flex justify-between items-center group">
-                      <span className="text-xl font-black tracking-tight">{t("Total")}</span>
-                      <span className="text-3xl font-black gradient-text group-hover:scale-110 transition-transform">{formatPrice(getTotalPrice())}</span>
+                  <div className="pt-10 border-t border-black/5">
+                    <div className="flex justify-between items-baseline mb-10">
+                      <span className="text-xs font-black uppercase tracking-widest">Estimated Total</span>
+                      <span className="text-4xl font-black text-black tracking-tighter">{formatPrice(getTotalPrice())}</span>
                     </div>
-                  </div>
-                </div>
 
-                <div className="mt-10 space-y-4">
-                  <Link href="/checkout">
-                    <Button className="w-full gradient-bg text-white hover:opacity-90 h-16 rounded-2xl text-lg font-black shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] transition-all group">
-                      {t("Checkout Now")}
-                      <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                  
-                  <Link href="/products">
-                    <Button variant="ghost" className="w-full h-14 rounded-2xl font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
-                      {t("Discover More")}
-                    </Button>
-                  </Link>
+                    <Link href="/checkout">
+                      <Button className="w-full h-16 bg-black text-white hover:bg-black/90 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] shadow-2xl transition-all hover:-translate-y-1">
+                        {t("Check Out Now")}
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              
-              {/* Actions */}
-              <button 
-                onClick={clearCart}
-                className="w-full flex items-center justify-center space-x-2 text-sm font-bold text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-widest"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span>{t("Empty All Items")}</span>
-              </button>
+
+              <div className="text-center">
+                 <button 
+                  onClick={clearCart}
+                  className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+                >
+                   Wipe Bag Contents
+                </button>
+              </div>
             </div>
           </div>
         </div>

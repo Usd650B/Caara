@@ -198,11 +198,11 @@ export default function ProductDetailPage() {
           <span className="text-gray-900 font-medium">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 lg:gap-12 max-w-7xl mx-auto">
-          {/* Product Media */}
-          <div className="space-y-4 sm:space-y-6">
-            <div className="relative">
-              <div className="aspect-[3/4] sm:aspect-square bg-gray-50 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 max-w-6xl mx-auto items-start">
+          {/* Product Media - 7 Columns */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="relative group">
+              <div className="aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100/50">
                 {productMedia[currentImageIndex]?.includes('video') ? (
                   <video
                     src={productMedia[currentImageIndex]}
@@ -220,249 +220,164 @@ export default function ProductDetailPage() {
                 )}
               </div>
               
-              {/* Media Navigation */}
+              {/* Media Navigation - Minimalist */}
               <button
                 onClick={prevImage}
-                className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-lg touch-target"
-                aria-label="Previous product media"
+                className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl"
               >
-                <ArrowLeft className="h-3 w-3 sm:h-5 sm:w-5" />
+                <ArrowLeft className="h-5 w-5" />
               </button>
               <button
                 onClick={nextImage}
-                className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-lg touch-target"
-                aria-label="Next product media"
+                className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl"
               >
-                <ArrowLeft className="h-3 w-3 sm:h-5 sm:w-5 rotate-180" />
+                <ArrowLeft className="h-5 w-5 rotate-180" />
               </button>
             </div>
 
-            {/* Thumbnail Media */}
-            <div className="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2">
+            {/* Thumbnail Media - Balanced Size */}
+            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
               {productMedia.map((media, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all touch-target ${
-                    currentImageIndex === index ? 'border-purple-600 shadow-lg' : 'border-gray-200 hover:border-gray-300'
+                  className={`flex-shrink-0 w-20 h-24 rounded-2xl overflow-hidden border-2 transition-all ${
+                    currentImageIndex === index ? 'border-black shadow-lg scale-105' : 'border-transparent hover:border-gray-200'
                   }`}
-                  aria-label={`View product ${media.includes('video') ? 'video' : 'image'} ${index + 1}`}
                 >
                   {media.includes('video') ? (
                     <div className="relative w-full h-full">
-                      <video
-                        src={media}
-                        className="w-full h-full object-cover"
-                        preload="metadata"
-                        muted
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                        <div className="w-4 h-4 sm:w-6 sm:h-6 bg-white rounded-full flex items-center justify-center">
-                          <Play className="h-2 w-2 sm:h-3 sm:w-3 text-black ml-0.5" />
-                        </div>
+                      <video src={media} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                        <Play className="h-4 w-4 text-white" />
                       </div>
                     </div>
                   ) : (
-                    <img 
-                      src={media} 
-                      alt={`Product ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                    <img src={media} className="w-full h-full object-cover" alt="" />
                   )}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Product Details */}
-          <div className="space-y-4 sm:space-y-6 pb-24 lg:pb-0"> {/* Added pb for sticky mobile button */}
-            {/* Product Info */}
-            <div>
-              <h1 className="heading-hero text-2xl sm:text-3xl lg:text-4xl mb-2 tracking-tight">{product.name}</h1>
-              
-              {/* Price & Rating Row */}
-              <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
-                <div className="flex items-center space-x-3">
-                  <span className="text-3xl sm:text-4xl font-black text-black tracking-tight">
-                    {formatPrice(product.price)}
+          {/* Product Details - 5 Columns */}
+          <div className="lg:col-span-5 flex flex-col pt-4">
+            <div className="space-y-8">
+              {/* Context & Title */}
+              <div className="space-y-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">{t(product.category)}</p>
+                <h1 className="text-4xl font-black tracking-tight text-black leading-[1.1]">{product.name}</h1>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
+                    <span className="text-sm font-black">{product.rating || "4.8"}</span>
+                  </div>
+                  <span className="text-xs font-bold text-black/20 uppercase tracking-widest">{product.reviews || "120"} Trusted Reviews</span>
+                </div>
+              </div>
+
+              {/* Price Block - Modern & Clean */}
+              <div className="flex items-baseline gap-4">
+                <span className="text-4xl font-black text-black tracking-tighter">
+                  {formatPrice(product.price)}
+                </span>
+                {product.originalPrice && (
+                  <span className="text-lg text-black/20 line-through font-bold">
+                    {formatPrice(product.originalPrice)}
                   </span>
-                  {product.originalPrice && (
-                    <span className="text-lg text-gray-400 line-through font-medium">
-                      {formatPrice(product.originalPrice)}
-                    </span>
-                  )}
-                  {product.badge && (
-                    <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm bg-black text-white ml-2">
-                      {t(product.badge)}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-                  <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                  <span className="text-sm font-bold">{product.rating || "4.8"}</span>
-                  <span className="text-xs text-gray-500">
-                    ({product.reviews || Math.floor(Math.random() * 500 + 100)})
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Product Options */}
-            <div className="space-y-6 py-6 border-y border-gray-100">
-              {/* Color Selection */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">{t("Color")}</label>
-                  <span className="text-xs font-semibold text-gray-500">{selectedColor ? t(selectedColor) : t("Select a color")}</span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {(product.colors || ["Black", "White", "Pink", "Blue"]).map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setSelectedColor(color)}
-                      className={`relative px-4 py-2 text-sm font-bold transition-all rounded-full border-2 focus:outline-none ${
-                        selectedColor === color
-                          ? "border-black text-black bg-white shadow-sm ring-2 ring-black/10 ring-offset-2"
-                          : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"
-                      }`}
-                    >
-                      {t(color)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Size Selection */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <label className="text-sm font-bold uppercase tracking-wider text-gray-900">{t("Size")}</label>
-                  <span className="text-xs font-semibold text-primary underline cursor-pointer hover:text-black">{t("Size Guide")}</span>
-                </div>
-                <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {(product.sizes || ["Standard", "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\""]).map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => setSelectedSize(size)}
-                      className={`min-w-[3rem] px-4 py-2 text-sm font-bold transition-all rounded-lg border-2 focus:outline-none ${
-                        selectedSize === size
-                          ? "border-black text-black bg-white shadow-sm ring-2 ring-black/10 ring-offset-2"
-                          : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quantity */}
-              <div>
-                <label className="block text-sm font-bold uppercase tracking-wider text-gray-900 mb-3">{t("Quantity")}</label>
-                <div className="flex items-center space-x-1 bg-gray-50 border border-gray-200 rounded-lg p-1 w-max">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white hover:shadow-sm text-gray-600 hover:text-black transition-all"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="w-12 text-center text-sm font-bold select-none">{quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white hover:shadow-sm text-gray-600 hover:text-black transition-all"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop Add to Cart (Desktop only) */}
-            <div className="hidden lg:flex space-x-3">
-              <Button 
-                onClick={addToCart}
-                className={`flex-1 transition-all h-14 text-base font-bold uppercase tracking-wider rounded-xl shadow-xl hover:-translate-y-1 ${
-                  isAdded ? 'bg-green-500 hover:bg-green-600 text-white shadow-green-500/20' : 'bg-black text-white hover:bg-black/90 hover:shadow-2xl'
-                }`}
-              >
-                {isAdded ? (
-                  <span className="flex items-center justify-center gap-2"><CheckCircle className="h-5 w-5" /> {t("Added")}</span>
-                ) : (
-                  t("Add to Cart")
                 )}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setIsFavorited(!isFavorited)}
-                className={`h-14 px-6 rounded-xl border-2 transition-colors ${
-                  isFavorited ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-black hover:bg-gray-50'
-                }`}
-              >
-                <Heart className={`h-5 w-5 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
-              </Button>
-            </div>
+              </div>
 
-            {/* Mobile Sticky Add to Cart */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-gray-200 z-50 flex space-x-3 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsFavorited(!isFavorited)}
-                className={`h-[3.25rem] px-5 rounded-xl border-2 flex-shrink-0 transition-colors ${
-                  isFavorited ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}
-              >
-                <Heart className={`h-5 w-5 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
-              </Button>
-              <Button 
-                onClick={addToCart}
-                className={`flex-1 transition-all h-[3.25rem] text-sm font-bold uppercase tracking-wider rounded-xl shadow-lg ${
-                  isAdded ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-black/90'
-                }`}
-              >
-                {isAdded ? (
-                  <span className="flex items-center justify-center gap-2"><CheckCircle className="h-4 w-4" /> {t("Added")}</span>
-                ) : (
-                  <>{t("Add to Cart")} • {formatPrice(product.price * quantity)}</>
-                )}
-              </Button>
-            </div>
-
-            {/* Product Features */}
-            <div className="grid grid-cols-1 gap-4 pt-6">
-              <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                <div className="bg-white p-2 rounded-full shadow-sm">
-                  <Truck className="h-5 w-5 text-black" />
+              {/* Selections */}
+              <div className="space-y-10 py-10 border-y border-black/5">
+                {/* Variant Selection */}
+                <div className="space-y-4">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
+                    <span>Select Color</span>
+                    <span className="text-black">{selectedColor}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(product.colors || ["Black", "Nude", "Pink"]).map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={`px-6 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2 ${
+                          selectedColor === color
+                            ? "border-black bg-black text-white shadow-xl"
+                            : "border-gray-100 hover:border-black/10 text-black/40"
+                        }`}
+                      >
+                        {t(color)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-sm text-gray-900">{t("Free International Delivery")}</p>
-                  <p className="text-xs text-gray-500 mt-1">{t("Automatically applied at checkout")}</p>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
+                    <span>Select Size</span>
+                    <span className="text-black">{selectedSize}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(product.sizes || ["S", "M", "L"]).map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`min-w-[4rem] px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2 ${
+                          selectedSize === size
+                            ? "border-black bg-black text-white shadow-xl"
+                            : "border-gray-100 hover:border-black/10 text-black/40"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quantity */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 block">Quantity</span>
+                  <div className="inline-flex items-center bg-gray-50 border border-gray-100 rounded-2xl p-2">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><Minus className="h-4 w-4" /></button>
+                    <span className="w-12 text-center text-sm font-black">{quantity}</span>
+                    <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><Plus className="h-4 w-4" /></button>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start space-x-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                <div className="bg-white p-2 rounded-full shadow-sm">
-                  <Shield className="h-5 w-5 text-black" />
-                </div>
-                <div>
-                  <p className="font-bold text-sm text-gray-900">{t("Buyer Protection guarantee")}</p>
-                  <p className="text-xs text-gray-500 mt-1">{t("Safe & secure payments with full refunds")}</p>
-                </div>
-              </div>
-            </div>
 
-            {/* Description */}
-            {product.description && (
-              <div className="pt-8 mb-12">
-                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">{t("Product Details")}</h3>
-                <div className="prose prose-sm text-gray-600 leading-relaxed">
-                  <p>{product.description}</p>
+              {/* Main Actions */}
+              <div className="space-y-4 pt-4">
+                <Button 
+                  onClick={addToCart}
+                  className={`w-full h-16 text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl transition-all hover:-translate-y-1 ${
+                    isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/90'
+                  }`}
+                >
+                  {isAdded ? "Secured to Cart" : t("Add to Bag")}
+                </Button>
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
+                      <Truck className="h-4 w-4 text-black/40" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-black/60">Free Logistics</span>
+                   </div>
+                   <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
+                      <Shield className="h-4 w-4 text-black/40" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-black/60">Secure Protocol</span>
+                   </div>
                 </div>
               </div>
-            )}
+
+              {/* Description - Simplified */}
+              {product.description && (
+                <div className="space-y-4 pt-8">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40">Product Narrative</h3>
+                  <p className="text-sm text-black/60 leading-relaxed font-medium">
+                    {product.description}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

@@ -172,46 +172,49 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6">
+        {/* Grid - High Impression Minimalist */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-8">
           {isLoading ? (
             Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="space-y-3 animate-pulse">
-                <div className="aspect-[3/4] bg-[#f0f0f0] rounded-xl sm:rounded-2xl" />
-                <div className="h-3 bg-[#f0f0f0] rounded-full w-2/3 mx-auto" />
-                <div className="h-2.5 bg-[#f0f0f0] rounded-full w-1/3 mx-auto" />
+              <div key={i} className="space-y-4 animate-pulse">
+                <div className="aspect-[4/5] bg-gray-50 rounded-[2rem]" />
+                <div className="h-2 bg-gray-100 rounded-full w-2/3 mx-auto" />
               </div>
             ))
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="group space-y-3">
-                <div className="aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden bg-[#f9f9f9] relative">
-                  <img src={p.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt={p.name} />
-                  {/* Wishlist — always visible on mobile, hover on desktop */}
-                  <button className="absolute top-2.5 right-2.5 h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-white/90 backdrop-blur-md flex items-center justify-center shadow-md hover:bg-black hover:text-white transition-all sm:opacity-0 sm:group-hover:opacity-100">
-                    <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </button>
-                  {/* Add to Cart — slides up on hover (desktop only) */}
-                  <div className="absolute inset-x-3 bottom-3 translate-y-8 group-hover:translate-y-0 transition-all duration-400 opacity-0 group-hover:opacity-100 hidden sm:block">
-                    <Button className="w-full bg-black/90 text-white hover:bg-black h-10 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl">
-                      {t("View Product")}
-                    </Button>
-                  </div>
-                  {/* Badge */}
-                  {p.badge && (
-                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black text-white text-[8px] font-black uppercase tracking-widest rounded-md">
-                      {p.badge}
-                    </span>
-                  )}
-                </div>
-                <div className="text-center space-y-1 px-1">
-                  <p className="text-[8px] font-black uppercase tracking-widest text-black/20">{p.category}</p>
-                  <h3 className="text-[10px] sm:text-[11px] font-bold text-black/80 uppercase line-clamp-1 group-hover:text-black transition-colors">{p.name}</h3>
-                  <div className="flex items-center justify-center gap-2">
-                    <p className="text-sm sm:text-base font-black text-black tracking-tight">{formatPrice(p.price)}</p>
-                    {p.originalPrice && (
-                      <p className="text-[9px] text-black/30 line-through">{formatPrice(p.originalPrice)}</p>
+              <Link key={p.id} href={`/products/${p.id}`} className="group block">
+                <div className="space-y-4">
+                  <div className="aspect-[4/5] rounded-[2rem] overflow-hidden bg-white relative border border-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.02)] transition-all duration-700 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] group-hover:-translate-y-1">
+                    <img 
+                      src={p.image} 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                      alt={p.name} 
+                    />
+                    
+                    {/* Minimalist Hover Action */}
+                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                       <div className="bg-white/90 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl scale-90 group-hover:scale-100 transition-all duration-500">
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black">Explore Drop</span>
+                       </div>
+                    </div>
+
+                    {p.badge && (
+                      <span className="absolute top-4 left-4 px-3 py-1 bg-black text-white text-[8px] font-black uppercase tracking-widest rounded-sm">
+                        {p.badge}
+                      </span>
                     )}
+                  </div>
+
+                  <div className="text-center space-y-1.5 px-2">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-black/20 group-hover:text-black/40 transition-colors uppercase">{p.category}</p>
+                    <h3 className="text-xs font-black text-black tracking-tight uppercase line-clamp-1">{p.name}</h3>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-sm font-black text-black tracking-tighter">{formatPrice(p.price)}</span>
+                      {p.originalPrice && (
+                        <span className="text-[10px] text-black/20 line-through font-bold">{formatPrice(p.originalPrice)}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Link>
