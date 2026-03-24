@@ -23,7 +23,7 @@ export function Footer() {
               <div className="h-1.5 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
             </Link>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-sm font-light">
-              {t("Shop the best fashion for your everyday life.")}
+              {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}
             </p>
             <div className="flex items-center space-x-4">
               <a href="mailto:shabanimnango99@gmail.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">

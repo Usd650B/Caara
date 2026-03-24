@@ -67,9 +67,9 @@ export default function ProductDetailPage() {
       
       if (foundProduct) {
         if (foundProduct.sizes && foundProduct.sizes.length > 0) setSelectedSize(foundProduct.sizes[0]);
-        else setSelectedSize("M");
+        else setSelectedSize("Standard");
         if (foundProduct.colors && foundProduct.colors.length > 0) setSelectedColor(foundProduct.colors[0]);
-        else setSelectedColor("Black");
+        else setSelectedColor("Natural Black");
       }
       
       // Load related products (excluding current product)
@@ -342,12 +342,12 @@ export default function ProductDetailPage() {
                   <span className="text-xs font-semibold text-primary underline cursor-pointer hover:text-black">{t("Size Guide")}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((size) => (
+                  {(product.sizes || ["Standard", "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\""]).map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`min-w-[3rem] px-3 py-2 text-sm font-bold transition-all rounded-lg border-2 focus:outline-none ${
+                      className={`min-w-[3rem] px-4 py-2 text-sm font-bold transition-all rounded-lg border-2 focus:outline-none ${
                         selectedSize === size
                           ? "border-black text-black bg-white shadow-sm ring-2 ring-black/10 ring-offset-2"
                           : "border-gray-200 text-gray-600 hover:border-black/30 hover:bg-gray-50"

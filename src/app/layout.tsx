@@ -9,12 +9,12 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-poppins" });
 
 export const metadata: Metadata = {
-  title: "SheDoo - Explore Global Trends",
-  description: "Discover SheDoo - High-quality fashion inspired by global trends. Premium styles, everyday comfort.",
-  keywords: ["fashion", "clothing", "SheDoo", "trends", "style", "Aliexpress style", "SHEIN style"],
-  authors: [{ name: "SheDoo Fashion" }],
-  creator: "SheDoo Fashion",
-  publisher: "SheDoo Fashion",
+  title: "SheDoo - Premium Wigs, Hair Accessories & Jewels",
+  description: "Discover SheDoo Elegance - High-quality wigs, stylish hair accessories, and exquisite jewels at prices you can afford. Premium beauty for every style.",
+  keywords: ["wigs", "hair accessories", "jewelry", "SheDoo", "beauty", "hair styling", "lace front wigs", "jewels"],
+  authors: [{ name: "SheDoo Beauty" }],
+  creator: "SheDoo Beauty",
+  publisher: "SheDoo Beauty",
   formatDetection: {
     email: false,
     address: false,
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "SheDoo - Explore Global Trends",
-    description: "Discover SheDoo - High-quality fashion inspired by global trends.",
+    title: "SheDoo - Premium Wigs, Hair Accessories & Jewels",
+    description: "Discover SheDoo Elegance - High-quality wigs, hair accessories, and exquisite jewels at prices you can afford.",
     url: "https://shedoo.com",
     siteName: "SheDoo Fashion",
     images: [
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SheDoo - Explore Global Trends",
-    description: "Discover SheDoo - High-quality fashion inspired by global trends.",
+    title: "SheDoo - Premium Wigs, Hair Accessories & Jewels",
+    description: "Discover SheDoo Elegance - High-quality wigs, hair accessories, and exquisite jewels at prices you can afford.",
     images: ["/og-image.jpg"],
   },
   robots: {
