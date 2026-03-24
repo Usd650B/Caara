@@ -72,10 +72,10 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-16 sm:justify-center space-y-3">
             <div className="space-y-1.5">
-              <h1 className="text-2xl sm:text-5xl font-black text-white tracking-tight uppercase leading-none">
+              <h1 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] animate-in fade-in slide-in-from-left duration-700">
                 SheDoo Glow
               </h1>
-              <p className="text-white/80 text-xs sm:text-base max-w-md font-medium hidden sm:block">
+              <p className="text-white/80 text-[9px] sm:text-base max-w-md font-medium">
                 {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}
               </p>
             </div>
@@ -109,26 +109,26 @@ export default function Home() {
         </div>
 
         {/* Collections Spotlight */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
               <img src="/images/wig_hero.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Wigs" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Luxury Wigs</h4>
-                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Lace Fronts • Silk Base</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Luxury Wigs</h4>
+                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Lace Fronts • Silk Base</p>
               </div>
            </div>
-           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
               <img src="/images/hair_acc.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Accessories" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Style Accents</h4>
-                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Silk • Pearls • Gold</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Style Accents</h4>
+                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Silk • Pearls • Gold</p>
               </div>
            </div>
-           <div className="group relative h-[250px] rounded-[2rem] overflow-hidden cursor-pointer">
+           <div className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer">
               <img src="/images/jewelry.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Jewelry" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-lg tracking-tight">Exquisite Jewels</h4>
-                 <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mt-1">Elegance Redefined</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
+                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Exquisite Jewels</h4>
+                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Elegance Redefined</p>
               </div>
            </div>
         </div>
