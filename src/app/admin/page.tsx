@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { 
   Plus, Search, Edit, Trash2, Package, ShoppingCart, 
   Users, LogOut, X, Eye, Menu, BarChart3, 
-  Settings, ChevronRight, LayoutDashboard,
+  Settings, ChevronRight, LayoutDashboard, Truck,
   Box, ClipboardList, Activity, Sparkles, Diamond,
   User, Shield, Bell, Globe, CreditCard, Lock,
   Mail, Phone, MapPin, ExternalLink, RefreshCw, 
