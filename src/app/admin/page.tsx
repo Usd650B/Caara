@@ -371,6 +371,7 @@ export default function AdminPage() {
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Agent / Client</th>
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Asset Value</th>
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Fulfillment Status</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Buyer Signals</th>
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-right">Operational Actions</th>
               </tr>
             </thead>
@@ -399,8 +400,36 @@ export default function AdminPage() {
                       <span className="text-[10px] font-black uppercase tracking-widest text-black/60">{order.status}</span>
                     </div>
                   </td>
+                  <td className="px-8 py-8">
+                    <div className="flex flex-col gap-2">
+                      {order.isReceivedConfirmed && (
+                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-lg text-[9px] font-black tracking-widest uppercase w-max">
+                           <CheckCircle className="h-3 w-3" /> Confirmed
+                         </span>
+                      )}
+                      {order.disputeStatus && (
+                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 ${order.disputeStatus === 'open' ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'} rounded-lg text-[9px] font-black tracking-widest uppercase w-max`}>
+                           <AlertCircle className="h-3 w-3" /> Dispute {order.disputeStatus}
+                         </span>
+                      )}
+                      {order.rating && (
+                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-50 text-yellow-600 rounded-lg text-[9px] font-black tracking-widest uppercase w-max">
+                           <Sparkles className="h-3 w-3" /> {order.rating}/5 Rated
+                         </span>
+                      )}
+                      {!order.isReceivedConfirmed && !order.disputeStatus && !order.rating && (
+                         <span className="text-[9px] text-black/20 font-black uppercase tracking-widest">None yet</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-8 py-8 text-right">
                     <div className="flex items-center justify-end gap-3">
+                       {/* View Details Button placeholder */}
+                       <Link href={`/order-tracking/${order.id}`} target="_blank">
+                         <button className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all text-black/20">
+                            <Eye className="h-4 w-4" />
+                         </button>
+                       </Link>
                        <button onClick={() => order.id && handleDeleteOrder(order.id)} className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-black/20">
                           <Trash2 className="h-4 w-4" />
                        </button>

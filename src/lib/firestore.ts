@@ -69,6 +69,12 @@ export interface Order {
   };
   trackingNumber?: string;
   notes?: string;
+  // New features
+  isReceivedConfirmed?: boolean;
+  disputeStatus?: 'open' | 'resolved';
+  disputeReason?: string;
+  rating?: number;
+  review?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
