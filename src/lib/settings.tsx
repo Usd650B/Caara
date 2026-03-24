@@ -76,7 +76,17 @@ const translations: Record<string, string> = {
   "Free Delivery Everywhere": "Usafirishaji Bure Kila Mahali",
   "We deliver for free because we care about you.": "Tunakuletea bure kwa sababu tunakujali.",
   "Privacy": "Sera ya Faragha",
-  "Terms": "Vigezo"
+  "Terms": "Vigezo",
+  "View Product": "Tazama Bidhaa",
+  "No Products Yet": "Hakuna Bidhaa Bado",
+  "Check back soon.": "Rudi hivi karibuni.",
+  "Show All": "Onyesha Zote",
+  "Safe Shopping": "Ununuzi Salama",
+  "100% Authentic Products": "Bidhaa 100% Halisi",
+  "Free Delivery": "Usafirishaji Bure",
+  "To Your Door": "Mpaka Mlangoni Mwako",
+  "24/7 Support": "Msaada 24/7",
+  "Always Here for You": "Daima Tuko Nawe"
 };
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
