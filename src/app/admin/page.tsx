@@ -609,6 +609,8 @@ export default function AdminPage() {
       price: editingProduct?.price || 0,
       category: editingProduct?.category || "Dresses",
       image: editingProduct?.image || "",
+      images: editingProduct?.images || [] as string[],
+      video: editingProduct?.video || "",
       description: editingProduct?.description || "",
       stock: editingProduct?.stock || 100,
     });
@@ -624,6 +626,8 @@ export default function AdminPage() {
         price: Number(formData.price),
         category: formData.category,
         image: formData.image,
+        images: formData.images,
+        video: formData.video,
         description: formData.description,
         sizes: editingProduct?.sizes || ["S", "M", "L"],
         colors: editingProduct?.colors || ["Black", "White"],
@@ -728,6 +732,54 @@ export default function AdminPage() {
                         </div>
                         <ImageUpload onImageUpload={(url) => setFormData({ ...formData, image: url })} />
                       </div>
+                    )}
+                  </div>
+
+                  {/* Extra Images (up to 3) */}
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Extra Photos (up to 3)</Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[0, 1, 2].map((idx) => (
+                        <div key={idx} className="aspect-square rounded-2xl overflow-hidden border-2 border-dashed border-black/10 bg-black/[0.01] relative flex flex-col items-center justify-center group">
+                          {formData.images[idx] ? (
+                            <>
+                              <img src={formData.images[idx]} alt={`Extra ${idx+1}`} className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...formData.images];
+                                  updated.splice(idx, 1);
+                                  setFormData({ ...formData, images: updated });
+                                }}
+                                className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              >×</button>
+                            </>
+                          ) : (
+                            <ImageUpload
+                              onImageUpload={(url) => {
+                                const updated = [...formData.images];
+                                updated[idx] = url;
+                                setFormData({ ...formData, images: updated.filter(Boolean) });
+                              }}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Video URL */}
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Video URL (optional)</Label>
+                    <Input
+                      type="url"
+                      value={formData.video}
+                      onChange={e => setFormData({ ...formData, video: e.target.value })}
+                      className="h-12 bg-black/[0.01] border-black/5 rounded-2xl font-medium text-sm"
+                      placeholder="e.g. https://youtu.be/... or Firebase Storage URL"
+                    />
+                    {formData.video && (
+                      <video src={formData.video} controls className="w-full rounded-2xl mt-2 max-h-48" />
                     )}
                   </div>
                 </div>
