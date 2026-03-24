@@ -17,7 +17,11 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
-import { getProducts, addProduct, updateProduct, deleteProduct, Product, getOrders, Order, deleteOrder } from "@/lib/firestore";
+import { 
+  getProducts, addProduct, updateProduct, deleteProduct, Product, 
+  getOrders, Order, deleteOrder, 
+  getNotifications, markNotificationRead, markAllNotificationsRead, Notification 
+} from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { VideoUpload } from "@/components/ui/video-upload";
@@ -34,6 +38,8 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter();
 
   const loadProducts = async () => {
@@ -48,6 +54,11 @@ export default function AdminPage() {
     setOrders(ordersData);
   };
 
+  const loadNotifications = async () => {
+    const nData = await getNotifications();
+    setNotifications(nData);
+  };
+
   useEffect(() => {
     if (!isSellerAuthenticated()) {
       router.push("/admin/login");
@@ -55,7 +66,13 @@ export default function AdminPage() {
     }
     loadProducts();
     loadOrders();
+    loadNotifications();
+
+    const interval = setInterval(loadNotifications, 30000); // 30s polling
+    return () => clearInterval(interval);
   }, []);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleAddProduct = async (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
     const result = await addProduct(productData);
@@ -152,10 +169,10 @@ export default function AdminPage() {
           <p className="text-black/40 text-sm font-medium mt-2">Real-time performance metrics and business overview for SheDoo OS.</p>
         </div>
         <div className="flex items-center space-x-3">
-          <Button variant="outline" className="h-14 px-6 border-black/5 rounded-2xl hover:bg-black hover:text-white transition-all font-black text-[10px] uppercase tracking-widest hidden sm:flex">
-            <Bell className="h-4 w-4 mr-3" />
-            Alert Notification
-          </Button>
+          <div className="hidden sm:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
+             <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
+             <span className="text-[9px] font-black uppercase tracking-widest">Active Node</span>
+          </div>
         </div>
       </div>
 
@@ -908,21 +925,33 @@ export default function AdminPage() {
            </div>
            
            <div className="flex items-center space-x-4">
-             <Button 
-               onClick={() => setShowAddProduct(true)}
-               className="h-12 px-6 bg-black text-white rounded-xl shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] transition-all font-black text-[10px] uppercase tracking-widest hidden md:flex"
-             >
-               <Plus className="h-4 w-4 mr-2" />
-               New Asset
-             </Button>
-             <div className="hidden sm:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
-                <span className="text-[9px] font-black uppercase tracking-widest">v4.0.2</span>
-             </div>
-             <div className="w-10 h-10 bg-black rounded-xl shadow-xl shadow-black/20 flex items-center justify-center text-white text-xs font-black">
-                SM
-             </div>
-           </div>
+              <Button 
+                variant="outline"
+                onClick={() => setShowNotifications(true)}
+                className="h-10 w-10 sm:h-12 sm:w-12 bg-white border-black/5 rounded-xl shadow-sm flex items-center justify-center relative hover:bg-black hover:text-white transition-all group"
+              >
+                <Bell className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg shadow-red-500/40 animate-bounce">
+                    {unreadCount}
+                  </span>
+                )}
+              </Button>
+              <Button 
+                onClick={() => setShowAddProduct(true)}
+                className="h-12 px-6 bg-black text-white rounded-xl shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] transition-all font-black text-[10px] uppercase tracking-widest hidden md:flex"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Asset
+              </Button>
+              <div className="hidden sm:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
+                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
+                 <span className="text-[9px] font-black uppercase tracking-widest">v4.0.2</span>
+              </div>
+              <div className="w-10 h-10 bg-black rounded-xl shadow-xl shadow-black/20 flex items-center justify-center text-white text-xs font-black">
+                 SM
+              </div>
+            </div>
         </header>
 
         <div className="max-w-7xl mx-auto p-8 md:p-12">
@@ -976,6 +1005,95 @@ export default function AdminPage() {
            </div>
         </div>
       </main>
+
+      {/* Notification Sidebar */}
+      {showNotifications && (
+        <div className="fixed inset-0 z-[100] flex justify-end">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm shadow-2xl" onClick={() => setShowNotifications(false)} />
+          <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
+             <div className="p-8 border-b border-black/5 flex items-center justify-between bg-black text-white">
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-tight">System Alerts</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mt-1">Intelligence Stream</p>
+                </div>
+                <button onClick={() => setShowNotifications(false)} className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all">
+                  <X className="h-5 w-5" />
+                </button>
+             </div>
+
+             <div className="flex-1 overflow-y-auto p-8">
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/5">
+                   <p className="text-[10px] font-black uppercase tracking-widest text-black/30">{notifications.length} Total Signals</p>
+                   <button
+                     onClick={async () => {
+                       await markAllNotificationsRead();
+                       loadNotifications();
+                     }}
+                     className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800"
+                   >
+                     Clear Archives
+                   </button>
+                </div>
+
+                {notifications.length === 0 ? (
+                  <div className="py-20 text-center space-y-4">
+                     <Bell className="h-12 w-12 text-black/5 mx-auto" />
+                     <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Stream Quiet - No Alerts Detected</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        onClick={async () => {
+                          if (!n.isRead && n.id) {
+                            await markNotificationRead(n.id);
+                            loadNotifications();
+                          }
+                        }}
+                        className={`p-6 rounded-2xl border transition-all cursor-pointer relative ${
+                          n.isRead ? 'bg-black/[0.01] border-black/5 opacity-60' : 'bg-white border-black/10 shadow-lg ring-1 ring-black/5'
+                        }`}
+                      >
+                        {!n.isRead && <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />}
+                        <div className="flex items-start gap-4">
+                           <div className={`p-3 rounded-xl ${
+                             n.type === 'dispute' ? 'bg-red-50 text-red-600' :
+                             n.type === 'confirmation' ? 'bg-green-50 text-green-600' :
+                             n.type === 'review' ? 'bg-yellow-50 text-yellow-600' : 'bg-blue-50 text-blue-600'
+                           }`}>
+                              {n.type === 'dispute' ? <AlertCircle className="h-4 w-4" /> :
+                               n.type === 'confirmation' ? <CheckCircle className="h-4 w-4" /> :
+                               n.type === 'review' ? <Sparkles className="h-4 w-4" /> : <Box className="h-4 w-4" />
+                              }
+                           </div>
+                           <div className="flex-1">
+                              <h4 className="font-black text-xs uppercase tracking-tight text-black">{n.title}</h4>
+                              <p className="text-[11px] font-medium text-black/60 mt-2 leading-relaxed">{n.message}</p>
+                              <div className="flex items-center justify-between mt-4">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-black/20">
+                                  {n.createdAt?.toDate ? n.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Now'}
+                                </span>
+                                {n.relatedId && (
+                                   <Link
+                                    href={`/order-tracking/${n.relatedId}`}
+                                    target="_blank"
+                                    className="text-[9px] font-black uppercase tracking-widest text-black hover:underline"
+                                   >
+                                     Inspect Node
+                                   </Link>
+                                )}
+                              </div>
+                           </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
       {showAddProduct && <AddProductModal />}
     </div>

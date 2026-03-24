@@ -16,6 +16,18 @@ import { getDb } from './firebase';
 // Products collection
 const PRODUCTS_COLLECTION = 'products';
 const ORDERS_COLLECTION = 'orders';
+const NOTIFICATIONS_COLLECTION = 'notifications';
+
+export interface Notification {
+  id?: string;
+  type: 'order' | 'dispute' | 'review' | 'stock' | 'confirmation';
+  title: string;
+  message: string;
+  isRead: boolean;
+  relatedId?: string; // Order ID or Product ID
+  customerName?: string;
+  createdAt?: Timestamp;
+}
 
 export interface Product {
   id?: string;
@@ -241,5 +253,71 @@ export const deleteOrder = async (id: string): Promise<{ success: boolean; error
   } catch (error) {
     console.error('Error deleting order:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+};
+
+// Notification operations
+export const addNotification = async (notification: Omit<Notification, 'id' | 'createdAt' | 'isRead'>) => {
+  const db = getDb();
+  if (!db) return { success: false, error: 'Firestore not available' };
+  
+  try {
+    const docRef = await addDoc(collection(db, NOTIFICATIONS_COLLECTION), {
+      ...notification,
+      isRead: false,
+      createdAt: Timestamp.now()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error adding notification:', error);
+    return { success: false, error: 'Failed to add notification' };
+  }
+};
+
+export const getNotifications = async (): Promise<Notification[]> => {
+  const db = getDb();
+  if (!db) return [];
+  
+  try {
+    const q = query(collection(db, NOTIFICATIONS_COLLECTION), orderBy('createdAt', 'desc'), limit(50));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Notification));
+  } catch (error) {
+    console.error('Error getting notifications:', error);
+    return [];
+  }
+};
+
+export const markNotificationRead = async (id: string) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  
+  try {
+    await updateDoc(doc(db, NOTIFICATIONS_COLLECTION, id), {
+      isRead: true
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error marking notification read:', error);
+    return { success: false };
+  }
+};
+
+export const markAllNotificationsRead = async () => {
+  const db = getDb();
+  if (!db) return { success: false };
+  
+  try {
+    const q = query(collection(db, NOTIFICATIONS_COLLECTION), where('isRead', '==', false));
+    const querySnapshot = await getDocs(q);
+    const promises = querySnapshot.docs.map(d => updateDoc(doc(db, NOTIFICATIONS_COLLECTION, d.id), { isRead: true }));
+    await Promise.all(promises);
+    return { success: true };
+  } catch (error) {
+    console.error('Error marking all notifications read:', error);
+    return { success: false };
   }
 };

@@ -10,7 +10,7 @@ import {
   AlertTriangle, Star, Check
 } from "lucide-react";
 import Link from "next/link";
-import { getOrders, Order, updateOrder } from "@/lib/firestore";
+import { getOrders, Order, updateOrder, addNotification } from "@/lib/firestore";
 import { downloadReceipt, generateReceiptNumber, ReceiptData } from "@/lib/receipt";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,9 +97,18 @@ export default function OrderTrackingPage() {
     setIsMarkingReceived(true);
     try {
       await updateOrder(order.id, {
-        status: 'delivered',
         isReceivedConfirmed: true
       });
+      
+      // Notify admin
+      await addNotification({
+        type: 'confirmation',
+        title: 'Manifest Secured',
+        message: `${order.customerName} has confirmed delivery of Manifest #${order.id?.slice(-8).toUpperCase()}`,
+        relatedId: order.id,
+        customerName: order.customerName
+      });
+
       setOrder({ ...order, status: 'delivered', isReceivedConfirmed: true });
     } catch (err) {
       console.error(err);
@@ -116,6 +125,16 @@ export default function OrderTrackingPage() {
         disputeStatus: 'open',
         disputeReason
       });
+      
+      // Notify admin
+      await addNotification({
+         type: 'dispute',
+         title: 'Protocol Deviation',
+         message: `${order.customerName} opened a dispute on Manifest #${order.id?.slice(-8).toUpperCase()}`,
+         relatedId: order.id,
+         customerName: order.customerName
+      });
+
       setOrder({ ...order, disputeStatus: 'open', disputeReason });
       setShowDisputeModal(false);
     } catch (err) {
@@ -133,6 +152,16 @@ export default function OrderTrackingPage() {
         rating,
         review
       });
+
+      // Notify admin
+      await addNotification({
+         type: 'review',
+         title: 'Intelligence Report',
+         message: `${order.customerName} left a ${rating}-star feedback for Manifest #${order.id?.slice(-8).toUpperCase()}`,
+         relatedId: order.id,
+         customerName: order.customerName
+      });
+
       setOrder({ ...order, rating, review });
       setShowReviewModal(false);
     } catch (err) {
