@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
 import { 
   getProducts, addProduct, updateProduct, deleteProduct, Product, 
-  getOrders, Order, deleteOrder, 
+  getOrders, Order, updateOrder, deleteOrder, 
   getNotifications, markNotificationRead, markAllNotificationsRead, Notification 
 } from "@/lib/firestore";
 import { clearAllProducts } from "@/lib/clear-products";
@@ -500,9 +500,10 @@ const ProductsContent = ({
 interface OrdersContentProps {
   orders: Order[];
   handleDeleteOrder: (id: string) => Promise<void>;
+  handleProcessOrder: (order: Order) => void;
 }
 
-const OrdersContent = ({ orders, handleDeleteOrder }: OrdersContentProps) => (
+const OrdersContent = ({ orders, handleDeleteOrder, handleProcessOrder }: OrdersContentProps) => (
   <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-black/5">
       <div>
@@ -575,12 +576,12 @@ const OrdersContent = ({ orders, handleDeleteOrder }: OrdersContentProps) => (
                 </td>
                 <td className="px-8 py-8 text-right">
                   <div className="flex items-center justify-end gap-3">
-                       {/* View Details Button placeholder */}
-                       <Link href={`/order-tracking/${order.id}`} target="_blank">
-                         <button className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all text-black/20">
-                            <Eye className="h-4 w-4" />
-                         </button>
-                       </Link>
+                       <button 
+                        onClick={() => handleProcessOrder(order)}
+                        className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all text-black/20"
+                       >
+                          <Eye className="h-4 w-4" />
+                       </button>
                        <button onClick={() => order.id && handleDeleteOrder(order.id)} className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-black/20">
                           <Trash2 className="h-4 w-4" />
                        </button>
@@ -588,18 +589,166 @@ const OrdersContent = ({ orders, handleDeleteOrder }: OrdersContentProps) => (
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-          {orders.length === 0 && (
-            <div className="py-24 text-center">
-               <Package className="h-10 w-10 text-black/10 mx-auto mb-4" />
-               <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Stream Inactive - No data detected.</p>
+          </tbody>
+        </table>
+        {orders.length === 0 && (
+          <div className="py-24 text-center">
+             <Package className="h-10 w-10 text-black/10 mx-auto mb-4" />
+             <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Stream Inactive - No data detected.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+interface ProcessOrderModalProps {
+  order: Order;
+  onClose: () => void;
+  onUpdate: (id: string, data: Partial<Order>) => Promise<void>;
+}
+
+const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps) => {
+  const [status, setStatus] = useState(order.status);
+  const [trackingNumber, setTrackingNumber] = useState(order.trackingNumber || '');
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdate = async () => {
+    if (!order.id) return;
+    setIsUpdating(true);
+    await onUpdate(order.id, { status, trackingNumber });
+    setIsUpdating(false);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-4xl bg-[#F8F8F8] rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="flex flex-col h-[90vh]">
+          {/* Header */}
+          <div className="bg-black px-10 py-8 flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter">Command: Order Processing</h3>
+              <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mt-1">Order Node: #{order.id?.slice(0, 12).toUpperCase()}</p>
             </div>
-          )}
+            <button onClick={onClose} className="w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all">
+              <X className="h-6 w-6 text-white" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-10 space-y-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+              {/* Left Column: Logistics & Information */}
+              <div className="space-y-10">
+                <section className="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm space-y-6">
+                  <div className="flex items-center gap-4 border-b border-black/5 pb-4">
+                    <User className="h-5 w-5 text-black" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest">Client Credentials</h4>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-[9px] font-black text-black/20 uppercase tracking-widest mb-1">Full Legal Name</p>
+                      <p className="font-bold text-black uppercase">{order.customerName}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black text-black/20 uppercase tracking-widest mb-1">Electronic Mail</p>
+                      <p className="font-bold text-black">{order.customerEmail}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black text-black/20 uppercase tracking-widest mb-1">Direct Liaison</p>
+                      <p className="font-bold text-black">{order.customerPhone || 'N/A'}</p>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm space-y-6">
+                  <div className="flex items-center gap-4 border-b border-black/5 pb-4">
+                    <Truck className="h-5 w-5 text-black" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest">Logistics Destination</h4>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-black/5 rounded-xl">
+                      <p className="text-sm font-bold text-black leading-relaxed">
+                        {order.shippingAddress.address}<br />
+                        {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              {/* Right Column: Order Manifest & Status Control */}
+              <div className="space-y-10">
+                <section className="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm space-y-6">
+                  <div className="flex items-center gap-4 border-b border-black/5 pb-4">
+                    <Package className="h-5 w-5 text-black" />
+                    <h4 className="text-[10px] font-black uppercase tracking-widest">Asset Manifest</h4>
+                  </div>
+                  <div className="space-y-4">
+                    {order.items.map((item, index) => (
+                      <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                        <div className="w-12 h-16 bg-white rounded-lg overflow-hidden border border-black/5">
+                          <img src={item.image} className="w-full h-full object-cover" alt="" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[10px] font-black uppercase leading-tight">{item.name}</p>
+                          <p className="text-[9px] font-bold text-black/30 uppercase mt-1">QTY: {item.quantity} • {item.size} / {item.color}</p>
+                        </div>
+                        <p className="text-sm font-black text-black">${item.price}</p>
+                      </div>
+                    ))}
+                    <div className="pt-4 border-t border-black/5 flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest">Total Valuation</span>
+                      <span className="text-xl font-black text-black">${order.total}</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="bg-black text-white rounded-[2rem] p-8 shadow-2xl shadow-black/20 space-y-8">
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3 block">Operational Status</Label>
+                      <select 
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value as any)}
+                        className="w-full h-14 bg-white/10 border border-white/10 rounded-2xl px-4 font-black text-[10px] uppercase tracking-widest text-white focus:outline-none focus:ring-1 focus:ring-white/20"
+                      >
+                        <option value="pending" className="text-black">Pending Authorization</option>
+                        <option value="processing" className="text-black">In Processing</option>
+                        <option value="shipped" className="text-black">Dispatched / Shipped</option>
+                        <option value="delivered" className="text-black">Destination Reached</option>
+                        <option value="cancelled" className="text-black">Protocol Terminated</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3 block">Logistics Code [Tracking]</Label>
+                      <Input 
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        placeholder="Enter tracking ID..."
+                        className="h-14 bg-white/10 border border-white/10 rounded-2xl text-white font-bold"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={handleUpdate}
+                    disabled={isUpdating}
+                    className="w-full h-14 bg-white text-black hover:bg-gray-100 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all"
+                  >
+                    {isUpdating ? 'Synchronizing...' : 'Authorize State Change'}
+                  </Button>
+                </section>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
+};
 
   const SettingsContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -763,6 +912,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [processingOrder, setProcessingOrder] = useState<Order | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter();
@@ -818,6 +968,13 @@ export default function AdminPage() {
       setShowAddProduct(false);
       setEditingProduct(null);
       loadProducts();
+    }
+  };
+
+  const submitUpdateOrder = async (orderId: string, updatedData: Partial<Order>) => {
+    const result = await updateOrder(orderId, updatedData);
+    if (result.success) {
+      loadOrders();
     }
   };
 
@@ -970,7 +1127,13 @@ export default function AdminPage() {
               setShowAddProduct={setShowAddProduct}
             />
           )}
-          {activeTab === "orders" && <OrdersContent orders={orders} handleDeleteOrder={handleDeleteOrder} />}
+          {activeTab === "orders" && (
+            <OrdersContent 
+              orders={orders} 
+              handleDeleteOrder={handleDeleteOrder} 
+              handleProcessOrder={setProcessingOrder}
+            />
+          )}
           {activeTab === "settings" && <SettingsContent />}
           {activeTab === "profile" && <ProfileContent />}
           {activeTab === "analytics" && (
@@ -1107,6 +1270,14 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+      {processingOrder && (
+        <ProcessOrderModal 
+          order={processingOrder}
+          onClose={() => setProcessingOrder(null)}
+          onUpdate={submitUpdateOrder}
+        />
+      )}
 
       {showAddProduct && (
         <AddProductModal 
