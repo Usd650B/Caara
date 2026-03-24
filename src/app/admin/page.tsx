@@ -656,7 +656,7 @@ export default function AdminPage() {
       price: editingProduct?.price || 0,
       category: editingProduct?.category || "Wigs",
       image: editingProduct?.image || "",
-      images: editingProduct?.images || [] as string[],
+      images: editingProduct?.images?.length === 3 ? editingProduct.images : [...(editingProduct?.images || []), "", "", ""].slice(0, 3),
       video: editingProduct?.video || "",
       description: editingProduct?.description || "",
       stock: editingProduct?.stock || 100,
@@ -676,7 +676,7 @@ export default function AdminPage() {
         price: Number(formData.price),
         category: formData.category,
         image: formData.image,
-        images: formData.images,
+        images: formData.images.filter(img => img && img !== ""),
         video: formData.video,
         description: formData.description,
         sizes: editingProduct?.sizes || ["Standard", "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\""],
@@ -768,24 +768,10 @@ export default function AdminPage() {
 
                   <div className="space-y-4">
                     <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Visual Capture</Label>
-                    {formData.image ? (
-                      <div className="relative aspect-[3/4] bg-black/5 rounded-[2.5rem] overflow-hidden group shadow-2xl">
-                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <Button type="button" variant="destructive" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6" onClick={() => setFormData({ ...formData, image: "" })}>Delete Frame</Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="aspect-[3/4] border-4 border-dashed border-black/10 rounded-[3rem] bg-black/[0.01] flex flex-col items-center justify-center p-12 text-center transition-all hover:bg-black/[0.03] hover:border-black/20 group">
-                        <div className="w-16 h-16 bg-black/[0.03] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-all">
-                           <Box className="h-6 w-6" />
-                        </div>
-                        <ImageUpload 
-                          currentImage={formData.image}
-                          onImageUpload={(url) => setFormData({ ...formData, image: url })} 
-                        />
-                      </div>
-                    )}
+                    <ImageUpload 
+                      currentImage={formData.image}
+                      onImageUpload={(url) => setFormData({ ...formData, image: url })} 
+                    />
                   </div>
 
                   {/* Extra Images (up to 3) */}
@@ -794,31 +780,15 @@ export default function AdminPage() {
                     <div className="grid grid-cols-3 gap-3">
                       {[0, 1, 2].map((idx) => (
                         <div key={idx} className="aspect-square rounded-2xl overflow-hidden border-2 border-dashed border-black/10 bg-black/[0.01] relative flex flex-col items-center justify-center group">
-                          {formData.images[idx] ? (
-                            <>
-                              <img src={formData.images[idx]} alt={`Extra ${idx+1}`} className="w-full h-full object-cover" />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const updated = [...formData.images];
-                                  updated.splice(idx, 1);
-                                  setFormData({ ...formData, images: updated });
-                                }}
-                                className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                              >×</button>
-                            </>
-                          ) : (
                             <ImageUpload
                               compact
                               currentImage={formData.images[idx]}
                               onImageUpload={(url) => {
-                                if (!url) return;
                                 const updated = [...formData.images];
                                 updated[idx] = url;
-                                setFormData({ ...formData, images: updated.filter(Boolean) });
+                                setFormData({ ...formData, images: updated });
                               }}
                             />
-                          )}
                         </div>
                       ))}
                     </div>

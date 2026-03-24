@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, Video, X, Loader2 } from "lucide-react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
@@ -15,6 +15,13 @@ export function VideoUpload({ onVideoUpload, currentVideo }: VideoUploadProps) {
   const [progress, setProgress] = useState(0);
   const [preview, setPreview] = useState<string | null>(currentVideo || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync preview with prop
+  useEffect(() => {
+    if (currentVideo !== undefined) {
+      setPreview(currentVideo || null);
+    }
+  }, [currentVideo]);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
