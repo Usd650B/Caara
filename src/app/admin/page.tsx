@@ -209,7 +209,9 @@ export default function AdminPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-black text-black text-sm tracking-tight">${order.total}</p>
-                    <p className="text-[9px] font-bold text-black/20 uppercase tracking-widest mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                    <p className="text-[9px] font-bold text-black/20 uppercase tracking-widest mt-1">
+                      {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -303,13 +305,13 @@ export default function AdminPage() {
                  <button onClick={() => handleEditProduct(product)} className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-black hover:text-white transition-all">
                     <Edit className="h-4 w-4" />
                  </button>
-                 <button onClick={() => handleDeleteProduct(product.id)} className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-red-500 hover:text-white transition-all">
+                 <button onClick={() => product.id && handleDeleteProduct(product.id)} className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-red-500 hover:text-white transition-all">
                     <Trash2 className="h-4 w-4" />
                  </button>
               </div>
               <div className="absolute bottom-6 left-6 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                  <div className="px-4 py-2 bg-black/90 backdrop-blur-md rounded-xl text-[9px] font-black text-white uppercase tracking-widest">
-                    ID: {product.id.slice(0, 8)}
+                    ID: {product.id?.slice(0, 8)}
                  </div>
               </div>
             </div>
@@ -375,8 +377,10 @@ export default function AdminPage() {
               {orders.map((order) => (
                 <tr key={order.id} className="hover:bg-black/[0.01] transition-all">
                   <td className="px-8 py-8">
-                    <span className="font-black text-xs text-black tracking-widest">#{order.id.slice(0, 10).toUpperCase()}</span>
-                    <p className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                    <span className="font-black text-xs text-black tracking-widest">#{order.id?.slice(0, 10).toUpperCase() || 'UNKNOWN'}</span>
+                    <p className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-1">
+                      {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}
+                    </p>
                   </td>
                   <td className="px-8 py-8">
                     <div className="space-y-1">
@@ -390,13 +394,13 @@ export default function AdminPage() {
                   </td>
                   <td className="px-8 py-8">
                     <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${order.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                      <div className={`w-2 h-2 rounded-full ${order.status === 'delivered' ? 'bg-green-500' : 'bg-blue-500'}`} />
                       <span className="text-[10px] font-black uppercase tracking-widest text-black/60">{order.status}</span>
                     </div>
                   </td>
                   <td className="px-8 py-8 text-right">
                     <div className="flex items-center justify-end gap-3">
-                       <button onClick={() => handleDeleteOrder(order.id)} className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-black/20">
+                       <button onClick={() => order.id && handleDeleteOrder(order.id)} className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-black/20">
                           <Trash2 className="h-4 w-4" />
                        </button>
                     </div>
