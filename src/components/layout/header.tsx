@@ -75,16 +75,16 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+              <Link href="/products" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Discover")}
               </Link>
-              <Link href="/products" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+              <Link href="/products" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Collections")}
               </Link>
-              <Link href="/track" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+              <Link href="/track" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Track Order")}
               </Link>
-              <Link href="/contact" className="text-sm font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
+              <Link href="/contact" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
                 {t("Concierge")}
               </Link>
             </nav>
@@ -92,9 +92,9 @@ export function Header() {
 
           {/* Center - Logo */}
           <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group">
-            <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter transition-all duration-500 group-hover:scale-110">
-              <span className="gradient-text">CAARA</span>
-              <div className="h-1.5 w-0 group-hover:w-full gradient-bg mt-1 transition-all duration-500 rounded-full mx-auto opacity-0 group-hover:opacity-100"></div>
+            <span className="text-2xl sm:text-3xl font-black tracking-tight transition-all duration-500 group-hover:scale-105">
+              <span className="gradient-text">SheDoo</span>
+              <div className="h-1 w-0 group-hover:w-full gradient-bg mt-0.5 transition-all duration-500 rounded-full mx-auto opacity-0 group-hover:opacity-100"></div>
             </span>
           </Link>
 
@@ -143,7 +143,7 @@ export function Header() {
                     <Link href="/profile">
                       <Button variant="ghost" size="sm" className="w-full justify-start h-11 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
                         <User className="h-4 w-4 mr-3" />
-                        <span className="font-bold text-xs uppercase tracking-widest">{t("Profile Architecture")}</span>
+                        <span className="font-bold text-xs uppercase tracking-widest">{t("Profile")}</span>
                       </Button>
                     </Link>
                     <Link href="/orders">
@@ -159,7 +159,7 @@ export function Header() {
                       onClick={() => signOutCustomer()}
                     >
                       <LogOut className="h-4 w-4 mr-3" />
-                      <span className="font-bold text-xs uppercase tracking-widest">{t("Terminate Session")}</span>
+                      <span className="font-bold text-xs uppercase tracking-widest">{t("Sign Out")}</span>
                     </Button>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export function Header() {
                     </div>
                   </div>
                   <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                    <span>{t("Profile Architecture")}</span>
+                    <span>{t("Profile")}</span>
                     <User className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
                   </Link>
                   <Link href="/orders" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between group">

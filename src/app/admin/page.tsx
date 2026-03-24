@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,8 @@ import {
   Box, ClipboardList, Activity, Sparkles, Diamond,
   User, Shield, Bell, Globe, CreditCard, Lock,
   Mail, Phone, MapPin, ExternalLink, RefreshCw, 
-  Target, Zap, Save, Trash, DollarSign
+  Target, Zap, Save, Trash, DollarSign, TrendingUp as TrendingUpIcon,
+  PlusCircle, CheckCircle, AlertCircle, ChevronLeft
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
@@ -117,7 +118,7 @@ export default function AdminPage() {
         </div>
         {trend && (
           <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${trend === 'up' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-            {trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            {trend === 'up' ? <TrendingUpIcon className="h-3 w-3" /> : <Activity className="h-3 w-3" />}
             <span>{trendValue}%</span>
           </div>
         )}
@@ -129,9 +130,6 @@ export default function AdminPage() {
     </div>
   );
 
-  const TrendingUp = ({ className }: { className?: string }) => <Zap className={className} />;
-  const TrendingDown = ({ className }: { className?: string }) => <Activity className={className} />;
-
   const tabs = [
     { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -141,7 +139,7 @@ export default function AdminPage() {
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const currentTabTitle = tabs.find(t => t.id === activeTab)?.label || 'CAARA';
+  const currentTabTitle = tabs.find(t => t.id === activeTab)?.label || 'SheDoo';
 
   const DashboardContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -150,19 +148,12 @@ export default function AdminPage() {
           <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
             System Intelligence
           </h2>
-          <p className="text-black/40 text-sm font-medium mt-2">Real-time performance metrics and business overview for OS CAARA.</p>
+          <p className="text-black/40 text-sm font-medium mt-2">Real-time performance metrics and business overview for SheDoo OS.</p>
         </div>
         <div className="flex items-center space-x-3">
-          <Button variant="outline" className="h-14 px-6 border-black/5 rounded-2xl hover:bg-black hover:text-white transition-all font-black text-[10px] uppercase tracking-widest">
+          <Button variant="outline" className="h-14 px-6 border-black/5 rounded-2xl hover:bg-black hover:text-white transition-all font-black text-[10px] uppercase tracking-widest hidden sm:flex">
             <Bell className="h-4 w-4 mr-3" />
             Alert Notification
-          </Button>
-          <Button 
-            onClick={() => setShowAddProduct(true)}
-            className="h-14 px-8 bg-black text-white rounded-2xl shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] transition-all font-black text-[10px] uppercase tracking-widest"
-          >
-            <Plus className="h-4 w-4 mr-3" />
-            Launch Asset
           </Button>
         </div>
       </div>
@@ -206,21 +197,19 @@ export default function AdminPage() {
                 View All Stream <ChevronRight className="h-3 w-3 ml-2" />
               </Button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {orders.slice(0, 5).map((order) => (
-                <div key={order.id} className="flex items-center justify-between p-6 rounded-3xl hover:bg-black/[0.01] transition-all border border-transparent hover:border-black/5 group">
+                <div key={order.id} className="flex items-center justify-between p-6 rounded-2xl bg-black/[0.01] hover:bg-black/[0.03] transition-all border border-black/[0.03]">
                   <div className="flex items-center space-x-6">
-                    <div className="w-14 h-14 bg-black/[0.03] rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest group-hover:bg-black group-hover:text-white transition-colors">
-                      #{order.id?.slice(-4)}
-                    </div>
+                    <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center text-white font-black text-xs italic">S</div>
                     <div>
-                      <p className="text-sm font-black text-black uppercase tracking-tight">{order.customerName}</p>
-                      <p className="text-[10px] text-black/30 font-black uppercase tracking-widest mt-1">{order.items?.length || 0} Assets • {order.status}</p>
+                      <h4 className="font-black text-black text-xs uppercase tracking-tight">{order.customerName}</h4>
+                      <p className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-1">{order.status}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-black text-black">${order.total.toFixed(2)}</p>
-                    <p className="text-[10px] text-green-500 font-black uppercase tracking-widest mt-1">Live Manifest</p>
+                    <p className="font-black text-black text-sm tracking-tight">${order.total}</p>
+                    <p className="text-[9px] font-bold text-black/20 uppercase tracking-widest mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
               ))}
@@ -229,14 +218,14 @@ export default function AdminPage() {
         </div>
 
         <div className="space-y-12">
-          <div className="bg-black text-white p-12 rounded-[3.5rem] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.05] group-hover:scale-110 transition-transform duration-1000">
+          <div className="bg-[#0a0a0a] text-white rounded-[2.5rem] p-10 shadow-2xl shadow-black/30 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:scale-110 transition-transform duration-700">
                <Globe className="h-64 w-64" />
             </div>
             <div className="relative z-10 space-y-4">
-               <h3 className="text-sm font-black uppercase tracking-[0.4em] text-white/40">Organization Identity</h3>
-               <h4 className="text-4xl font-black tracking-tighter uppercase">Caara International</h4>
-               <p className="text-white/30 text-[10px] font-medium max-w-sm tracking-wide">Strategic logistics and brand identity node for the worldwide CAARA fashion network.</p>
+                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-white/40">Global Logistics</h3>
+                <h4 className="text-4xl font-black tracking-tighter uppercase">SheDoo Global</h4>
+                <p className="text-white/30 text-[10px] font-medium max-w-sm tracking-wide">Managing fashion logistics and supply chain for the worldwide SheDoo network.</p>
             </div>
           </div>
           
@@ -267,11 +256,11 @@ export default function AdminPage() {
                 { label: 'Asset Retention', value: '32%', progress: 45, color: 'bg-purple-600' },
               ].map((item) => (
                 <div key={item.label} className="space-y-3">
-                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-black/40">{item.label}</span>
-                    <span className="text-black">{item.value}</span>
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/40">{item.label}</span>
+                    <span className="text-xs font-black text-black">{item.value}</span>
                   </div>
-                  <div className="h-1.5 bg-black/[0.03] rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-black/[0.03] rounded-full overflow-hidden">
                     <div className={`h-full ${item.color} rounded-full transition-all duration-1000`} style={{ width: `${item.progress}%` }} />
                   </div>
                 </div>
@@ -285,153 +274,143 @@ export default function AdminPage() {
 
   const ProductsContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-black/5">
         <div>
-          <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Inventory Vault
+          <h2 className="text-4xl font-black tracking-tighter text-black uppercase italic" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Inventory Hub
           </h2>
-          <p className="text-black/40 text-sm font-medium mt-2">Curate and refine your digital product ecosystem.</p>
+          <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.2em] mt-3 flex items-center gap-2">
+            <Target className="h-3 w-3" /> Total Assets Deployed: {products.length}
+          </p>
         </div>
-        <div className="flex items-center gap-4 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-96">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 h-4 w-4" />
-            <input
-              type="text"
-              placeholder="Search assets by identity..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-14 pr-6 h-14 bg-white border border-black/5 rounded-[1.25rem] text-sm font-bold focus:ring-1 focus:ring-black/10 shadow-sm transition-all"
-            />
-          </div>
-          <Button 
-            onClick={() => setShowAddProduct(true)}
-            className="h-14 px-8 bg-black text-white rounded-[1.25rem] font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] shadow-xl shadow-black/10 transition-all"
-          >
-            <Plus className="h-4 w-4 mr-3" />
-            Add Asset
-          </Button>
+        <div className="relative w-full md:w-96 group">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-black/20 group-hover:text-black transition-colors" />
+          <Input 
+            placeholder="Scout assets..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="h-16 pl-14 pr-6 bg-black/[0.01] border-black/5 rounded-[1.5rem] font-bold text-xs tracking-tight placeholder:text-black/20 focus:bg-white focus:shadow-xl transition-all"
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="group bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_40px_80px_rgb(0,0,0,0.08)] transition-all duration-700">
-            <div className="aspect-[3/4] relative overflow-hidden bg-black/[0.02]">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover transform group-hover:scale-110 grayscale group-hover:grayscale-0 transition-all duration-1000"
-              />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4">
-                <Button 
-                  size="icon" 
-                  className="bg-white text-black hover:bg-white/90 rounded-2xl h-12 w-12"
-                  onClick={() => handleEditProduct(product)}
-                >
-                  <Edit className="h-5 w-5" />
-                </Button>
-                <Button 
-                  size="icon" 
-                  className="bg-white text-red-600 hover:bg-red-50 rounded-2xl h-12 w-12"
-                  onClick={() => handleDeleteProduct(product.id as string)}
-                >
-                  <Trash2 className="h-5 w-5" />
-                </Button>
+          <div key={product.id} className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_40px_80px_rgb(0,0,0,0.08)] transition-all duration-700 group">
+            <div className="aspect-[4/5] relative overflow-hidden bg-black/[0.01]">
+              <img src={product.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={product.name} />
+              <div className="absolute top-6 right-6 flex flex-col gap-3 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500">
+                 <button onClick={() => handleEditProduct(product)} className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-black hover:text-white transition-all">
+                    <Edit className="h-4 w-4" />
+                 </button>
+                 <button onClick={() => handleDeleteProduct(product.id)} className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-red-500 hover:text-white transition-all">
+                    <Trash2 className="h-4 w-4" />
+                 </button>
               </div>
-              <div className="absolute top-6 left-6">
-                <span className="px-4 py-2 bg-white/90 backdrop-blur-md text-[10px] font-black uppercase tracking-[0.2em] rounded-[0.75rem] shadow-sm">
-                  {product.category}
-                </span>
+              <div className="absolute bottom-6 left-6 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                 <div className="px-4 py-2 bg-black/90 backdrop-blur-md rounded-xl text-[9px] font-black text-white uppercase tracking-widest">
+                    ID: {product.id.slice(0, 8)}
+                 </div>
               </div>
             </div>
             <div className="p-8 space-y-4">
-              <h3 className="font-black text-black text-lg line-clamp-1 uppercase tracking-tight">{product.name}</h3>
-              <div className="flex justify-between items-end">
-                <span className="text-2xl font-black text-black">${product.price}</span>
-                <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">UNIT COUNT: {product.stock || 0}</span>
-              </div>
+               <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-black/20 mb-1">{product.category}</p>
+                    <h3 className="text-sm font-black text-black uppercase tracking-tight line-clamp-1">{product.name}</h3>
+                  </div>
+                  <p className="text-xl font-black text-black tracking-tighter">${product.price}</p>
+               </div>
+               <div className="h-1.5 w-full bg-black/[0.03] rounded-full overflow-hidden">
+                  <div className={`h-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'} rounded-full`} style={{ width: `${Math.min((product.stock / 100) * 100, 100)}%` }} />
+               </div>
+               <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-black/30">
+                  <span>Asset Availability</span>
+                  <span className={product.stock > 0 ? "text-green-600" : "text-red-500"}>{product.stock > 0 ? `${product.stock} Units` : 'Depleted'}</span>
+               </div>
             </div>
           </div>
         ))}
+
+        <button 
+          onClick={() => setShowAddProduct(true)}
+          className="aspect-square md:aspect-auto h-full min-h-[400px] border-4 border-dashed border-black/5 rounded-[3rem] bg-black/[0.01] flex flex-col items-center justify-center gap-6 group hover:bg-black/[0.03] hover:border-black/20 transition-all duration-500"
+        >
+          <div className="w-20 h-20 bg-black rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform">
+             <Plus className="h-10 w-10" />
+          </div>
+          <div className="text-center">
+            <h4 className="text-xl font-black uppercase tracking-tight">Deploy Asset</h4>
+            <p className="text-[9px] font-black uppercase tracking-widest text-black/20 mt-2">Initialize new inventory unit</p>
+          </div>
+        </button>
       </div>
     </div>
   );
 
   const OrdersContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-black/5">
         <div>
-          <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Manifest Fulfillment
+          <h2 className="text-4xl font-black tracking-tighter text-black uppercase italic" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Fulfillment Stream
           </h2>
-          <p className="text-black/40 text-sm font-medium mt-2">Oversee order lifecycles and customer acquisitions.</p>
+          <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.2em] mt-3">Active Logistics Threads: {orders.length}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
+      <div className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-black/[0.02]">
-                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Reference Bundle</th>
-                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Client Entity</th>
-                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Status protocol</th>
-                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Manifest Value</th>
-                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Audit Control</th>
+              <tr className="bg-black text-white">
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Global Order ID</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Agent / Client</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Asset Value</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Fulfillment Status</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-right">Operational Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-black/[0.01] transition-colors group">
-                  <td className="px-10 py-8">
-                    <span className="text-sm font-black text-black uppercase tracking-tight">#{order.id?.slice(-8).toUpperCase()}</span>
-                    <p className="text-[10px] text-black/20 font-black mt-2 uppercase tracking-widest">{order.createdAt?.toDate()?.toLocaleDateString()}</p>
+                <tr key={order.id} className="hover:bg-black/[0.01] transition-all">
+                  <td className="px-8 py-8">
+                    <span className="font-black text-xs text-black tracking-widest">#{order.id.slice(0, 10).toUpperCase()}</span>
+                    <p className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                   </td>
-                  <td className="px-10 py-8">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center text-xs font-black">
-                        {order.customerName[0]}
-                      </div>
-                      <div>
-                        <p className="text-sm font-black text-black uppercase tracking-tight">{order.customerName}</p>
-                        <p className="text-[10px] text-black/30 font-black uppercase tracking-widest mt-1">{order.customerEmail}</p>
-                      </div>
+                  <td className="px-8 py-8">
+                    <div className="space-y-1">
+                      <p className="font-black text-black text-xs uppercase tracking-tight">{order.customerName}</p>
+                      <p className="text-[10px] text-black/40 font-medium">{order.customerEmail}</p>
                     </div>
                   </td>
-                  <td className="px-10 py-8">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-2 h-2 rounded-full ${
-                        order.status === 'delivered' ? 'bg-green-500' :
-                        order.status === 'shipped' ? 'bg-blue-500' :
-                        order.status === 'processing' ? 'bg-yellow-500' : 'bg-black/10'
-                      }`} />
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/60">{order.status}</span>
+                  <td className="px-8 py-8">
+                    <p className="font-black text-black text-sm tracking-tighter">${order.total}</p>
+                    <p className="text-[9px] text-black/20 font-black uppercase tracking-widest mt-1">Paid via Protocol</p>
+                  </td>
+                  <td className="px-8 py-8">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-2 h-2 rounded-full ${order.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-black/60">{order.status}</span>
                     </div>
                   </td>
-                  <td className="px-10 py-8">
-                    <span className="text-lg font-black text-black">${order.total.toFixed(2)}</span>
-                  </td>
-                  <td className="px-10 py-8">
-                    <div className="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Link href={`/admin/${order.id}`}>
-                        <Button variant="outline" size="sm" className="h-11 px-6 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest">
-                          Audit
-                        </Button>
-                      </Link>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-11 w-11 text-red-600 hover:bg-red-50 rounded-xl"
-                        onClick={() => handleDeleteOrder(order.id!)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                  <td className="px-8 py-8 text-right">
+                    <div className="flex items-center justify-end gap-3">
+                       <button onClick={() => handleDeleteOrder(order.id)} className="w-10 h-10 border border-black/5 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all text-black/20">
+                          <Trash2 className="h-4 w-4" />
+                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {orders.length === 0 && (
+            <div className="py-24 text-center">
+               <Package className="h-10 w-10 text-black/10 mx-auto mb-4" />
+               <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Stream Inactive - No data detected.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -439,17 +418,11 @@ export default function AdminPage() {
 
   const SettingsContent = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
-            System Protocol
-          </h2>
-          <p className="text-black/40 text-sm font-medium mt-2">Configuration of standard business nodes and platform security.</p>
-        </div>
-        <Button className="h-14 px-8 bg-black text-white rounded-2xl shadow-xl font-black text-[10px] uppercase tracking-widest">
-          <Save className="h-4 w-4 mr-3" />
-          Synchronize Configuration
-        </Button>
+      <div>
+        <h2 className="text-4xl font-black tracking-tight text-black" style={{ fontFamily: 'var(--font-playfair)' }}>
+          Environment Config
+        </h2>
+        <p className="text-black/40 text-sm font-medium mt-2">Adjust core system variables and global operational parameters.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -459,13 +432,13 @@ export default function AdminPage() {
               <div className="w-12 h-12 bg-black/[0.03] rounded-2xl flex items-center justify-center">
                 <Globe className="h-6 w-6 text-black" />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest">Store Manifest</h3>
+              <h3 className="text-lg font-black uppercase tracking-widest">Global Identity</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Organization Identity</Label>
-                <Input defaultValue="OS CAARA Official" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                <Input defaultValue="SheDoo OS" className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Official Intelligence Email</Label>
@@ -549,7 +522,7 @@ export default function AdminPage() {
                <p className="text-white/40 text-xs leading-relaxed font-medium">Activate specialized encryption across all system branches if a threat is detected.</p>
              </div>
              <Button className="w-full bg-red-600 hover:bg-red-700 text-white h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest">
-               System Lockdown
+                System Lockdown
              </Button>
           </section>
         </div>
@@ -613,33 +586,12 @@ export default function AdminPage() {
         </div>
 
         <div className="space-y-12">
-          <section className="bg-white rounded-[2.5rem] border border-black/5 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8">
-            <h3 className="text-xs font-black uppercase tracking-widest text-black/30">Recent Authorities</h3>
-            <div className="space-y-6">
-              {[
-                { action: 'Product Manifest Upload', time: '2h ago', icon: Box },
-                { action: 'System Backup Complete', time: '14h ago', icon: Shield },
-                { action: 'Protocol Sync', time: '1d ago', icon: Activity },
-              ].map((log, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 bg-black/[0.03] rounded-xl flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
-                    <log.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-tight">{log.action}</p>
-                    <p className="text-[10px] font-bold text-black/20 uppercase tracking-widest mt-1">{log.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           <section className="bg-white rounded-[2.5rem] border border-black/5 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8 text-center">
              <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Security Clearance</p>
              <div className="flex justify-center flex-wrap gap-2">
-               {['BIOMETRIC', '2FA', 'HARD-KEY'].map(s => (
-                 <span key={s} className="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-[9px] font-black tracking-widest uppercase">{s}</span>
-               ))}
+                {['BIOMETRIC', '2FA', 'HARD-KEY'].map(s => (
+                  <span key={s} className="px-3 py-1.5 bg-green-50 text-green-600 rounded-lg text-[9px] font-black tracking-widest uppercase">{s}</span>
+                ))}
              </div>
           </section>
         </div>
@@ -685,8 +637,10 @@ export default function AdminPage() {
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }} />
-        <div className="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-[2.5rem] shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
-          <div className="flex h-full">
+        <div className="relative bg-white w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[2.5rem] shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 overflow-hidden">
+          
+          <div className="flex flex-1 overflow-hidden">
+            {/* Left Info Panel */}
             <div className="hidden md:block w-72 bg-black p-12 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Diamond className="h-40 w-40 rotate-12" />
@@ -707,7 +661,8 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="flex-1 p-12 overflow-y-auto">
+            {/* Right Scrollable Form Panel */}
+            <div className="flex-1 overflow-y-auto px-8 py-10 md:px-12 md:py-12">
               <div className="flex justify-between items-center mb-10">
                 <h2 className="text-2xl font-black text-black uppercase tracking-tight">{isEdit ? "Refine Protocol" : "Authorize Asset"}</h2>
                 <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 hover:bg-black/5" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>
@@ -715,7 +670,7 @@ export default function AdminPage() {
                 </Button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-10">
+              <form id="product-form" onSubmit={handleSubmit} className="space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-8">
                     <div className="space-y-3">
@@ -772,29 +727,43 @@ export default function AdminPage() {
                     )}
                   </div>
                 </div>
-
-                <div className="flex justify-end gap-4 pt-10 border-t border-black/5">
-                  <Button type="button" variant="ghost" className="font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>Abort</Button>
-                  <Button type="submit" className="bg-black text-white px-12 font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl shadow-xl shadow-black/10 hover:scale-[1.02] transition-all">
-                    {isEdit ? "Apply Refinement" : "Confirm Authorization"}
-                  </Button>
-                </div>
               </form>
             </div>
           </div>
+
+          {/* Fixed Footer with Buttons */}
+          <div className="p-8 md:px-12 md:py-8 border-t border-black/5 bg-white flex justify-end gap-4 z-50">
+            <Button 
+                type="button" 
+                variant="ghost" 
+                className="font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl" 
+                onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}
+            >
+                Abort
+            </Button>
+            <Button 
+                form="product-form"
+                type="submit" 
+                className="bg-black text-white px-12 font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl shadow-xl shadow-black/10 hover:scale-[1.02] transition-all"
+            >
+              {isEdit ? "Apply Refinement" : "Confirm Authorization"}
+            </Button>
+          </div>
+
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col lg:flex-row">
+    <div className="flex h-screen bg-[#F0F0F0] overflow-hidden font-sans">
+      {/* Sidebar - Mobile Toggle Placeholder */}
       <div className="lg:hidden p-4 border-b bg-white flex justify-between items-center sticky top-0 z-50">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white">
-            <span className="font-black italic">C</span>
+            <span className="font-black italic">S</span>
           </div>
-          <span className="font-black text-xl tracking-tighter">OS CAARA</span>
+          <span className="font-black text-xl tracking-tighter">SheDoo OS</span>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="rounded-xl h-12 w-12"><Menu className="h-6 w-6" /></Button>
       </div>
@@ -805,9 +774,9 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-14">
             <div className="flex items-center space-x-4 group cursor-pointer">
               <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10 group-hover:scale-110 transition-transform">
-                <span className="font-black text-xl italic">C</span>
+                <span className="font-black text-xl italic">S</span>
               </div>
-              <span className="text-2xl font-black tracking-tighter">OS CAARA</span>
+              <span className="text-2xl font-black tracking-tighter">SheDoo OS</span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="lg:hidden rounded-xl h-10 w-10"><X className="h-5 w-5" /></Button>
           </div>
@@ -849,17 +818,24 @@ export default function AdminPage() {
         <header className="h-24 bg-[#fafafa]/80 backdrop-blur-md border-b border-black/5 px-8 md:px-12 flex items-center justify-between sticky top-0 z-40">
            <div>
              <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black/20 mb-1">
-               <span>OS CAARA</span>
+               <span>SheDoo OS</span>
                <ChevronRight className="h-3 w-3" />
                <span className="text-black">{currentTabTitle}</span>
              </div>
-             <h1 className="text-xl font-black tracking-tighter uppercase">{currentTabTitle} Node</h1>
+             <h1 className="text-xl font-black tracking-tighter uppercase">{currentTabTitle}</h1>
            </div>
            
-           <div className="flex items-center space-x-6">
-             <div className="hidden md:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
+           <div className="flex items-center space-x-4">
+             <Button 
+               onClick={() => setShowAddProduct(true)}
+               className="h-12 px-6 bg-black text-white rounded-xl shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] transition-all font-black text-[10px] uppercase tracking-widest hidden md:flex"
+             >
+               <Plus className="h-4 w-4 mr-2" />
+               New Asset
+             </Button>
+             <div className="hidden sm:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
-                <span className="text-[9px] font-black uppercase tracking-widest">Global Protocol V4</span>
+                <span className="text-[9px] font-black uppercase tracking-widest">v4.0.2</span>
              </div>
              <div className="w-10 h-10 bg-black rounded-xl shadow-xl shadow-black/20 flex items-center justify-center text-white text-xs font-black">
                 SM
@@ -891,17 +867,27 @@ export default function AdminPage() {
           )}
         </div>
 
+        {/* Floating Action Button for Mobile */}
+        <div className="fixed bottom-8 right-8 z-[100] md:hidden">
+          <Button 
+            onClick={() => setShowAddProduct(true)}
+            className="w-16 h-16 bg-black text-white rounded-2xl shadow-2xl shadow-black/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
+          >
+            <Plus className="h-8 w-8" />
+          </Button>
+        </div>
+
         {/* Global Footer Identifier */}
         <div className="px-8 md:px-12 pb-12">
            <div className="flex items-center justify-between pt-8 border-t border-black/5">
               <div className="flex items-center gap-6">
                  <div className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-black/20">Operational</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-black/20">Operational Status</span>
                  </div>
-                 <div className="text-[9px] font-black uppercase tracking-widest text-black/20">© 2026 CAARA SYSTEMS ADM</div>
+                 <div className="text-[9px] font-black uppercase tracking-widest text-black/20">© 2026 SheDoo Global</div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-4">
                  <Lock className="h-3 w-3 text-black/10" />
                  <span className="text-[9px] font-black uppercase tracking-widest text-black/10">End-to-End Encryption Active</span>
               </div>

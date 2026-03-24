@@ -9,12 +9,12 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-poppins" });
 
 export const metadata: Metadata = {
-  title: "Caara - Where Every Queen Wears Caara",
-  description: "Discover the Caara collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
-  keywords: ["fashion", "clothing", "Caara", "premium", "style", "elegance", "women's fashion"],
-  authors: [{ name: "Caara Fashion" }],
-  creator: "Caara Fashion",
-  publisher: "Caara Fashion",
+  title: "SheDoo - Explore Global Trends",
+  description: "Discover SheDoo - High-quality fashion inspired by global trends. Premium styles, everyday comfort.",
+  keywords: ["fashion", "clothing", "SheDoo", "trends", "style", "Aliexpress style", "SHEIN style"],
+  authors: [{ name: "SheDoo Fashion" }],
+  creator: "SheDoo Fashion",
+  publisher: "SheDoo Fashion",
   formatDetection: {
     email: false,
     address: false,
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Caara - Where Every Queen Wears Caara",
-    description: "Discover the Caara collection - Premium fashion that defines your universe. Bold, extraordinary, and uniquely you.",
-    url: "https://caara-two.vercel.app",
-    siteName: "Caara Fashion",
+    title: "SheDoo - Explore Global Trends",
+    description: "Discover SheDoo - High-quality fashion inspired by global trends.",
+    url: "https://shedoo.com",
+    siteName: "SheDoo Fashion",
     images: [
       {
         url: "/og-image.jpg",
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Caara - Where Every Queen Wears Caara",
-    description: "Discover the Caara collection - Premium fashion that defines your universe.",
+    title: "SheDoo - Explore Global Trends",
+    description: "Discover SheDoo - High-quality fashion inspired by global trends.",
     images: ["/og-image.jpg"],
   },
   robots: {

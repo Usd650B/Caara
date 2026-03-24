@@ -17,12 +17,12 @@ export function Footer() {
           {/* Brand - Span 2 Columns */}
           <div className="lg:col-span-2 space-y-8">
             <Link href="/" className="inline-block group">
-              <span className="text-4xl sm:text-5xl font-black tracking-tighter" style={{ fontFamily: 'var(--font-playfair)' }}>
-                <span className="gradient-text">CAARA</span>
+              <span className="text-2xl sm:text-3xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
+                <span className="gradient-text">SheDoo</span>
               </span>
               <div className="h-1.5 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
             </Link>
-            <p className="text-muted-foreground text-lg leading-relaxed max-w-md font-light">
+            <p className="text-muted-foreground text-xs leading-relaxed max-w-sm font-light">
               {t("Elevating the ordinary into the extraordinary. Discover a curated universe of fashion that defines your unique essence.")}
             </p>
             <div className="flex items-center space-x-4">
@@ -38,7 +38,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary">{t("Dimensions")}</h3>
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary">{t("Explore")}</h3>
             <ul className="space-y-4">
               {["Discover", "Collections", "The Atelier", "Concierge"].map((link) => (
                 <li key={link}>
@@ -53,7 +53,7 @@ export function Footer() {
 
           {/* Customer Service */}
           <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Assistance")}</h3>
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Support")}</h3>
             <ul className="space-y-4">
               <li>
                 <Link href="/track" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
@@ -95,7 +95,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
-            &copy; 2024 <span className="gradient-text font-black">CAARA</span>. Defined by Excellence.
+            &copy; 2026 <span className="gradient-text font-black">SheDoo</span>. All rights reserved.
           </p>
           <div className="flex items-center space-x-6">
             <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">Privacy</Link>
