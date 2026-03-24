@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { Mail, Phone, ShoppingBag } from "lucide-react";
+import { Mail, Phone, ShoppingBag, Crown } from "lucide-react";
 import { useSettings } from "@/lib/settings";
 
 export function Footer() {
@@ -17,10 +17,14 @@ export function Footer() {
           {/* Brand - Span 2 Columns */}
           <div className="lg:col-span-2 space-y-8">
             <Link href="/" className="inline-block group">
-              <span className="text-2xl sm:text-3xl font-black tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
-                <span className="gradient-text">SheDoo</span>
-              </span>
-              <div className="h-1.5 w-12 gradient-bg mt-2 rounded-full transition-all duration-500 group-hover:w-full"></div>
+              <div className="flex items-center gap-2 mb-2">
+                <Crown className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
+                <span className="text-2xl sm:text-3xl tracking-tighter">
+                  <span className="font-black text-black">She</span>
+                  <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
+                </span>
+              </div>
+              <div className="h-1 w-8 bg-pink-500 rounded-full transition-all duration-500 group-hover:w-full opacity-30 group-hover:opacity-100"></div>
             </Link>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-sm font-light">
               {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}

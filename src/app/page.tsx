@@ -76,8 +76,10 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-16 sm:justify-center space-y-3">
             <div className="space-y-1.5">
-              <h1 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] animate-in fade-in slide-in-from-left duration-700">
-                SheDoo Glow
+              <h1 className="text-4xl sm:text-7xl tracking-tighter uppercase leading-[0.8] animate-in fade-in slide-in-from-left duration-1000">
+                <span className="font-black text-white">She</span>
+                <span className="font-light italic text-pink-400">Doo</span>
+                <span className="block text-xl sm:text-3xl font-black text-white/40 mt-2">Glow</span>
               </h1>
               <p className="text-white/80 text-[9px] sm:text-base max-w-md font-medium">
                 {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}

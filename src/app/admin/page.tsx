@@ -13,7 +13,7 @@ import {
   User, Shield, Bell, Globe, CreditCard, Lock,
   Mail, Phone, MapPin, ExternalLink, RefreshCw, 
   Target, Zap, Save, Trash, DollarSign, TrendingUp as TrendingUpIcon,
-  PlusCircle, CheckCircle, AlertCircle, ChevronLeft
+  PlusCircle, CheckCircle, AlertCircle, ChevronLeft, Crown
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isSellerAuthenticated, signOutSeller } from "@/lib/auth";
@@ -873,9 +873,13 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-14">
             <div className="flex items-center space-x-4 group cursor-pointer">
               <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10 group-hover:scale-110 transition-transform">
-                <span className="font-black text-xl italic">S</span>
+                <Crown className="h-6 w-6 text-yellow-500 fill-yellow-500/20" />
               </div>
-              <span className="text-2xl font-black tracking-tighter">SheDoo OS</span>
+              <span className="text-2xl tracking-tighter">
+                <span className="font-black text-black">She</span>
+                <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-black/20 ml-2">OS</span>
+              </span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="lg:hidden rounded-xl h-10 w-10"><X className="h-5 w-5" /></Button>
           </div>

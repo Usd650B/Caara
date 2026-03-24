@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight, Crown } from "lucide-react";
 import { getCurrentUser, signOutCustomer, signInWithGoogle } from "@/lib/customer-auth";
 import { useSettings } from "@/lib/settings";
 
@@ -90,12 +90,24 @@ export function Header() {
             </nav>
           </div>
 
-          {/* Center - Logo */}
+          {/* Center - Highly Brandable Logo */}
           <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group">
-            <span className="text-2xl sm:text-3xl font-black tracking-tight transition-all duration-500 group-hover:scale-105">
-              <span className="gradient-text">SheDoo</span>
-              <div className="h-1 w-0 group-hover:w-full gradient-bg mt-0.5 transition-all duration-500 rounded-full mx-auto opacity-0 group-hover:opacity-100"></div>
-            </span>
+            <div className="flex flex-col items-center">
+              <div className="flex items-center gap-1 sm:gap-1.5 opacity-0 animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                <Crown className="h-2 w-2 sm:h-3 sm:w-3 text-yellow-500 fill-yellow-500/20 rotate-12" />
+                <div className="h-[1px] w-4 sm:w-6 bg-yellow-500/30" />
+                <Crown className="h-2 w-2 sm:h-3 sm:w-3 text-yellow-500 fill-yellow-500/20 -rotate-12" />
+              </div>
+              <span className="text-2xl sm:text-3xl tracking-tighter transition-all duration-700 group-hover:tracking-normal">
+                <span className="font-black text-black">She</span>
+                <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
+              </span>
+              <div className="flex items-center gap-1.5 mt-0.5 h-1">
+                <div className="h-[1.5px] w-0 group-hover:w-8 bg-black transition-all duration-500 rounded-full opacity-0 group-hover:opacity-100"></div>
+                <div className="w-1 h-1 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-300 shadow-[0_0_8px_rgba(236,72,153,0.5)]"></div>
+                <div className="h-[1.5px] w-0 group-hover:w-8 bg-pink-500 transition-all duration-500 rounded-full opacity-0 group-hover:opacity-100"></div>
+              </div>
+            </div>
           </Link>
 
           {/* Right - User Actions */}
