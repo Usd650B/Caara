@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://caara-two.vercel.app"),
+  metadataBase: new URL("https://shedoo.com"),
   alternates: {
     canonical: "/",
   },
@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
       </head>
       <body
         className={`${inter.variable} ${poppins.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}

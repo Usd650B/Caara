@@ -2,8 +2,8 @@
 import { getFirebaseAuth } from './firebase';
 
 // Single seller credentials (you as the owner)
-const SELLER_EMAIL = 'admin@caara.com';
-const SELLER_PASSWORD = 'caara123';
+const SELLER_EMAIL = 'admin@shedoo.com';
+const SELLER_PASSWORD = 'shedoo123';
 
 export const signInAsSeller = async () => {
   try {

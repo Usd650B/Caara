@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
     setError("");
 
     // Simple authentication for single seller
-    if (email === "admin@cara.com" && password === "caara123") {
+    if (email === "admin@shedoo.com" && password === "shedoo123") {
       const result = await signInAsSeller();
       if (result.success) {
         router.push("/admin");

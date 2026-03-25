@@ -87,8 +87,8 @@ const AddProductModal = ({
     video: editingProduct?.video || "",
     description: editingProduct?.description || "",
     stock: editingProduct?.stock || 100,
-    sizes: editingProduct?.sizes || ["Standard"],
-    colors: editingProduct?.colors || ["Natural Black"],
+    sizes: editingProduct?.sizes || [],
+    colors: editingProduct?.colors || [],
   });
 
   const [newSize, setNewSize] = useState("");
