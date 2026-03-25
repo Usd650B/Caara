@@ -284,106 +284,172 @@ export default function ProductDetailPage() {
           <div className="lg:col-span-5 flex flex-col pt-0 lg:pt-4">
             <div className="space-y-6 lg:space-y-10">
               {/* Context & Title */}
-              <div className="space-y-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">{t(product.category)}</p>
-                <h1 className="text-4xl font-black tracking-tight text-black leading-[1.1]">{product.name}</h1>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
-                    <span className="text-sm font-black">{product.rating || "4.8"}</span>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
+                    {product.badge || 'Premium Selection'}
+                  </span>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 underline decoration-black/10 underline-offset-4">{t(product.category)}</p>
+                </div>
+                
+                <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-black leading-[1.05]">{product.name}</h1>
+                
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-1.5">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star key={s} className={`h-3 w-3 ${s <= 4 ? 'text-black fill-black' : 'text-black/10 fill-black/10'}`} />
+                    ))}
+                    <span className="text-xs font-black ml-1">4.8</span>
                   </div>
-                  <span className="text-xs font-bold text-black/20 uppercase tracking-widest">{product.reviews || "120"} Trusted Reviews</span>
+                  <div className="h-4 w-px bg-black/10" />
+                  <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">{product.reviews || "120"} Verified Reviews</span>
                 </div>
               </div>
 
               {/* Price Block - Modern & Clean */}
-              <div className="flex items-baseline gap-4 bg-gray-50/50 p-6 rounded-[2rem] border border-black/[0.02]">
-                <span className="text-4xl lg:text-5xl font-black text-black tracking-tighter">
-                  {formatPrice(product.price)}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-xl text-black/25 line-through font-bold">
-                    {formatPrice(product.originalPrice)}
+              <div className="flex flex-col gap-2 bg-gradient-to-br from-gray-50/80 to-white p-8 rounded-[2.5rem] border border-black/[0.03] shadow-inner relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
+                  <ShoppingBag className="h-24 w-24" />
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Retail Value</p>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-5xl font-black text-black tracking-tighter">
+                    {formatPrice(product.price)}
                   </span>
-                )}
+                  {product.originalPrice && (
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-green-600 uppercase mb-1">Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
+                      <span className="text-lg text-black/20 line-through font-bold leading-none">
+                        {formatPrice(product.originalPrice)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
+                  <CheckCircle className="h-3 w-3 text-green-500" />
+                  Tax Included & Carbon Neutral Shipping
+                </div>
               </div>
 
               {/* Selections */}
-              <div className="space-y-8 lg:space-y-12 py-4">
+              <div className="space-y-10 py-4">
                 {/* Variant Selection */}
-                <div className="space-y-4">
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
-                    <span>Select Color</span>
-                    <span className="text-black">{selectedColor}</span>
+                {product.colors && product.colors.length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
+                      <span className="text-black/40">Chromatic Node</span>
+                      <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedColor}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {product.colors.map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setSelectedColor(color)}
+                          className={`group relative px-6 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border-2 overflow-hidden ${
+                            selectedColor === color
+                              ? "border-black bg-black text-white shadow-xl scale-105"
+                              : "border-black/5 hover:border-black/20 text-black/40"
+                          }`}
+                        >
+                          <span className="relative z-10">{t(color)}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {(product.colors || ["Black", "Nude", "Pink"]).map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={`px-6 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2 ${
-                          selectedColor === color
-                            ? "border-black bg-black text-white shadow-xl"
-                            : "border-gray-100 hover:border-black/10 text-black/40"
-                        }`}
-                      >
-                        {t(color)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                )}
 
-                <div className="space-y-4">
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
-                    <span>Select Size</span>
-                    <span className="text-black">{selectedSize}</span>
+                {product.sizes && product.sizes.length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
+                      <span className="text-black/40">Dimensional Scale</span>
+                      <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedSize}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {product.sizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`min-w-[4.5rem] px-5 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border-2 ${
+                            selectedSize === size
+                              ? "border-black bg-black text-white shadow-xl scale-105"
+                              : "border-black/5 hover:border-black/20 text-black/40"
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {(product.sizes || ["S", "M", "L"]).map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`min-w-[4rem] px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2 ${
-                          selectedSize === size
-                            ? "border-black bg-black text-white shadow-xl"
-                            : "border-gray-100 hover:border-black/10 text-black/40"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                )}
 
                 {/* Quantity */}
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 block">Quantity</span>
-                  <div className="inline-flex items-center bg-gray-50 border border-gray-100 rounded-2xl p-2">
-                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><Minus className="h-4 w-4" /></button>
-                    <span className="w-12 text-center text-sm font-black">{quantity}</span>
-                    <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><Plus className="h-4 w-4" /></button>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
+                    <span>Batch Quantity</span>
+                    {product.stock !== undefined && product.stock < 10 && (
+                      <span className="text-red-500 animate-pulse">Critical: Only {product.stock} Left</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="inline-flex items-center bg-black/[0.02] border border-black/5 rounded-[1.5rem] p-2">
+                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-xl transition-all"><Minus className="h-4 w-4" /></button>
+                      <span className="w-14 text-center text-sm font-black tracking-widest">{quantity}</span>
+                      <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-xl transition-all"><Plus className="h-4 w-4" /></button>
+                    </div>
+                    <div className="flex-1 text-[9px] font-black uppercase tracking-widest text-black/20 leading-relaxed">
+                      Optimized for supply chain node efficiency.
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Main Actions */}
-              <div className="space-y-4 pt-4">
-                <Button 
-                  onClick={addToCart}
-                  className={`w-full h-16 text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl transition-all hover:-translate-y-1 ${
-                    isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/90'
-                  }`}
-                >
-                  {isAdded ? "Secured to Cart" : t("Add to Bag")}
-                </Button>
-                <div className="grid grid-cols-2 gap-4">
-                   <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
-                      <Truck className="h-4 w-4 text-black/40" />
-                      <span className="text-[9px] font-black uppercase tracking-widest text-black/60">Free Logistics</span>
+              <div className="space-y-6 pt-6">
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={addToCart}
+                    className={`flex-1 h-20 text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] shadow-2xl transition-all active:scale-95 ${
+                      isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/90 hover:-translate-y-1'
+                    }`}
+                  >
+                    {isAdded ? (
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5" /> Secured to Cart
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <ShoppingBag className="h-5 w-5" /> {t("Add to Bag")}
+                      </div>
+                    )}
+                  </Button>
+                  <button 
+                    onClick={() => setIsFavorited(!isFavorited)}
+                    className={`w-20 h-20 rounded-[2rem] border-2 flex items-center justify-center transition-all ${
+                      isFavorited ? 'bg-red-50 border-red-500 text-red-500' : 'border-black/5 hover:border-black/20 text-black/20'
+                    }`}
+                  >
+                    <Heart className={`h-6 w-6 ${isFavorited ? 'fill-current' : ''}`} />
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                        <Truck className="h-4 w-4 text-black" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Express Logistics</span>
+                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Complimentary Global Delivery</span>
+                      </div>
                    </div>
-                   <div className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
-                      <Shield className="h-4 w-4 text-black/40" />
-                      <span className="text-[9px] font-black uppercase tracking-widest text-black/60">Secure Protocol</span>
+                   <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                        <Shield className="h-4 w-4 text-black" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Asset Protocol</span>
+                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Full Data Encryption Secured</span>
+                      </div>
                    </div>
                 </div>
               </div>
@@ -397,6 +463,22 @@ export default function ProductDetailPage() {
                   </p>
                 </div>
               )}
+
+              {/* Delivery & Security Minimalist Section */}
+              <div className="pt-10 space-y-6 border-t border-black/5 mt-10">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
+                  <span className="text-black/40 group-hover:text-black">Logistics Breakdown</span>
+                  <Truck className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
+                  <span className="text-black/40 group-hover:text-black">Secure Payment Protocol</span>
+                  <Shield className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
+                  <span className="text-black/40 group-hover:text-black">Authenticity Guarantee</span>
+                  <CheckCircle className="h-3.5 w-3.5" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

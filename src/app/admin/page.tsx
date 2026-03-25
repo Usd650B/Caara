@@ -87,7 +87,12 @@ const AddProductModal = ({
     video: editingProduct?.video || "",
     description: editingProduct?.description || "",
     stock: editingProduct?.stock || 100,
+    sizes: editingProduct?.sizes || ["Standard"],
+    colors: editingProduct?.colors || ["Natural Black"],
   });
+
+  const [newSize, setNewSize] = useState("");
+  const [newColor, setNewColor] = useState("");
 
   const isEdit = !!editingProduct;
 
@@ -106,8 +111,8 @@ const AddProductModal = ({
       images: formData.images.filter(img => img && img !== ""),
       video: formData.video,
       description: formData.description,
-      sizes: editingProduct?.sizes || ["Standard", "12\"", "14\"", "16\"", "18\"", "20\"", "22\"", "24\""],
-      colors: editingProduct?.colors || ["Natural Black", "Honey Blonde", "Platinum", "Jet Black"],
+      sizes: formData.sizes,
+      colors: formData.colors,
       stock: Number(formData.stock),
       status: editingProduct?.status || 'active' as const
     };
@@ -185,6 +190,106 @@ const AddProductModal = ({
                     <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold px-4 focus:ring-0">
                       {categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
+                  </div>
+
+                  {/* Size Management */}
+                  <div className="space-y-4">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Available Dimensions (Sizes)</Label>
+                    <div className="flex gap-2">
+                       <Input 
+                        value={newSize} 
+                        onChange={e => setNewSize(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = newSize.trim();
+                            if (val && !formData.sizes.includes(val)) {
+                              setFormData({ ...formData, sizes: [...formData.sizes, val] });
+                              setNewSize("");
+                            }
+                          }
+                        }}
+                        className="h-12 bg-black/[0.01] border-black/5 rounded-xl font-bold"
+                        placeholder='e.g. 18", XL, 750ml...'
+                       />
+                       <Button 
+                        type="button"
+                        onClick={() => {
+                          const val = newSize.trim();
+                          if (val && !formData.sizes.includes(val)) {
+                            setFormData({ ...formData, sizes: [...formData.sizes, val] });
+                            setNewSize("");
+                          }
+                        }}
+                        className="h-12 w-12 bg-black text-white rounded-xl flex-shrink-0"
+                       >
+                         <Plus className="h-4 w-4" />
+                       </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {formData.sizes.map((size, idx) => (
+                        <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest group">
+                          {size}
+                          <button 
+                            type="button"
+                            onClick={() => setFormData({ ...formData, sizes: formData.sizes.filter((_, i) => i !== idx) })}
+                            className="hover:text-red-400 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Color Management */}
+                  <div className="space-y-4">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Chromatic Spectrum (Colors)</Label>
+                    <div className="flex gap-2">
+                       <Input 
+                        value={newColor} 
+                        onChange={e => setNewColor(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = newColor.trim();
+                            if (val && !formData.colors.includes(val)) {
+                              setFormData({ ...formData, colors: [...formData.colors, val] });
+                              setNewColor("");
+                            }
+                          }
+                        }}
+                        className="h-12 bg-black/[0.01] border-black/5 rounded-xl font-bold"
+                        placeholder="e.g. Jet Black, Pink, Matte..."
+                       />
+                       <Button 
+                        type="button"
+                        onClick={() => {
+                          const val = newColor.trim();
+                          if (val && !formData.colors.includes(val)) {
+                            setFormData({ ...formData, colors: [...formData.colors, val] });
+                            setNewColor("");
+                          }
+                        }}
+                        className="h-12 w-12 bg-black text-white rounded-xl flex-shrink-0"
+                       >
+                         <Plus className="h-4 w-4" />
+                       </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {formData.colors.map((color, idx) => (
+                        <div key={idx} className="flex items-center gap-2 px-4 py-2 border border-black/10 text-black rounded-full text-[10px] font-black uppercase tracking-widest">
+                          {color}
+                          <button 
+                            type="button"
+                            onClick={() => setFormData({ ...formData, colors: formData.colors.filter((_, i) => i !== idx) })}
+                            className="hover:text-red-500 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="space-y-3">
