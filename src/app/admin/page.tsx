@@ -792,15 +792,23 @@ const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps)
                   </div>
                   <div className="space-y-4">
                     {order.items.map((item, index) => (
-                      <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
-                        <div className="w-12 h-16 bg-white rounded-lg overflow-hidden border border-black/5">
+                      <div key={index} className="flex items-center gap-6 p-4 bg-gray-50 rounded-[1.5rem] border border-black/5 transition-all hover:bg-black/[0.02]">
+                        <div className="w-16 h-20 bg-white rounded-xl overflow-hidden border border-black/10 shadow-sm flex-shrink-0">
                           <img src={item.image} className="w-full h-full object-cover" alt="" />
                         </div>
-                        <div className="flex-1">
-                          <p className="text-[10px] font-black uppercase leading-tight">{item.name}</p>
-                          <p className="text-[9px] font-bold text-black/30 uppercase mt-1">QTY: {item.quantity} • {item.size} / {item.color}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-black uppercase tracking-tight text-black truncate">{item.name}</p>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                             <span className="px-2 py-1 bg-black text-white text-[8px] font-black uppercase tracking-widest rounded-md">Selected Type</span>
+                             <span className="px-2 py-1 bg-white border border-black/10 text-black text-[8px] font-black uppercase tracking-widest rounded-md">Size: {item.size}</span>
+                             <span className="px-2 py-1 bg-white border border-black/10 text-black text-[8px] font-black uppercase tracking-widest rounded-md">Color: {item.color}</span>
+                          </div>
+                          <p className="text-[9px] font-bold text-black/30 uppercase mt-2 tracking-widest">QTY: {item.quantity}</p>
                         </div>
-                        <p className="text-sm font-black text-black">${item.price}</p>
+                        <div className="text-right">
+                          <p className="text-sm font-black text-black">${item.price}</p>
+                          <p className="text-[9px] font-bold text-black/20 uppercase mt-1">Unit Price</p>
+                        </div>
                       </div>
                     ))}
                     <div className="pt-4 border-t border-black/5 flex justify-between items-center">

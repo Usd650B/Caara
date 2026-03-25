@@ -99,18 +99,22 @@ export default function ProductDetailPage() {
       return;
     }
 
+    const selectedMedia = productMedia[currentImageIndex];
+    const isVideo = selectedMedia?.includes('video');
+
     const cartItem = {
       id: product.id,
       name: product.name,
       price: product.price,
       originalPrice: product.originalPrice,
       category: product.category,
-      image: product.image,
+      image: isVideo ? product.image : selectedMedia, // Use primary image if video is selected
       quantity,
       size: selectedSize,
       color: selectedColor,
       rating: product.rating,
-      reviews: product.reviews
+      reviews: product.reviews,
+      selectedVariantImage: isVideo ? product.image : selectedMedia // Extra field for clarity
     };
 
     // Get existing cart
@@ -255,28 +259,42 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Thumbnail Media - Balanced Size */}
-            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
-              {productMedia.map((media, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`flex-shrink-0 w-20 h-24 rounded-2xl overflow-hidden border-2 transition-all ${
-                    currentImageIndex === index ? 'border-black shadow-lg scale-105' : 'border-transparent hover:border-gray-200'
-                  }`}
-                >
-                  {media.includes('video') ? (
-                    <div className="relative w-full h-full">
-                      <video src={media} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                        <Play className="h-4 w-4 text-white" />
+            {/* Thumbnail Media / Type Selection - Balanced Size */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40 px-2">
+                <span>Select Style / Type</span>
+                <span className="text-black">Option {currentImageIndex + 1}</span>
+              </div>
+              <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide px-2">
+                {productMedia.map((media, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`flex-shrink-0 w-24 h-32 rounded-2xl overflow-hidden border-2 transition-all relative group ${
+                      currentImageIndex === index ? 'border-black shadow-xl scale-105' : 'border-black/5 hover:border-black/20'
+                    }`}
+                  >
+                    {media.includes('video') ? (
+                      <div className="relative w-full h-full">
+                        <video src={media} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <Play className="h-4 w-4 text-white" />
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <LazyImage src={media} className="w-full h-full" aspectRatio="aspect-square" alt="" />
-                  )}
-                </button>
-              ))}
+                    ) : (
+                      <LazyImage src={media} className="w-full h-full" aspectRatio="aspect-square" alt="" />
+                    )}
+                    
+                    {currentImageIndex === index && (
+                      <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                        <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg">
+                          <CheckCircle className="h-3 w-3 text-black" />
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
