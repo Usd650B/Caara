@@ -59,86 +59,83 @@ export default function Home() {
 
       {/* Hero Banner - Handbag Primary Focus */}
       <section className="px-3 pt-3 pb-2 sm:py-6 max-w-screen-2xl mx-auto">
-        <div className="relative h-[500px] sm:h-[750px] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden shadow-2xl group border border-black/5">
+        <div className="relative h-[600px] sm:h-[850px] rounded-[3rem] sm:rounded-[5rem] overflow-hidden shadow-2xl group border border-black/5 bg-[#F9F9F9]">
           <img 
-            src="/images/handbag_hero.png" 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[4000ms] ease-out shadow-inner" 
-            alt="Affordable Stylish Handbags"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1200";
-            }}
+            src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=100&w=2400" 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[4000ms] ease-out" 
+            alt="SheDoo Luxury Handbags"
           />
           
-          {/* Subtle Overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          {/* High-End Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
 
-          <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-24 space-y-8">
-            <div className="max-w-4xl space-y-6">
-              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 animate-in fade-in slide-in-from-bottom duration-700">
-                <Sparkles className="h-3.5 w-3.5 text-pink-300" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">2026 Premium Selection</span>
+          <div className="absolute inset-0 flex flex-col justify-end p-10 sm:p-28 space-y-10">
+            <div className="max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-2xl rounded-full border border-white/20">
+                <Sparkles className="h-4 w-4 text-pink-400" />
+                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-white">SheDoo 2026 Collection</span>
               </div>
               
-              <div className="space-y-4">
-                <h1 className="text-5xl sm:text-[10rem] font-black tracking-tighter uppercase leading-[0.8] text-white animate-in fade-in slide-in-from-left duration-1000">
+              <div className="space-y-6">
+                <h1 className="text-6xl sm:text-[11rem] font-black tracking-tighter uppercase leading-[0.8] text-white">
                   Affordable<br/>
-                  <span className="text-pink-400 italic font-light lowercase">Stylish</span><br/>
+                  <span className="text-pink-500 italic font-light lowercase">Stylish</span><br/>
                   Handbags
                 </h1>
-                <p className="text-white/60 text-xs sm:text-base font-medium max-w-lg tracking-wide leading-relaxed">
-                  Elevate your everyday style with our curated collection of luxury-grade handbags designed for the modern woman who values both aesthetics and value.
+                <p className="text-white/50 text-sm sm:text-lg font-medium max-w-xl tracking-wide leading-relaxed">
+                  Curated for distinction. Discover the SheDoo philosophy of accessible luxury, where every stitch defines contemporary elegance.
                 </p>
               </div>
               
-              <div className="flex flex-wrap items-center gap-8 pt-4">
+              <div className="flex flex-wrap items-center gap-12 pt-6">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Starting Price</span>
-                  <span className="text-5xl font-black text-white tracking-tighter">$49.00</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-2">Boutique Pricing</span>
+                  <span className="text-6xl font-black text-white tracking-tighter">$49.00</span>
                 </div>
-                <div className="h-12 w-px bg-white/10 hidden sm:block" />
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center sm:items-start">
-                     <div className="flex items-center gap-1.5 mb-1">
-                        <CheckCircle className="h-3 w-3 text-green-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white">Genuine</span>
+                <div className="h-16 w-px bg-white/10 hidden sm:block" />
+                <div className="flex items-center gap-6">
+                  <div className="flex flex-col">
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span className="text-[11px] font-black uppercase tracking-widest text-white">Authentic</span>
                      </div>
-                     <span className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Verified Quality</span>
+                     <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Premium Leather</span>
                   </div>
-                  <div className="flex flex-col items-center sm:items-start">
-                     <div className="flex items-center gap-1.5 mb-1">
-                        <Truck className="h-3 w-3 text-pink-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white">Global</span>
+                  <div className="flex flex-col">
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <Truck className="h-4 w-4 text-pink-500" />
+                        <span className="text-[11px] font-black uppercase tracking-widest text-white">Express</span>
                      </div>
-                     <span className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Express Shipping</span>
+                     <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Global Delivery</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-5 pt-8">
+            <div className="flex flex-col sm:flex-row gap-6">
               <Button 
                 onClick={() => document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-white text-black hover:bg-black hover:text-white h-24 px-14 text-xs font-black uppercase tracking-[0.5em] transition-all rounded-[2.5rem] shadow-2xl group active:scale-95 z-10"
+                className="bg-white text-black hover:bg-black hover:text-white h-28 px-16 text-xs font-black uppercase tracking-[0.6em] transition-all rounded-[3rem] shadow-3xl group active:scale-95 z-10"
               >
-                {t("Order Now")}
-                <ShoppingBag className="ml-5 h-6 w-6 group-hover:rotate-12 transition-transform" />
+                {t("Shop Now")}
+                <ShoppingBag className="ml-6 h-6 w-6 group-hover:rotate-12 transition-transform" />
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Category removal - Direct Stream of Handbags */}
-      <section id="explore-section" className="px-6 sm:px-16 py-24 max-w-screen-2xl mx-auto">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12 mb-20">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/5 rounded-full">
-               <TrendingUp className="h-3 w-3 text-black/40" />
-               <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Market Trend: High Demand</span>
+      {/* Handbag Stream */}
+      <section id="explore-section" className="px-6 sm:px-16 py-32 max-w-screen-2xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24">
+          <div className="space-y-8 animate-in fade-in slide-in-from-left duration-1000">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-black/5 rounded-full">
+               <TrendingUp className="h-4 w-4 text-black/60" />
+               <span className="text-[10px] font-black uppercase tracking-widest text-black/50">Modern Trends 2026</span>
             </div>
-            <h2 className="text-4xl sm:text-7xl font-black tracking-tighter uppercase leading-none text-black">
-               The Handbag<br/>
-               <span className="text-black/10">Collective</span>
+            <h2 className="text-5xl sm:text-8xl font-black tracking-tighter uppercase leading-none text-black">
+               SheDoo Handbag<br/>
+               <span className="text-black/10">Collection</span>
             </h2>
           </div>
           
