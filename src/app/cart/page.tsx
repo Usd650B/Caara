@@ -132,10 +132,10 @@ export default function CartPage() {
     <div className="min-h-screen bg-white py-12 sm:py-20">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Minimalist Header */}
-        <div className="mb-16">
-          <h1 className="text-5xl font-black tracking-tighter text-black uppercase">{t("Your Bag")}</h1>
-          <p className="text-black/30 text-[10px] font-black uppercase tracking-[0.3em] mt-4">
-            {getTotalItems()} Items Selected for Deployment
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold tracking-tight text-black">{t("Your Bag")}</h1>
+          <p className="text-black/50 text-sm mt-2">
+            {getTotalItems()} items in your cart
           </p>
         </div>
 
@@ -165,8 +165,8 @@ export default function CartPage() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-start">
                         <div className="space-y-1">
-                           <p className="text-[9px] font-black uppercase tracking-widest text-black/20">{t(item.category)}</p>
-                           <h3 className="text-2xl font-black tracking-tight text-black uppercase">{item.name}</h3>
+                           <p className="text-[10px] font-semibold uppercase tracking-widest text-black/40">{t(item.category)}</p>
+                           <h3 className="text-base font-semibold tracking-tight text-black">{item.name}</h3>
                         </div>
                         <button
                           onClick={() => removeItem(item.id, item.size, item.color)}
@@ -178,32 +178,32 @@ export default function CartPage() {
                       
                       <div className="flex items-center gap-6">
                         <div className="flex flex-col">
-                           <span className="text-[9px] font-black uppercase tracking-widest text-black/20 mb-1">Variant</span>
-                           <span className="text-xs font-bold uppercase tracking-widest text-black">{t(item.color)} / {item.size}</span>
+                           <span className="text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-1">Variant</span>
+                           <span className="text-xs font-semibold text-black">{t(item.color)} / {item.size}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between mt-8">
                       {/* Quantity Controller - Minimalist */}
-                      <div className="flex items-center bg-gray-50 border border-gray-100 rounded-xl p-1">
+                      <div className="flex items-center border border-black/10 rounded-lg overflow-hidden">
                         <button
                           onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
-                          className="w-10 h-10 flex items-center justify-center text-black/40 hover:text-black transition-all"
+                          className="w-8 h-8 flex items-center justify-center text-black/60 hover:bg-black/5 transition-all"
                         >
                           <Minus className="h-3 w-3" />
                         </button>
-                        <span className="w-8 text-center font-black text-sm">{item.quantity}</span>
+                        <span className="w-8 text-center font-semibold text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                          className="w-10 h-10 flex items-center justify-center text-black/40 hover:text-black transition-all"
+                          className="w-8 h-8 flex items-center justify-center text-black/60 hover:bg-black/5 transition-all"
                         >
                           <Plus className="h-3 w-3" />
                         </button>
                       </div>
 
                       <div className="text-right">
-                         <span className="text-2xl font-black text-black tracking-tighter">{formatPrice(item.price)}</span>
+                         <span className="text-lg font-bold text-black">{formatPrice(item.price)}</span>
                       </div>
                     </div>
                   </div>
@@ -215,27 +215,27 @@ export default function CartPage() {
           {/* Checkout Column - 4 Columns */}
           <div className="lg:col-span-4">
             <div className="sticky top-32 space-y-8">
-              <div className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
-                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black/30 mb-10">Order Summary</h2>
+              <div className="bg-gray-50/50 rounded-2xl p-6 border border-black/5">
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-black/50 mb-6">Order Summary</h2>
                 
-                <div className="space-y-6">
-                  <div className="flex justify-between text-black/40 text-[10px] font-black uppercase tracking-widest">
-                    <span>Subtotal Value</span>
-                    <span className="text-black">{formatPrice(getTotalPrice())}</span>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-sm text-black/60">
+                    <span>Subtotal</span>
+                    <span className="text-black font-semibold">{formatPrice(getTotalPrice())}</span>
                   </div>
-                  <div className="flex justify-between items-center text-black/40 text-[10px] font-black uppercase tracking-widest">
-                    <span>Logistics</span>
-                    <span className="text-green-600">Free</span>
+                  <div className="flex justify-between items-center text-sm text-black/60">
+                    <span>Shipping</span>
+                    <span className="text-green-600 font-semibold">Free</span>
                   </div>
                   
-                  <div className="pt-10 border-t border-black/5">
-                    <div className="flex justify-between items-baseline mb-10">
-                      <span className="text-xs font-black uppercase tracking-widest">Estimated Total</span>
-                      <span className="text-4xl font-black text-black tracking-tighter">{formatPrice(getTotalPrice())}</span>
+                  <div className="pt-6 border-t border-black/5">
+                    <div className="flex justify-between items-baseline mb-6">
+                      <span className="text-sm font-bold text-black">Estimated Total</span>
+                      <span className="text-2xl font-bold text-black">{formatPrice(getTotalPrice())}</span>
                     </div>
 
                     <Link href="/checkout">
-                      <Button className="w-full h-16 bg-black text-white hover:bg-black/90 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] shadow-2xl transition-all hover:-translate-y-1">
+                      <Button className="w-full h-12 bg-black text-white hover:bg-black/80 rounded-xl text-sm font-semibold transition-all">
                         {t("Check Out Now")}
                       </Button>
                     </Link>
@@ -246,9 +246,9 @@ export default function CartPage() {
               <div className="text-center">
                  <button 
                   onClick={clearCart}
-                  className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+                  className="text-xs font-semibold text-black/40 hover:text-black transition-colors"
                 >
-                   Wipe Bag Contents
+                   Clear Cart
                 </button>
               </div>
             </div>
