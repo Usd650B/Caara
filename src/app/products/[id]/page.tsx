@@ -321,7 +321,7 @@ export default function ProductDetailPage() {
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 underline decoration-black/10 underline-offset-4">{t(product.category)}</p>
                 </div>
                 
-                <h1 className="text-4xl lg:text-7xl font-black tracking-tight text-black leading-[1] uppercase">{product.name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black leading-snug">{product.name}</h1>
                 
                 <div className="flex items-center justify-center sm:justify-start gap-6">
                   <div className="flex items-center gap-1.5">
@@ -335,60 +335,43 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Price Block - Wide format */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-br from-gray-50/80 to-white p-10 rounded-[3rem] border border-black/[0.03] shadow-inner relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
-                  <ShoppingBag className="h-32 w-32" />
+              {/* Price Block */}
+              <div className="flex items-center justify-between gap-4 py-4 border-y border-black/5">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-3xl font-bold text-black">{formatPrice(product.price)}</span>
+                  {product.originalPrice && (
+                    <>
+                      <span className="text-base text-black/30 line-through">{formatPrice(product.originalPrice)}</span>
+                      <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md">Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
+                    </>
+                  )}
                 </div>
-                <div className="space-y-2 relative z-10">
-                   <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Product Price</p>
-                   <div className="flex items-baseline justify-center sm:justify-start gap-4">
-                      <span className="text-6xl font-black text-black tracking-tighter">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.originalPrice && (
-                        <div className="flex flex-col">
-                          <span className="text-[10px] font-black text-green-600 uppercase mb-1">Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
-                          <span className="text-xl text-black/20 line-through font-bold leading-none">
-                            {formatPrice(product.originalPrice)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                </div>
-                <div className="flex flex-col items-center sm:items-end gap-2 relative z-10">
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                    Tax Included
-                  </div>
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
-                    <Truck className="h-3 w-3 text-pink-500" />
-                    Global Shipping
-                  </div>
+                <div className="flex flex-col items-end gap-1 text-[9px] font-bold text-black/30 uppercase tracking-widest">
+                  <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Tax Included</span>
+                  <span className="flex items-center gap-1"><Truck className="h-3 w-3 text-pink-500" /> Free Shipping</span>
                 </div>
               </div>
 
               {/* Selections */}
-              <div className="space-y-12">
-                {/* Variant Selection */}
+              <div className="space-y-6">
                 {product.colors && product.colors.length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
-                      <span className="text-black/40">Available Colors</span>
-                      <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedColor}</span>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-xs font-semibold text-black/50">
+                      <span>Color</span>
+                      <span className="text-black">{selectedColor}</span>
                     </div>
-                    <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {product.colors.map((color) => (
                         <button
                           key={color}
                           onClick={() => setSelectedColor(color)}
-                          className={`group relative px-8 py-5 text-[10px] font-black uppercase tracking-widest rounded-3xl transition-all border-2 overflow-hidden ${
+                          className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all border ${
                             selectedColor === color
-                              ? "border-black bg-black text-white shadow-xl scale-105"
-                              : "border-black/5 hover:border-black/20 text-black/40"
+                              ? "border-black bg-black text-white"
+                              : "border-black/10 hover:border-black/30 text-black/60"
                           }`}
                         >
-                          <span className="relative z-10">{t(color)}</span>
+                          {t(color)}
                         </button>
                       ))}
                     </div>
@@ -396,20 +379,20 @@ export default function ProductDetailPage() {
                 )}
 
                 {product.sizes && product.sizes.length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
-                      <span className="text-black/40">Select Your Size</span>
-                      <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedSize}</span>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-xs font-semibold text-black/50">
+                      <span>Size</span>
+                      <span className="text-black">{selectedSize}</span>
                     </div>
-                    <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {product.sizes.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`min-w-[5rem] px-6 py-5 text-[10px] font-black uppercase tracking-widest rounded-3xl transition-all border-2 ${
+                          className={`min-w-[3.5rem] px-4 py-2 text-xs font-semibold rounded-xl transition-all border ${
                             selectedSize === size
-                              ? "border-black bg-black text-white shadow-xl scale-105"
-                              : "border-black/5 hover:border-black/20 text-black/40"
+                              ? "border-black bg-black text-white"
+                              : "border-black/10 hover:border-black/30 text-black/60"
                           }`}
                         >
                           {size}
@@ -420,86 +403,69 @@ export default function ProductDetailPage() {
                 )}
 
                 {/* Quantity */}
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
-                    <span>Order Quantity</span>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-xs font-semibold text-black/50">
+                    <span>Quantity</span>
                     {product.stock !== undefined && product.stock < 10 && (
-                      <span className="text-red-500 animate-pulse font-black">Limited Stock: Only {product.stock} Left</span>
+                      <span className="text-red-500 text-xs font-bold">Only {product.stock} left!</span>
                     )}
                   </div>
-                  <div className="flex flex-col sm:flex-row items-center gap-8">
-                    <div className="inline-flex items-center bg-black/[0.02] border border-black/5 rounded-[2rem] p-3 scale-110">
-                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-14 h-14 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-2xl transition-all"><Minus className="h-5 w-5" /></button>
-                      <span className="w-16 text-center text-lg font-black tracking-widest">{quantity}</span>
-                      <button onClick={() => setQuantity(quantity + 1)} className="w-14 h-14 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-2xl transition-all"><Plus className="h-5 w-5" /></button>
-                    </div>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-black/20 text-center sm:text-left">
-                      Hand-picked and inspected <br/>for quality assurance.
-                    </div>
+                  <div className="inline-flex items-center border border-black/10 rounded-xl overflow-hidden">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors"><Minus className="h-4 w-4" /></button>
+                    <span className="w-12 text-center text-sm font-bold">{quantity}</span>
+                    <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors"><Plus className="h-4 w-4" /></button>
                   </div>
                 </div>
               </div>
 
               {/* Main Actions */}
-              <div className="space-y-8 pt-6">
-                <div className="flex flex-col sm:flex-row gap-4">
+              <div className="space-y-4 pt-2">
+                <div className="flex gap-3">
                   <Button 
                     onClick={addToCart}
-                    className={`flex-1 h-24 text-xs font-black uppercase tracking-[0.5em] rounded-[2.5rem] shadow-2xl transition-all active:scale-95 ${
-                      isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/90 hover:-translate-y-1'
+                    className={`flex-1 h-12 text-sm font-semibold rounded-xl transition-all active:scale-95 ${
+                      isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/80'
                     }`}
                   >
                     {isAdded ? (
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-6 w-6" /> Secured to Bag
-                      </div>
+                      <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Added to Bag</span>
                     ) : (
-                      <div className="flex items-center gap-3">
-                        <ShoppingBag className="h-6 w-6" /> {t("Complete Purchase")}
-                      </div>
+                      <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4" /> Add to Bag</span>
                     )}
                   </Button>
                   <button 
                     onClick={() => setIsFavorited(!isFavorited)}
-                    className={`w-24 h-24 rounded-[2.5rem] border-2 flex items-center justify-center transition-all ${
-                      isFavorited ? 'bg-red-50 border-red-500 text-red-500' : 'border-black/5 hover:border-black/20 text-black/20'
+                    className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-all ${
+                      isFavorited ? 'bg-red-50 border-red-400 text-red-500' : 'border-black/10 hover:border-black/30 text-black/30'
                     }`}
                   >
-                    <Heart className={`h-8 w-8 ${isFavorited ? 'fill-current' : ''}`} />
+                    <Heart className={`h-5 w-5 ${isFavorited ? 'fill-current' : ''}`} />
                   </button>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <div className="flex items-center gap-5 p-6 rounded-[2rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                        <Truck className="h-5 w-5 text-black" />
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Free Shipping</span>
-                        <span className="text-[9px] font-bold text-black/30 uppercase tracking-tight">Fast Doorstep Delivery</span>
-                      </div>
-                   </div>
-                   <div className="flex items-center gap-5 p-6 rounded-[2rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                        <Shield className="h-5 w-5 text-black" />
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Buyer Protection</span>
-                        <span className="text-[9px] font-bold text-black/30 uppercase tracking-tight">Secure Payment Protocol</span>
-                      </div>
-                   </div>
+
+                <div className="flex gap-3">
+                  <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl border border-black/[0.04]">
+                    <Truck className="h-4 w-4 text-black/40 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs font-semibold text-black">Free Shipping</p>
+                      <p className="text-[10px] text-black/40">Fast doorstep delivery</p>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl border border-black/[0.04]">
+                    <Shield className="h-4 w-4 text-black/40 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs font-semibold text-black">Buyer Protection</p>
+                      <p className="text-[10px] text-black/40">Secure payment</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Description - Focused */}
               {product.description && (
-                <div className="space-y-6 pt-16 border-t border-black/5">
-                  <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-black/40 text-center">Product Narrative</h3>
-                  <div className="bg-gray-50/30 p-10 rounded-[3rem] border border-black/[0.02]">
-                    <p className="text-lg text-black/70 leading-relaxed font-medium text-center">
-                      {product.description}
-                    </p>
-                  </div>
+                <div className="space-y-3 pt-6 border-t border-black/5">
+                  <h3 className="text-xs font-semibold text-black/40 uppercase tracking-widest">Description</h3>
+                  <p className="text-sm text-black/70 leading-relaxed">{product.description}</p>
                 </div>
               )}
 
