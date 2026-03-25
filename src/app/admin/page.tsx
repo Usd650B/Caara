@@ -180,13 +180,13 @@ const AddProductModal = ({
                       <Input type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Supply Count</Label>
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Stock Inventory</Label>
                       <Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: Number(e.target.value) })} required className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Classification Node</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Category</Label>
                     <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold px-4 focus:ring-0">
                       {categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
@@ -194,7 +194,7 @@ const AddProductModal = ({
 
                   {/* Size Management */}
                   <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Available Dimensions (Sizes)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Sizes</Label>
                     <div className="flex gap-2">
                        <Input 
                         value={newSize} 
@@ -244,7 +244,7 @@ const AddProductModal = ({
 
                   {/* Color Management */}
                   <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Chromatic Spectrum (Colors)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Colors</Label>
                     <div className="flex gap-2">
                        <Input 
                         value={newColor} 

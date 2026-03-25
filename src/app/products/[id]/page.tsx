@@ -67,10 +67,17 @@ export default function ProductDetailPage() {
       setProduct(foundProduct || null);
       
       if (foundProduct) {
-        if (foundProduct.sizes && foundProduct.sizes.length > 0) setSelectedSize(foundProduct.sizes[0]);
-        else setSelectedSize("Standard");
-        if (foundProduct.colors && foundProduct.colors.length > 0) setSelectedColor(foundProduct.colors[0]);
-        else setSelectedColor("Natural Black");
+        if (foundProduct.sizes && foundProduct.sizes.length > 0) {
+          setSelectedSize(foundProduct.sizes[0]);
+        } else {
+          setSelectedSize("");
+        }
+        
+        if (foundProduct.colors && foundProduct.colors.length > 0) {
+          setSelectedColor(foundProduct.colors[0]);
+        } else {
+          setSelectedColor("");
+        }
         
         // Reset current image
         setCurrentImageIndex(0);
@@ -94,8 +101,12 @@ export default function ProductDetailPage() {
     if (!product) return;
 
     // Validate required fields
-    if (!selectedSize || !selectedColor) {
-      alert('Please select size and color');
+    if (product.sizes?.length && !selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+    if (product.colors?.length && !selectedColor) {
+      alert('Please select a color');
       return;
     }
 
@@ -259,11 +270,11 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Thumbnail Media / Type Selection - Balanced Size */}
+            {/* Thumbnail Media / Selection - Simplified labels */}
             <div className="space-y-3">
               <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40 px-2">
-                <span>Select Style / Type</span>
-                <span className="text-black">Option {currentImageIndex + 1}</span>
+                <span>Select Style</span>
+                <span className="text-black">Photo {currentImageIndex + 1}</span>
               </div>
               <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide px-2">
                 {productMedia.map((media, index) => (
@@ -305,7 +316,7 @@ export default function ProductDetailPage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
-                    {product.badge || 'Premium Selection'}
+                    {product.badge || 'New Arrival'}
                   </span>
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 underline decoration-black/10 underline-offset-4">{t(product.category)}</p>
                 </div>
@@ -317,19 +328,19 @@ export default function ProductDetailPage() {
                     {[1, 2, 3, 4, 5].map((s) => (
                       <Star key={s} className={`h-3 w-3 ${s <= 4 ? 'text-black fill-black' : 'text-black/10 fill-black/10'}`} />
                     ))}
-                    <span className="text-xs font-black ml-1">4.8</span>
+                    <span className="text-xs font-black ml-1">{product.rating || "4.8"}</span>
                   </div>
                   <div className="h-4 w-px bg-black/10" />
-                  <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">{product.reviews || "120"} Verified Reviews</span>
+                  <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">{product.reviews || "120"} Trusted Reviews</span>
                 </div>
               </div>
 
-              {/* Price Block - Modern & Clean */}
+              {/* Price Block - Simplified labels */}
               <div className="flex flex-col gap-2 bg-gradient-to-br from-gray-50/80 to-white p-8 rounded-[2.5rem] border border-black/[0.03] shadow-inner relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
                   <ShoppingBag className="h-24 w-24" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Retail Value</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Product Price</p>
                 <div className="flex items-baseline gap-4">
                   <span className="text-5xl font-black text-black tracking-tighter">
                     {formatPrice(product.price)}
@@ -355,7 +366,7 @@ export default function ProductDetailPage() {
                 {product.colors && product.colors.length > 0 && (
                   <div className="space-y-6">
                     <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
-                      <span className="text-black/40">Chromatic Node</span>
+                      <span className="text-black/40">Available Colors</span>
                       <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedColor}</span>
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -379,7 +390,7 @@ export default function ProductDetailPage() {
                 {product.sizes && product.sizes.length > 0 && (
                   <div className="space-y-6">
                     <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.2em]">
-                      <span className="text-black/40">Dimensional Scale</span>
+                      <span className="text-black/40">Select Your Size</span>
                       <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedSize}</span>
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -403,9 +414,9 @@ export default function ProductDetailPage() {
                 {/* Quantity */}
                 <div className="space-y-6">
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
-                    <span>Batch Quantity</span>
+                    <span>Order Quantity</span>
                     {product.stock !== undefined && product.stock < 10 && (
-                      <span className="text-red-500 animate-pulse">Critical: Only {product.stock} Left</span>
+                      <span className="text-red-500 animate-pulse">Low Stock: Only {product.stock} Left</span>
                     )}
                   </div>
                   <div className="flex items-center gap-6">
@@ -415,7 +426,7 @@ export default function ProductDetailPage() {
                       <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-xl transition-all"><Plus className="h-4 w-4" /></button>
                     </div>
                     <div className="flex-1 text-[9px] font-black uppercase tracking-widest text-black/20 leading-relaxed">
-                      Optimized for supply chain node efficiency.
+                      Hand-picked and inspected for quality assurance.
                     </div>
                   </div>
                 </div>
@@ -456,8 +467,8 @@ export default function ProductDetailPage() {
                         <Truck className="h-4 w-4 text-black" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Express Logistics</span>
-                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Complimentary Global Delivery</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Free Shipping</span>
+                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Fast & Reliable Doorstep Delivery</span>
                       </div>
                    </div>
                    <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
@@ -465,8 +476,8 @@ export default function ProductDetailPage() {
                         <Shield className="h-4 w-4 text-black" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Asset Protocol</span>
-                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Full Data Encryption Secured</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Buyer Protection</span>
+                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Secure & Encrypted Payments</span>
                       </div>
                    </div>
                 </div>
@@ -485,15 +496,15 @@ export default function ProductDetailPage() {
               {/* Delivery & Security Minimalist Section */}
               <div className="pt-10 space-y-6 border-t border-black/5 mt-10">
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Logistics Breakdown</span>
+                  <span className="text-black/40 group-hover:text-black">Delivery Information</span>
                   <Truck className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Secure Payment Protocol</span>
+                  <span className="text-black/40 group-hover:text-black">Payment Security</span>
                   <Shield className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Authenticity Guarantee</span>
+                  <span className="text-black/40 group-hover:text-black">Product Authenticity</span>
                   <CheckCircle className="h-3.5 w-3.5" />
                 </div>
               </div>
