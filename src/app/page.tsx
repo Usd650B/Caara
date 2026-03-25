@@ -77,36 +77,36 @@ export default function Home() {
               </div>
               
               <div className="space-y-6">
-                <h1 className="text-6xl sm:text-[11rem] font-black tracking-tighter uppercase leading-[0.8] text-white">
+                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.8] text-white DropShadow-lg">
                   Affordable<br/>
                   <span className="text-pink-500 italic font-light lowercase">Stylish</span><br/>
                   Handbags
                 </h1>
-                <p className="text-white/50 text-sm sm:text-lg font-medium max-w-xl tracking-wide leading-relaxed">
+                <p className="text-white/70 text-sm sm:text-lg font-medium max-w-xl tracking-wide leading-relaxed drop-shadow-md">
                   Curated for distinction. Discover the SheDoo philosophy of accessible luxury, where every stitch defines contemporary elegance.
                 </p>
               </div>
               
-              <div className="flex flex-wrap items-center gap-12 pt-6">
+              <div className="flex flex-wrap items-center gap-10 pt-4">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-2">Boutique Pricing</span>
-                  <span className="text-6xl font-black text-white tracking-tighter">$49.00</span>
+                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-pink-400 mb-1">Our Promise</span>
+                  <span className="text-3xl sm:text-5xl font-black text-white tracking-tighter uppercase">Affordable <span className="font-light italic lowercase text-white/50">&</span> Premium</span>
                 </div>
-                <div className="h-16 w-px bg-white/10 hidden sm:block" />
+                <div className="h-12 w-px bg-white/10 hidden sm:block" />
                 <div className="flex items-center gap-6">
                   <div className="flex flex-col">
                      <div className="flex items-center gap-2 mb-1.5">
                         <CheckCircle className="h-4 w-4 text-green-500" />
                         <span className="text-[11px] font-black uppercase tracking-widest text-white">Authentic</span>
                      </div>
-                     <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Premium Leather</span>
+                     <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Premium Leather</span>
                   </div>
                   <div className="flex flex-col">
                      <div className="flex items-center gap-2 mb-1.5">
                         <Truck className="h-4 w-4 text-pink-500" />
                         <span className="text-[11px] font-black uppercase tracking-widest text-white">Express</span>
                      </div>
-                     <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Global Delivery</span>
+                     <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">Global Delivery</span>
                   </div>
                 </div>
               </div>
