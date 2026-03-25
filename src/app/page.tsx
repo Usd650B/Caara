@@ -35,6 +35,7 @@ export default function Home() {
     { id: "Wigs", name: t("Premium Wigs"), icon: Crown },
     { id: "Hair Accessories", name: t("Hair Accessories"), icon: Star },
     { id: "Jewellery", name: t("Exquisite Jewels"), icon: Diamond },
+    { id: "Handbags", name: t("Luxury Handbags"), icon: ShoppingBag },
   ];
 
   const filteredProducts = products.filter(p => {

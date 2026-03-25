@@ -30,7 +30,7 @@ import Link from "next/link";
 
 
 
-const categories = ["Wigs", "Hair Accessories", "Jewellery"];
+const categories = ["Wigs", "Hair Accessories", "Jewellery", "Handbags"];
 
 const tabs = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
