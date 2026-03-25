@@ -30,7 +30,7 @@ import Link from "next/link";
 
 
 
-const categories = ["Wigs", "Hair Accessories", "Jewellery", "Handbags"];
+const categories = ["Handbags"];
 
 const tabs = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -81,7 +81,7 @@ const AddProductModal = ({
   const [formData, setFormData] = useState({
     name: editingProduct?.name || "",
     price: editingProduct?.price || 0,
-    category: editingProduct?.category || "Wigs",
+    category: editingProduct?.category || "Handbags",
     image: editingProduct?.image || "",
     images: editingProduct?.images?.length === 3 ? editingProduct.images : [...(editingProduct?.images || []), "", "", ""].slice(0, 3),
     video: editingProduct?.video || "",

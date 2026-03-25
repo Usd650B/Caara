@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { 
-  ShoppingBag, Star, Heart, Sparkles,
-  Zap, Crown, Diamond, Truck,
-  Shield, User, Search
+  ShoppingBag, Star, Sparkles,
+  Zap, Truck, Shield, Search, ArrowRight,
+  TrendingUp, Heart, CheckCircle
 } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
@@ -16,12 +16,13 @@ export default function Home() {
   const { t, formatPrice } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
   const loadProducts = async () => {
     setIsLoading(true);
     const productsData = await getProducts();
+    // Filter to show only handbags if that becomes a requirement, 
+    // but for now we assume the user will only upload handbags.
     setProducts(productsData);
     setIsLoading(false);
   };
@@ -30,19 +31,10 @@ export default function Home() {
     loadProducts();
   }, []);
 
-  const categories = [
-    { id: "All", name: t("All"), icon: Sparkles },
-    { id: "Wigs", name: t("Premium Wigs"), icon: Crown },
-    { id: "Hair Accessories", name: t("Hair Accessories"), icon: Star },
-    { id: "Jewellery", name: t("Exquisite Jewels"), icon: Diamond },
-    { id: "Handbags", name: t("Luxury Handbags"), icon: ShoppingBag },
-  ];
-
   const filteredProducts = products.filter(p => {
-    const matchesCategory = activeCategory === "All" || p.category === activeCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          p.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   return (
@@ -56,221 +48,219 @@ export default function Home() {
           </span>
           <span className="text-white/30">|</span>
           <span className="flex items-center gap-1.5 text-pink-300 shrink-0">
-            <Zap className="h-3 w-3 fill-current" /> {t("New Daily Drops")}
+            <Zap className="h-3 w-3 fill-current" /> {t("New Handbag Drops")}
           </span>
           <span className="text-white/30 hidden sm:block">|</span>
           <span className="hidden sm:flex items-center gap-1.5 shrink-0">
-            <Shield className="h-3 w-3" /> {t("Secure Pay")}
+            <Shield className="h-3 w-3" /> {t("Secure Buy Protection")}
           </span>
         </div>
       </div>
 
-      {/* Hero Banner */}
+      {/* Hero Banner - Handbag Primary Focus */}
       <section className="px-3 pt-3 pb-2 sm:py-6 max-w-screen-2xl mx-auto">
-        <div className="relative h-[240px] sm:h-[450px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg">
+        <div className="relative h-[500px] sm:h-[750px] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden shadow-2xl group border border-black/5">
           <img 
-            src="/images/wig_hero.png" 
-            className="w-full h-full object-cover" 
-            alt="SheDoo Glow"
+            src="/images/handbag_hero.png" 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[4000ms] ease-out shadow-inner" 
+            alt="Affordable Stylish Handbags"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1620331313184-257dc64572ef?w=1200";
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1200";
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-16 sm:justify-center space-y-3">
-            <div className="space-y-1.5">
-              <h1 className="text-4xl sm:text-7xl tracking-tighter uppercase leading-[0.8] animate-in fade-in slide-in-from-left duration-1000">
-                <span className="font-black text-white">She</span>
-                <span className="font-light italic text-pink-400">Doo</span>
-                <span className="block text-xl sm:text-3xl font-black text-white/40 mt-2">Glow</span>
-              </h1>
-              <p className="text-white/80 text-[9px] sm:text-base max-w-md font-medium">
-                {t("Premium wigs, hair accessories, and exquisite jewels at prices you can afford.")}
-              </p>
+          
+          {/* Subtle Overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+          <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-24 space-y-8">
+            <div className="max-w-4xl space-y-6">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 animate-in fade-in slide-in-from-bottom duration-700">
+                <Sparkles className="h-3.5 w-3.5 text-pink-300" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">2026 Premium Selection</span>
+              </div>
+              
+              <div className="space-y-4">
+                <h1 className="text-5xl sm:text-[10rem] font-black tracking-tighter uppercase leading-[0.8] text-white animate-in fade-in slide-in-from-left duration-1000">
+                  Affordable<br/>
+                  <span className="text-pink-400 italic font-light lowercase">Stylish</span><br/>
+                  Handbags
+                </h1>
+                <p className="text-white/60 text-xs sm:text-base font-medium max-w-lg tracking-wide leading-relaxed">
+                  Elevate your everyday style with our curated collection of luxury-grade handbags designed for the modern woman who values both aesthetics and value.
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-8 pt-4">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Starting Price</span>
+                  <span className="text-5xl font-black text-white tracking-tighter">$49.00</span>
+                </div>
+                <div className="h-12 w-px bg-white/10 hidden sm:block" />
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-center sm:items-start">
+                     <div className="flex items-center gap-1.5 mb-1">
+                        <CheckCircle className="h-3 w-3 text-green-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white">Genuine</span>
+                     </div>
+                     <span className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Verified Quality</span>
+                  </div>
+                  <div className="flex flex-col items-center sm:items-start">
+                     <div className="flex items-center gap-1.5 mb-1">
+                        <Truck className="h-3 w-3 text-pink-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white">Global</span>
+                     </div>
+                     <span className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Express Shipping</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Button 
-              onClick={() => document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-white text-black hover:bg-black hover:text-white px-6 sm:px-8 h-10 sm:h-12 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all rounded-lg shadow-xl w-fit"
-            >
-              {t("Explore Now")}
-            </Button>
+
+            <div className="flex flex-col sm:flex-row gap-5 pt-8">
+              <Button 
+                onClick={() => document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-white text-black hover:bg-black hover:text-white h-24 px-14 text-xs font-black uppercase tracking-[0.5em] transition-all rounded-[2.5rem] shadow-2xl group active:scale-95 z-10"
+              >
+                {t("Order Now")}
+                <ShoppingBag className="ml-5 h-6 w-6 group-hover:rotate-12 transition-transform" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Category Tabs — Mobile friendly horizontal scroll */}
-      <section className="py-4 sm:py-6 px-3 sm:px-4">
-        <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-1">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full shrink-0 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border ${
-                activeCategory === cat.id
-                  ? 'bg-black text-white border-black shadow-md'
-                  : 'bg-[#f5f5f5] text-black/40 border-transparent hover:border-black/10 hover:text-black'
-              }`}
-            >
-              <cat.icon className="h-3.5 w-3.5 shrink-0" />
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Collections Spotlight */}
-        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-           <div 
-             onClick={() => { setActiveCategory("Wigs"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
-           >
-              <img src="/images/wig_hero.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Wigs" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Luxury Wigs</h4>
-                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Lace Fronts • Silk Base</p>
-              </div>
-           </div>
-           <div 
-             onClick={() => { setActiveCategory("Hair Accessories"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
-           >
-              <img src="/images/hair_acc.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Accessories" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Style Accents</h4>
-                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Silk • Pearls • Gold</p>
-              </div>
-           </div>
-           <div 
-             onClick={() => { setActiveCategory("Jewellery"); document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-             className="group relative h-[180px] sm:h-[250px] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden cursor-pointer"
-           >
-              <img src="/images/jewelry.png" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Jewelry" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 sm:p-8 flex flex-col justify-end">
-                 <h4 className="text-white font-black uppercase text-sm sm:text-lg tracking-tight">Exquisite Jewels</h4>
-                 <p className="text-white/60 text-[8px] sm:text-[10px] uppercase font-bold tracking-widest mt-0.5">Elegance Redefined</p>
-              </div>
-           </div>
-        </div>
-      </section>
-
-      {/* Main Product Grid */}
-      <section id="explore-section" className="px-6 sm:px-12 pb-24 max-w-screen-2xl mx-auto space-y-10">
-        {/* Header row */}
-        <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-4">
-          <div className="space-y-0.5">
-            <h2 className="text-lg sm:text-3xl font-black tracking-tight uppercase">{t("New Products")}</h2>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              <p className="text-black/30 text-[9px] font-bold uppercase tracking-widest">{t("Ready to Ship")}</p>
+      {/* Category removal - Direct Stream of Handbags */}
+      <section id="explore-section" className="px-6 sm:px-16 py-24 max-w-screen-2xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12 mb-20">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/5 rounded-full">
+               <TrendingUp className="h-3 w-3 text-black/40" />
+               <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Market Trend: High Demand</span>
             </div>
+            <h2 className="text-4xl sm:text-7xl font-black tracking-tighter uppercase leading-none text-black">
+               The Handbag<br/>
+               <span className="text-black/10">Collective</span>
+            </h2>
           </div>
-          {/* Search — more visible border + focus state */}
-          <div className="relative flex-1 max-w-[200px] sm:max-w-xs group">
-            <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${searchTerm ? 'text-black' : 'text-black/30'}`} />
-            <input 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t("Search products...")}
-              className="w-full pl-11 pr-4 h-12 bg-white border-2 border-black/[0.03] group-hover:border-black/10 focus:border-black rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all focus:outline-none shadow-sm"
-            />
+          
+          <div className="relative w-full lg:w-[400px] group">
+             <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-black/20 group-hover:text-black focus:text-black transition-colors" />
+             <input 
+                placeholder={t("Filter by name...")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-16 pl-16 pr-8 bg-black/[0.02] border-2 border-transparent focus:border-black/5 focus:bg-white rounded-3xl text-[10px] font-black uppercase tracking-widest shadow-sm transition-all outline-none"
+             />
           </div>
         </div>
 
-        {/* Grid - High Impression Minimalist - Thinner on mobile, compact on medium */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6">
-          {isLoading ? (
-            Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="space-y-4 animate-pulse">
-                <div className="aspect-[4/5] bg-gray-50 rounded-[2rem]" />
-                <div className="h-2 bg-gray-100 rounded-full w-2/3 mx-auto" />
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-12">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="space-y-6 animate-pulse">
+                <div className="aspect-[4/5] bg-gray-50 rounded-[3rem]" />
+                <div className="h-3 bg-gray-50 rounded-full w-3/4 mx-auto" />
               </div>
-            ))
-          ) : filteredProducts.length > 0 ? (
-            filteredProducts.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="group block">
-                <div className="space-y-4">
-                  <div className="rounded-[2.5rem] overflow-hidden bg-white relative border border-black/[0.03] shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-700 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] group-hover:-translate-y-1">
-                    <LazyImage 
-                      src={p.image || "https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=800&h=800&fit=crop"} 
-                      alt={p.name}
-                      className="transition-transform duration-1000 group-hover:scale-110"
-                    />
-                    
-                    {/* Minimalist Hover Action */}
-                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                       <div className="bg-white/90 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl scale-90 group-hover:scale-100 transition-all duration-500">
-                          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black">Explore Drop</span>
-                       </div>
-                    </div>
-
-                    {p.badge && (
-                      <span className="absolute top-4 left-4 px-3 py-1 bg-black text-white text-[8px] font-black uppercase tracking-widest rounded-sm">
-                        {p.badge}
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-48 bg-gray-50/50 rounded-[4rem] border-2 border-dashed border-black/[0.03]">
+            <ShoppingBag className="h-20 w-20 text-black/5 mx-auto mb-8" />
+            <h3 className="text-2xl font-black text-black/20 uppercase tracking-widest">{t("Collection Empty")}</h3>
+            <p className="text-[10px] font-bold text-black/10 uppercase tracking-widest mt-2">{t("Stay Tuned for the next drop")}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 sm:gap-12">
+            {filteredProducts.map((product) => (
+              <Link key={product.id} href={`/products/${product.id}`} className="group flex flex-col h-full bg-white">
+                <div className="relative aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-gray-50 border border-black/[0.03] shadow-sm transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-black/10 group-hover:-translate-y-2">
+                  <LazyImage 
+                    src={product.image || ""} 
+                    alt={product.name}
+                    className="transition-transform duration-[1500ms] group-hover:scale-110"
+                    aspectRatio="aspect-[3/4]"
+                  />
+                  
+                  {/* Status Badges */}
+                  <div className="absolute top-6 left-6 flex flex-col gap-2">
+                    {product.badge && (
+                      <span className="px-3 py-1 bg-black text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-xl">
+                        {product.badge}
+                      </span>
+                    )}
+                    {product.stock !== undefined && product.stock < 10 && (
+                      <span className="px-3 py-1 bg-red-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-xl">
+                         Only {product.stock} Left
                       </span>
                     )}
                   </div>
 
-                  <div className="text-center space-y-1.5 px-3">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20 group-hover:text-black/40 transition-colors">{p.category}</p>
-                    <h3 className="text-sm font-black text-black tracking-tight uppercase line-clamp-1">{p.name}</h3>
-                    <div className="flex items-center justify-center gap-3">
-                      <span className="text-base font-black text-black tracking-tighter">{formatPrice(p.price)}</span>
-                      {p.originalPrice && (
-                        <span className="text-xs text-black/20 line-through font-bold">{formatPrice(p.originalPrice)}</span>
+                  {/* Top Right Action */}
+                  <button className="absolute top-6 right-6 p-3 bg-white/80 backdrop-blur-md rounded-2xl opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-xl hover:scale-110">
+                    <Heart className="h-4 w-4 text-black/20 hover:text-red-500 transition-colors" />
+                  </button>
+
+                  {/* Centered Overlay Hook */}
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-8">
+                     <div className="bg-white/95 backdrop-blur-xl px-10 py-4 rounded-[2rem] shadow-2xl translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Secure Item</span>
+                     </div>
+                  </div>
+                </div>
+
+                <div className="pt-8 px-4 space-y-3 flex-1 flex flex-col text-center">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20 group-hover:text-black transition-colors">{product.category}</p>
+                    <h3 className="text-base font-black text-black tracking-tight uppercase line-clamp-1">{product.name}</h3>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl font-black text-black tracking-tighter">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-black/20 line-through font-bold">
+                          {formatPrice(product.originalPrice)}
+                        </span>
                       )}
+                    </div>
+                    
+                    {/* Simplified Rating */}
+                    <div className="flex items-center gap-1 pt-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} className="h-2.5 w-2.5 fill-black text-black" />
+                      ))}
+                      <span className="text-[9px] font-black ml-1">4.9 / 5.0</span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 mt-auto">
+                    <div className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-black group-hover:gap-4 transition-all">
+                       {t("View Details")}
+                       <ArrowRight className="h-3.5 w-3.5" />
                     </div>
                   </div>
                 </div>
               </Link>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-20 sm:py-32 bg-[#fafafa] rounded-2xl border border-black/[0.03]">
-              <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShoppingBag className="h-7 w-7 text-black/10" />
-              </div>
-              <h3 className="text-base sm:text-xl font-black uppercase tracking-tight">{t("No Products Yet")}</h3>
-              <p className="text-black/30 text-[9px] font-black uppercase tracking-widest mt-1">{t("Check back soon.")}</p>
-              <Button onClick={() => setActiveCategory('All')} className="mt-6 bg-black text-white h-11 px-6 rounded-xl font-black text-[9px] uppercase tracking-widest">
-                {t("Show All")}
-              </Button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Trust Section — cleaner + mobile-friendly */}
-      <section className="py-12 sm:py-20 bg-black text-white">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8">
-          <div className="grid grid-cols-3 gap-6 sm:gap-16 text-center">
-            <div className="space-y-3">
-              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl bg-white/5 mx-auto flex items-center justify-center">
-                <Shield className="h-5 w-5 sm:h-6 sm:w-6" />
-              </div>
-              <div>
-                <h4 className="text-[10px] sm:text-sm font-black uppercase tracking-wide">{t("Safe Shopping")}</h4>
-                <p className="text-white/30 text-[8px] font-bold uppercase tracking-widest mt-1 hidden sm:block">{t("100% Authentic Products")}</p>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl bg-white/5 mx-auto flex items-center justify-center">
-                <Truck className="h-5 w-5 sm:h-6 sm:w-6" />
-              </div>
-              <div>
-                <h4 className="text-[10px] sm:text-sm font-black uppercase tracking-wide">{t("Free Delivery")}</h4>
-                <p className="text-white/30 text-[8px] font-bold uppercase tracking-widest mt-1 hidden sm:block">{t("To Your Door")}</p>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl bg-white/5 mx-auto flex items-center justify-center">
-                <User className="h-5 w-5 sm:h-6 sm:w-6" />
-              </div>
-              <div>
-                <h4 className="text-[10px] sm:text-sm font-black uppercase tracking-wide">{t("24/7 Support")}</h4>
-                <p className="text-white/30 text-[8px] font-bold uppercase tracking-widest mt-1 hidden sm:block">{t("Always Here for You")}</p>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        )}
       </section>
 
+      {/* Simplified Brands/Trust Section */}
+      <section className="bg-black py-24 px-8 overflow-hidden rounded-[4rem] mx-4 mb-20 border border-white/10 shadow-3xl">
+         <div className="max-w-7xl mx-auto flex flex-col items-center text-center space-y-12">
+            <div className="w-16 h-1 bg-pink-500 rounded-full" />
+            <h3 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter max-w-2xl leading-tight">
+               Crafted for the modern woman who demands more.
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 sm:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+               {['EST. 2026', 'SECURED', 'PREMIUM', 'GLOBAL'].map(l => (
+                  <span key={l} className="text-white font-black text-xl tracking-[0.5em]">{l}</span>
+               ))}
+            </div>
+         </div>
+      </section>
     </div>
   );
 }
