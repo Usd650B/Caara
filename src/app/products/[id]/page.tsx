@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 export default function ProductDetailPage() {
   const { formatPrice, t } = useSettings();
@@ -59,7 +60,7 @@ export default function ProductDetailPage() {
   }, [params.id]);
 
   const loadProduct = async (productId: string) => {
-    setIsLoading(true);
+    // Loading state for new product fetch
     try {
       const products = await getProducts();
       const foundProduct = products.find(p => p.id === productId);
@@ -70,6 +71,9 @@ export default function ProductDetailPage() {
         else setSelectedSize("Standard");
         if (foundProduct.colors && foundProduct.colors.length > 0) setSelectedColor(foundProduct.colors[0]);
         else setSelectedColor("Natural Black");
+        
+        // Reset current image
+        setCurrentImageIndex(0);
       }
       
       // Load related products (excluding current product)
@@ -78,12 +82,12 @@ export default function ProductDetailPage() {
         .slice(0, 4); // Show up to 4 related products
       setRelatedProducts(related);
       
-      // TODO: Load real reviews when review system is implemented
       setReviews([]);
     } catch (error) {
       console.error('Error loading product:', error);
     }
     setIsLoading(false);
+    setIsNavigating(false);
   };
 
   const addToCart = () => {
@@ -159,11 +163,28 @@ export default function ProductDetailPage() {
     setCurrentImageIndex((prev) => (prev - 1 + productMedia.length) % productMedia.length);
   };
 
-  if (isLoading) {
+  // Targeted loading indicator for specific sections
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    // When ID changes, we want a subtle loading state instead of a whole-page skeleton
+    if (params.id) {
+      setIsNavigating(true);
+      // loadProduct is already called in the other useEffect
+    }
+  }, [params.id]);
+
+  if (isLoading && !product) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="animate-pulse">
-          <div className="h-96 bg-gray-200 rounded-lg"></div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-7 aspect-[4/5] bg-gray-50 rounded-[2.5rem] animate-pulse" />
+          <div className="lg:col-span-5 space-y-6">
+            <div className="h-10 bg-gray-50 rounded-xl w-3/4 animate-pulse" />
+            <div className="h-6 bg-gray-50 rounded-xl w-1/4 animate-pulse" />
+            <div className="h-24 bg-gray-50 rounded-xl w-full animate-pulse" />
+            <div className="h-12 bg-gray-50 rounded-xl w-full animate-pulse" />
+          </div>
         </div>
       </div>
     );
@@ -187,8 +208,8 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <div className={`min-h-screen bg-white transition-opacity duration-300 ${isNavigating ? 'opacity-50' : 'opacity-100'}`}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 lg:py-12">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
           <Link href="/" className="hover:text-black transition-colors">Home</Link>
@@ -198,11 +219,11 @@ export default function ProductDetailPage() {
           <span className="text-gray-900 font-medium">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 max-w-6xl mx-auto items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 max-w-7xl mx-auto items-start">
           {/* Product Media - 7 Columns */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="relative group">
-              <div className="aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100/50">
+          <div className="lg:col-span-7 space-y-6 lg:sticky lg:top-24">
+            <div className="relative group overflow-hidden">
+              <div className="aspect-[4/5] bg-[#fdfdfd] rounded-[2rem] lg:rounded-[3rem] overflow-hidden border border-black/[0.03] shadow-sm">
                 {productMedia[currentImageIndex]?.includes('video') ? (
                   <video
                     src={productMedia[currentImageIndex]}
@@ -211,11 +232,10 @@ export default function ProductDetailPage() {
                     preload="metadata"
                   />
                 ) : (
-                  <img 
+                  <LazyImage 
                     src={productMedia[currentImageIndex]} 
                     alt={product.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
+                    className="w-full h-full"
                   />
                 )}
               </div>
@@ -253,7 +273,7 @@ export default function ProductDetailPage() {
                       </div>
                     </div>
                   ) : (
-                    <img src={media} className="w-full h-full object-cover" alt="" />
+                    <LazyImage src={media} className="w-full h-full" aspectRatio="aspect-square" alt="" />
                   )}
                 </button>
               ))}
@@ -261,8 +281,8 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Product Details - 5 Columns */}
-          <div className="lg:col-span-5 flex flex-col pt-4">
-            <div className="space-y-8">
+          <div className="lg:col-span-5 flex flex-col pt-0 lg:pt-4">
+            <div className="space-y-6 lg:space-y-10">
               {/* Context & Title */}
               <div className="space-y-3">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">{t(product.category)}</p>
@@ -277,19 +297,19 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Price Block - Modern & Clean */}
-              <div className="flex items-baseline gap-4">
-                <span className="text-4xl font-black text-black tracking-tighter">
+              <div className="flex items-baseline gap-4 bg-gray-50/50 p-6 rounded-[2rem] border border-black/[0.02]">
+                <span className="text-4xl lg:text-5xl font-black text-black tracking-tighter">
                   {formatPrice(product.price)}
                 </span>
                 {product.originalPrice && (
-                  <span className="text-lg text-black/20 line-through font-bold">
+                  <span className="text-xl text-black/25 line-through font-bold">
                     {formatPrice(product.originalPrice)}
                   </span>
                 )}
               </div>
 
               {/* Selections */}
-              <div className="space-y-10 py-10 border-y border-black/5">
+              <div className="space-y-8 lg:space-y-12 py-4">
                 {/* Variant Selection */}
                 <div className="space-y-4">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
@@ -393,16 +413,17 @@ export default function ProductDetailPage() {
               </Link>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6">
               {relatedProducts.map((p) => (
                 <Link key={p.id} href={`/products/${p.id}`} className="group block h-full">
                   <div className="flex flex-col h-full bg-white rounded-sm overflow-hidden border border-transparent hover:border-muted-foreground/20 transition-all duration-200">
                     <div className="relative aspect-[3/4] overflow-hidden bg-muted">
                       {p.image ? (
-                        <img 
+                        <LazyImage 
                           src={p.image} 
                           alt={p.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="group-hover:scale-105 transition-transform duration-700"
+                          aspectRatio="aspect-[3/4]"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

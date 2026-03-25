@@ -286,7 +286,7 @@ const DashboardContent = ({ stats, orders }: DashboardContentProps) => (
       </div>
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
       <StatCard title="Gross Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="12.5" color="bg-blue-600" />
       <StatCard title="Active Orders" value={stats.totalOrders} icon={ShoppingCart} trend="up" trendValue="8.2" color="bg-green-600" />
       <StatCard title="Inventory Count" value={stats.totalProducts} icon={Package} trend="down" trendValue="3.1" color="bg-purple-600" />
@@ -442,7 +442,7 @@ const ProductsContent = ({
       </div>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
       {filteredProducts.map((product) => (
         <div key={product.id} className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_40px_80px_rgb(0,0,0,0.08)] transition-all duration-700 group">
           <div className="aspect-[4/5] relative overflow-hidden bg-black/[0.01]">

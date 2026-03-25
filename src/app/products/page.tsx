@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, ShoppingCart, Star, Filter, Search, ChevronDown, X, Truck, ShieldCheck, Zap, Minus, Plus, Diamond } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Knitwear"];
 const priceRanges = [
@@ -149,10 +150,10 @@ export default function ProductsPage() {
 
             <div className="flex flex-col h-full">
               <div className="w-full aspect-[4/5] bg-muted relative">
-                <img 
-                  src={activeProduct.image} 
+                <LazyImage 
+                  src={activeProduct.image || ""} 
                   alt={activeProduct.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
                 />
                 {activeProduct.badge && (
                   <div className="absolute top-6 left-6">
@@ -446,7 +447,7 @@ export default function ProductsPage() {
           )}
 
           <div className="flex-1">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-12">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12 px-2 sm:px-0">
               {isLoading ? (
                 Array.from({ length: 15 }).map((_, i) => (
                   <div key={i} className="space-y-4 animate-pulse">
@@ -463,10 +464,11 @@ export default function ProductsPage() {
                     onClick={() => openDrawer(p)}
                   >
                     <div className="relative aspect-[3/4] bg-muted overflow-hidden">
-                      <img 
-                        src={p.image} 
+                      <LazyImage 
+                        src={p.image || ""} 
                         alt={p.name}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out"
+                        className="transform group-hover:scale-110 transition-transform duration-1000 ease-out"
+                        aspectRatio="aspect-[3/4]"
                       />
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       

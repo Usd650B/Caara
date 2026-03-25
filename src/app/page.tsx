@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 export default function Home() {
   const { t, formatPrice } = useSettings();
@@ -150,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Main Product Grid */}
-      <section id="explore-section" className="px-3 sm:px-4 pb-16 max-w-screen-2xl mx-auto space-y-6">
+      <section id="explore-section" className="px-6 sm:px-12 pb-24 max-w-screen-2xl mx-auto space-y-10">
         {/* Header row */}
         <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-4">
           <div className="space-y-0.5">
@@ -172,8 +173,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Grid - High Impression Minimalist */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-8">
+        {/* Grid - High Impression Minimalist - Thinner on mobile, compact on medium */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6">
           {isLoading ? (
             Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="space-y-4 animate-pulse">
@@ -185,11 +186,11 @@ export default function Home() {
             filteredProducts.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="group block">
                 <div className="space-y-4">
-                  <div className="aspect-[4/5] rounded-[2rem] overflow-hidden bg-white relative border border-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.02)] transition-all duration-700 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] group-hover:-translate-y-1">
-                    <img 
-                      src={p.image} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      alt={p.name} 
+                  <div className="rounded-[2.5rem] overflow-hidden bg-white relative border border-black/[0.03] shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-700 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] group-hover:-translate-y-1">
+                    <LazyImage 
+                      src={p.image || "https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=800&h=800&fit=crop"} 
+                      alt={p.name}
+                      className="transition-transform duration-1000 group-hover:scale-110"
                     />
                     
                     {/* Minimalist Hover Action */}
@@ -206,13 +207,13 @@ export default function Home() {
                     )}
                   </div>
 
-                  <div className="text-center space-y-1.5 px-2">
-                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-black/20 group-hover:text-black/40 transition-colors uppercase">{p.category}</p>
-                    <h3 className="text-xs font-black text-black tracking-tight uppercase line-clamp-1">{p.name}</h3>
+                  <div className="text-center space-y-1.5 px-3">
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20 group-hover:text-black/40 transition-colors">{p.category}</p>
+                    <h3 className="text-sm font-black text-black tracking-tight uppercase line-clamp-1">{p.name}</h3>
                     <div className="flex items-center justify-center gap-3">
-                      <span className="text-sm font-black text-black tracking-tighter">{formatPrice(p.price)}</span>
+                      <span className="text-base font-black text-black tracking-tighter">{formatPrice(p.price)}</span>
                       {p.originalPrice && (
-                        <span className="text-[10px] text-black/20 line-through font-bold">{formatPrice(p.originalPrice)}</span>
+                        <span className="text-xs text-black/20 line-through font-bold">{formatPrice(p.originalPrice)}</span>
                       )}
                     </div>
                   </div>
