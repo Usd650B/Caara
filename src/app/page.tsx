@@ -61,7 +61,7 @@ export default function Home() {
       <section className="px-3 pt-3 pb-2 sm:py-6 max-w-screen-2xl mx-auto">
         <div className="relative h-[600px] sm:h-[850px] rounded-[3rem] sm:rounded-[5rem] overflow-hidden shadow-2xl group border border-black/5 bg-[#F9F9F9]">
           <img 
-            src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=100&w=2400" 
+            src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=100&w=2400" 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[4000ms] ease-out" 
             alt="SheDoo Luxury Handbags"
           />
