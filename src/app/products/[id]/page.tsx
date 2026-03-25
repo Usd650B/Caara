@@ -234,11 +234,11 @@ export default function ProductDetailPage() {
           <span className="text-gray-900 font-medium">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 max-w-7xl mx-auto items-start">
-          {/* Product Media - 7 Columns */}
-          <div className="lg:col-span-7 space-y-6 lg:sticky lg:top-24">
+        <div className="max-w-4xl mx-auto space-y-10 lg:space-y-20">
+          {/* Product Media - Centered Large View */}
+          <div className="space-y-8">
             <div className="relative group overflow-hidden">
-              <div className="aspect-[4/5] bg-[#fdfdfd] rounded-[2rem] lg:rounded-[3rem] overflow-hidden border border-black/[0.03] shadow-sm">
+              <div className="aspect-[4/5] sm:aspect-video bg-[#fdfdfd] rounded-[2rem] lg:rounded-[3rem] overflow-hidden border border-black/[0.03] shadow-sm">
                 {productMedia[currentImageIndex]?.includes('video') ? (
                   <video
                     src={productMedia[currentImageIndex]}
@@ -270,18 +270,18 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Thumbnail Media / Selection - Simplified labels */}
+            {/* Thumbnail Media / Selection - Centered */}
             <div className="space-y-3">
-              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40 px-2">
+              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40 px-6">
                 <span>Select Style</span>
-                <span className="text-black">Photo {currentImageIndex + 1}</span>
+                <span className="text-black">Photo {currentImageIndex + 1} of {productMedia.length}</span>
               </div>
-              <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide px-2">
+              <div className="flex justify-center flex-wrap gap-4 px-2">
                 {productMedia.map((media, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`flex-shrink-0 w-24 h-32 rounded-2xl overflow-hidden border-2 transition-all relative group ${
+                    className={`flex-shrink-0 w-20 h-28 rounded-2xl overflow-hidden border-2 transition-all relative group ${
                       currentImageIndex === index ? 'border-black shadow-xl scale-105' : 'border-black/5 hover:border-black/20'
                     }`}
                   >
@@ -309,59 +309,67 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Product Details - 5 Columns */}
-          <div className="lg:col-span-5 flex flex-col pt-0 lg:pt-4">
-            <div className="space-y-6 lg:space-y-10">
+          {/* Product Details - Centered Content */}
+          <div className="max-w-2xl mx-auto flex flex-col pt-0">
+            <div className="space-y-10 lg:space-y-16 text-center sm:text-left">
               {/* Context & Title */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
+              <div className="space-y-6">
+                <div className="flex items-center justify-center sm:justify-start gap-3">
                   <span className="px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
                     {product.badge || 'New Arrival'}
                   </span>
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 underline decoration-black/10 underline-offset-4">{t(product.category)}</p>
                 </div>
                 
-                <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-black leading-[1.05]">{product.name}</h1>
+                <h1 className="text-4xl lg:text-7xl font-black tracking-tight text-black leading-[1] uppercase">{product.name}</h1>
                 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center justify-center sm:justify-start gap-6">
                   <div className="flex items-center gap-1.5">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className={`h-3 w-3 ${s <= 4 ? 'text-black fill-black' : 'text-black/10 fill-black/10'}`} />
+                      <Star key={s} className={`h-4 w-4 ${s <= 4 ? 'text-black fill-black' : 'text-black/10 fill-black/10'}`} />
                     ))}
-                    <span className="text-xs font-black ml-1">{product.rating || "4.8"}</span>
+                    <span className="text-sm font-black ml-1">{product.rating || "4.8"}</span>
                   </div>
                   <div className="h-4 w-px bg-black/10" />
                   <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">{product.reviews || "120"} Trusted Reviews</span>
                 </div>
               </div>
 
-              {/* Price Block - Simplified labels */}
-              <div className="flex flex-col gap-2 bg-gradient-to-br from-gray-50/80 to-white p-8 rounded-[2.5rem] border border-black/[0.03] shadow-inner relative overflow-hidden group">
+              {/* Price Block - Wide format */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-br from-gray-50/80 to-white p-10 rounded-[3rem] border border-black/[0.03] shadow-inner relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
-                  <ShoppingBag className="h-24 w-24" />
+                  <ShoppingBag className="h-32 w-32" />
                 </div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Product Price</p>
-                <div className="flex items-baseline gap-4">
-                  <span className="text-5xl font-black text-black tracking-tighter">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.originalPrice && (
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-green-600 uppercase mb-1">Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
-                      <span className="text-lg text-black/20 line-through font-bold leading-none">
-                        {formatPrice(product.originalPrice)}
+                <div className="space-y-2 relative z-10">
+                   <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Product Price</p>
+                   <div className="flex items-baseline justify-center sm:justify-start gap-4">
+                      <span className="text-6xl font-black text-black tracking-tighter">
+                        {formatPrice(product.price)}
                       </span>
+                      {product.originalPrice && (
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black text-green-600 uppercase mb-1">Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
+                          <span className="text-xl text-black/20 line-through font-bold leading-none">
+                            {formatPrice(product.originalPrice)}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
                 </div>
-                <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
-                  <CheckCircle className="h-3 w-3 text-green-500" />
-                  Tax Included & Carbon Neutral Shipping
+                <div className="flex flex-col items-center sm:items-end gap-2 relative z-10">
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Tax Included
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-black/40 uppercase tracking-widest">
+                    <Truck className="h-3 w-3 text-pink-500" />
+                    Global Shipping
+                  </div>
                 </div>
               </div>
 
               {/* Selections */}
-              <div className="space-y-10 py-4">
+              <div className="space-y-12">
                 {/* Variant Selection */}
                 {product.colors && product.colors.length > 0 && (
                   <div className="space-y-6">
@@ -369,12 +377,12 @@ export default function ProductDetailPage() {
                       <span className="text-black/40">Available Colors</span>
                       <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedColor}</span>
                     </div>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-3">
                       {product.colors.map((color) => (
                         <button
                           key={color}
                           onClick={() => setSelectedColor(color)}
-                          className={`group relative px-6 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border-2 overflow-hidden ${
+                          className={`group relative px-8 py-5 text-[10px] font-black uppercase tracking-widest rounded-3xl transition-all border-2 overflow-hidden ${
                             selectedColor === color
                               ? "border-black bg-black text-white shadow-xl scale-105"
                               : "border-black/5 hover:border-black/20 text-black/40"
@@ -393,12 +401,12 @@ export default function ProductDetailPage() {
                       <span className="text-black/40">Select Your Size</span>
                       <span className="text-black bg-black/5 px-3 py-1 rounded-lg">{selectedSize}</span>
                     </div>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-3">
                       {product.sizes.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`min-w-[4.5rem] px-5 py-4 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border-2 ${
+                          className={`min-w-[5rem] px-6 py-5 text-[10px] font-black uppercase tracking-widest rounded-3xl transition-all border-2 ${
                             selectedSize === size
                               ? "border-black bg-black text-white shadow-xl scale-105"
                               : "border-black/5 hover:border-black/20 text-black/40"
@@ -416,96 +424,106 @@ export default function ProductDetailPage() {
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-black/40">
                     <span>Order Quantity</span>
                     {product.stock !== undefined && product.stock < 10 && (
-                      <span className="text-red-500 animate-pulse">Low Stock: Only {product.stock} Left</span>
+                      <span className="text-red-500 animate-pulse font-black">Limited Stock: Only {product.stock} Left</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-6">
-                    <div className="inline-flex items-center bg-black/[0.02] border border-black/5 rounded-[1.5rem] p-2">
-                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-xl transition-all"><Minus className="h-4 w-4" /></button>
-                      <span className="w-14 text-center text-sm font-black tracking-widest">{quantity}</span>
-                      <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-xl transition-all"><Plus className="h-4 w-4" /></button>
+                  <div className="flex flex-col sm:flex-row items-center gap-8">
+                    <div className="inline-flex items-center bg-black/[0.02] border border-black/5 rounded-[2rem] p-3 scale-110">
+                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-14 h-14 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-2xl transition-all"><Minus className="h-5 w-5" /></button>
+                      <span className="w-16 text-center text-lg font-black tracking-widest">{quantity}</span>
+                      <button onClick={() => setQuantity(quantity + 1)} className="w-14 h-14 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-2xl transition-all"><Plus className="h-5 w-5" /></button>
                     </div>
-                    <div className="flex-1 text-[9px] font-black uppercase tracking-widest text-black/20 leading-relaxed">
-                      Hand-picked and inspected for quality assurance.
+                    <div className="text-[10px] font-black uppercase tracking-widest text-black/20 text-center sm:text-left">
+                      Hand-picked and inspected <br/>for quality assurance.
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Main Actions */}
-              <div className="space-y-6 pt-6">
-                <div className="flex gap-4">
+              <div className="space-y-8 pt-6">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
                     onClick={addToCart}
-                    className={`flex-1 h-20 text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] shadow-2xl transition-all active:scale-95 ${
+                    className={`flex-1 h-24 text-xs font-black uppercase tracking-[0.5em] rounded-[2.5rem] shadow-2xl transition-all active:scale-95 ${
                       isAdded ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-black text-white hover:bg-black/90 hover:-translate-y-1'
                     }`}
                   >
                     {isAdded ? (
                       <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5" /> Secured to Cart
+                        <CheckCircle className="h-6 w-6" /> Secured to Bag
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
-                        <ShoppingBag className="h-5 w-5" /> {t("Add to Bag")}
+                        <ShoppingBag className="h-6 w-6" /> {t("Complete Purchase")}
                       </div>
                     )}
                   </Button>
                   <button 
                     onClick={() => setIsFavorited(!isFavorited)}
-                    className={`w-20 h-20 rounded-[2rem] border-2 flex items-center justify-center transition-all ${
+                    className={`w-24 h-24 rounded-[2.5rem] border-2 flex items-center justify-center transition-all ${
                       isFavorited ? 'bg-red-50 border-red-500 text-red-500' : 'border-black/5 hover:border-black/20 text-black/20'
                     }`}
                   >
-                    <Heart className={`h-6 w-6 ${isFavorited ? 'fill-current' : ''}`} />
+                    <Heart className={`h-8 w-8 ${isFavorited ? 'fill-current' : ''}`} />
                   </button>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
-                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <Truck className="h-4 w-4 text-black" />
+                   <div className="flex items-center gap-5 p-6 rounded-[2rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Truck className="h-5 w-5 text-black" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Free Shipping</span>
-                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Fast & Reliable Doorstep Delivery</span>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Free Shipping</span>
+                        <span className="text-[9px] font-bold text-black/30 uppercase tracking-tight">Fast Doorstep Delivery</span>
                       </div>
                    </div>
-                   <div className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
-                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <Shield className="h-4 w-4 text-black" />
+                   <div className="flex items-center gap-5 p-6 rounded-[2rem] bg-gray-50/50 border border-black/[0.03] hover:border-black/10 transition-colors group">
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Shield className="h-5 w-5 text-black" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-black">Buyer Protection</span>
-                        <span className="text-[8px] font-bold text-black/30 uppercase tracking-tighter">Secure & Encrypted Payments</span>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Buyer Protection</span>
+                        <span className="text-[9px] font-bold text-black/30 uppercase tracking-tight">Secure Payment Protocol</span>
                       </div>
                    </div>
                 </div>
               </div>
 
-              {/* Description - Simplified */}
+              {/* Description - Focused */}
               {product.description && (
-                <div className="space-y-4 pt-8">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40">Product Narrative</h3>
-                  <p className="text-sm text-black/60 leading-relaxed font-medium">
-                    {product.description}
-                  </p>
+                <div className="space-y-6 pt-16 border-t border-black/5">
+                  <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-black/40 text-center">Product Narrative</h3>
+                  <div className="bg-gray-50/30 p-10 rounded-[3rem] border border-black/[0.02]">
+                    <p className="text-lg text-black/70 leading-relaxed font-medium text-center">
+                      {product.description}
+                    </p>
+                  </div>
                 </div>
               )}
 
-              {/* Delivery & Security Minimalist Section */}
-              <div className="pt-10 space-y-6 border-t border-black/5 mt-10">
-                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Delivery Information</span>
-                  <Truck className="h-3.5 w-3.5" />
-                </div>
-                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Payment Security</span>
-                  <Shield className="h-3.5 w-3.5" />
-                </div>
-                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest group cursor-pointer hover:text-black transition-colors">
-                  <span className="text-black/40 group-hover:text-black">Product Authenticity</span>
-                  <CheckCircle className="h-3.5 w-3.5" />
+              {/* Additional Details Minimalist Section */}
+              <div className="pt-20 space-y-8 mt-10">
+                <div className="flex flex-wrap justify-center gap-12 sm:gap-20">
+                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
+                    <div className="w-14 h-14 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
+                      <Truck className="h-5 w-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/40 group-hover:text-black">Delivery Details</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
+                    <div className="w-14 h-14 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
+                      <Shield className="h-5 w-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/40 group-hover:text-black">Security Protocol</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
+                    <div className="w-14 h-14 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
+                      <CheckCircle className="h-5 w-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/40 group-hover:text-black">Authenticity</span>
+                  </div>
                 </div>
               </div>
             </div>

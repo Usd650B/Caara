@@ -1124,110 +1124,147 @@ export default function AdminPage() {
   const currentTabTitle = tabs.find(t => t.id === activeTab)?.label || 'SheDoo';
 
   return (
-    <div className="flex h-screen bg-[#F0F0F0] overflow-hidden font-sans">
-      {/* Sidebar - Mobile Toggle Placeholder */}
-      <div className="lg:hidden p-4 border-b bg-white flex justify-between items-center sticky top-0 z-50">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white">
-            <span className="font-black italic">S</span>
-          </div>
-          <span className="font-black text-xl tracking-tighter">SheDoo OS</span>
-        </div>
-        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="rounded-xl h-12 w-12"><Menu className="h-6 w-6" /></Button>
-      </div>
-
-      {/* Sidebar - Consistent with Intelligence Aesthetic */}
-      <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-[60] w-80 bg-white border-r border-black/5 transform transition-transform duration-500 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
-        <div className="flex flex-col h-full p-10">
-          <div className="flex items-center justify-between mb-14">
-            <div className="flex items-center space-x-4 group cursor-pointer">
-              <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10 group-hover:scale-110 transition-transform">
-                <Crown className="h-6 w-6 text-yellow-500 fill-yellow-500/20" />
-              </div>
-              <span className="text-2xl tracking-tighter">
+    <div className="flex flex-col h-screen bg-[#F0F0F0] overflow-hidden font-sans">
+      {/* Unified Top Navigation */}
+      <header className="h-28 bg-white border-b border-black/5 px-8 md:px-12 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+        <div className="flex items-center space-x-12">
+          {/* Brand Logo */}
+          <div className="flex items-center space-x-4 group cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+            <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10 group-hover:scale-110 transition-transform">
+              <Crown className="h-6 w-6 text-yellow-500 fill-yellow-500/20" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl tracking-tighter leading-none">
                 <span className="font-black text-black">She</span>
                 <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-black/20 ml-2">OS</span>
               </span>
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black/20 mt-1">Management Portal</span>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="lg:hidden rounded-xl h-10 w-10"><X className="h-5 w-5" /></Button>
           </div>
 
-          <nav className="flex-1 space-y-6">
-            <div className="space-y-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
-                  className={`w-full flex items-center space-x-4 px-6 h-14 rounded-2xl transition-all duration-300 group ${
-                    activeTab === tab.id 
-                    ? 'bg-black text-white shadow-xl shadow-black/10' 
-                    : 'text-black/40 hover:bg-black/5 hover:text-black'
-                  }`}
-                >
-                  <tab.icon className={`h-4 w-4 transition-transform duration-500 ${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'}`} />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </nav>
-
-          <div className="pt-10 border-t border-black/5 space-y-4">
-             <div className="flex items-center space-x-4 px-6 text-black/30">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-black/20">Operational</span>
-             </div>
-             <Button onClick={handleSignOut} variant="ghost" className="w-full justify-start space-x-4 px-6 h-14 rounded-2xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all">
-               <LogOut className="h-4 w-4" />
-               <span className="text-[10px] font-black uppercase tracking-widest">Terminate Account</span>
-             </Button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Stream */}
-      <main className="flex-1 min-w-0 overflow-y-auto">
-        <header className="h-24 bg-[#fafafa]/80 backdrop-blur-md border-b border-black/5 px-8 md:px-12 flex items-center justify-between sticky top-0 z-40">
-           <div>
-             <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black/20 mb-1">
-               <span>SheDoo OS</span>
-               <ChevronRight className="h-3 w-3" />
-               <span className="text-black">{currentTabTitle}</span>
-             </div>
-             <h1 className="text-xl font-black tracking-tighter uppercase">{currentTabTitle}</h1>
-           </div>
-           
-           <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline"
-                onClick={() => setShowNotifications(true)}
-                className="h-10 w-10 sm:h-12 sm:w-12 bg-white border-black/5 rounded-xl shadow-sm flex items-center justify-center relative hover:bg-black hover:text-white transition-all group"
+          {/* Horizontal Nav */}
+          <nav className="hidden xl:flex items-center bg-black/[0.03] p-1.5 rounded-2xl border border-black/[0.03]">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-3 px-6 h-11 rounded-xl transition-all duration-300 group ${
+                  activeTab === tab.id 
+                  ? 'bg-white text-black shadow-md' 
+                  : 'text-black/30 hover:text-black'
+                }`}
               >
-                <Bell className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                <tab.icon className={`h-3.5 w-3.5 ${activeTab === tab.id ? 'text-black' : 'text-black/30'}`} />
+                <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center space-x-6">
+          {/* Global Search */}
+          <div className="hidden lg:relative lg:flex items-center group">
+            <Search className="absolute left-4 h-4 w-4 text-black/20 group-hover:text-black/40 transition-colors" />
+            <Input 
+              placeholder="Search assets..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-64 h-12 pl-12 bg-black/[0.02] border-transparent focus:border-black/10 rounded-xl text-[10px] font-black uppercase tracking-widest"
+            />
+          </div>
+
+          <div className="h-8 w-px bg-black/5" />
+
+          {/* User & Notifications */}
+          <div className="flex items-center space-x-4">
+            <Button 
+                variant="ghost"
+                onClick={() => setShowNotifications(true)}
+                className="h-12 w-12 bg-black/[0.02] rounded-xl relative hover:bg-black hover:text-white transition-all group"
+              >
+                <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg shadow-red-500/40 animate-bounce">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white animate-bounce">
                     {unreadCount}
                   </span>
                 )}
-              </Button>
+            </Button>
+
+            <div className="relative group">
+               <Button className="h-12 w-12 bg-black rounded-xl shadow-lg shadow-black/20 flex items-center justify-center text-white text-xs font-black hover:scale-105 transition-all">
+                  SM
+               </Button>
+               <div className="absolute right-0 top-full mt-4 w-56 bg-white rounded-2xl p-2 shadow-2xl border border-black/5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div className="px-4 py-3 border-b border-black/5 mb-1">
+                    <p className="text-[9px] font-black text-black/30 uppercase tracking-widest tracking-widest">Signed in as</p>
+                    <p className="text-[11px] font-black truncate text-black">Administrator</p>
+                  </div>
+                  <button onClick={() => setActiveTab('profile')} className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black/5 rounded-xl transition-colors flex items-center justify-between">
+                    <span>Profile Control</span>
+                    <User className="h-3 w-3" />
+                  </button>
+                  <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-xl transition-colors flex items-center justify-between">
+                    <span>Terminate Session</span>
+                    <LogOut className="h-3 w-3" />
+                  </button>
+               </div>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="xl:hidden h-12 w-12 rounded-xl"><Menu className="h-6 w-6" /></Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Nav Overlay */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-[100] xl:hidden bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+           <div className="absolute left-0 inset-y-0 w-80 bg-white shadow-2xl p-10 flex flex-col animate-in slide-in-from-left duration-500">
+              <div className="flex items-center justify-between mb-12">
+                 <span className="font-black text-xl italic">SheDoo OS</span>
+                 <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="rounded-xl"><X className="h-6 w-6" /></Button>
+              </div>
+              <div className="space-y-2 flex-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center space-x-4 px-6 h-14 rounded-2xl transition-all ${
+                      activeTab === tab.id ? 'bg-black text-white' : 'text-black/40 hover:bg-black/5'
+                    }`}
+                  >
+                    <tab.icon className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* Main Stream */}
+      <main className="flex-1 min-w-0 overflow-y-auto pt-12">
+        <div className="max-w-7xl mx-auto p-8 md:p-12">
+          {/* Breadcrumb / Tab Indicator */}
+          <div className="mb-12 flex items-center justify-between">
+            <div>
+              <div className="flex items-center space-x-2 text-[9px] font-black uppercase tracking-[0.3em] text-black/20 mb-3">
+                <span>SheDoo OS</span>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-black">{currentTabTitle}</span>
+              </div>
+              <h1 className="text-4xl font-black tracking-tighter uppercase text-black leading-none">{currentTabTitle}</h1>
+            </div>
+            {activeTab === 'products' && (
               <Button 
                 onClick={() => setShowAddProduct(true)}
-                className="h-12 px-6 bg-black text-white rounded-xl shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] transition-all font-black text-[10px] uppercase tracking-widest hidden md:flex"
+                className="h-14 px-8 bg-black text-white rounded-2xl shadow-2xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-1 transition-all font-black text-[10px] uppercase tracking-widest"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                New Asset
+                Register New Asset
               </Button>
-              <div className="hidden sm:flex items-center bg-black/5 rounded-full px-4 py-2 border border-black/5">
-                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
-                 <span className="text-[9px] font-black uppercase tracking-widest">v4.0.2</span>
-              </div>
-              <div className="w-10 h-10 bg-black rounded-xl shadow-xl shadow-black/20 flex items-center justify-center text-white text-xs font-black">
-                 SM
-              </div>
-            </div>
-        </header>
-
-        <div className="max-w-7xl mx-auto p-8 md:p-12">
+            )}
+          </div>
           {activeTab === "dashboard" && <DashboardContent stats={stats} orders={orders} />}
           {activeTab === "products" && (
             <ProductsContent 
