@@ -103,8 +103,8 @@ export default function OrderTrackingPage() {
       // Notify admin
       await addNotification({
         type: 'confirmation',
-        title: 'Manifest Secured',
-        message: `${order.customerName} has confirmed delivery of Manifest #${order.id?.slice(-8).toUpperCase()}`,
+        title: 'Order Delivered',
+        message: `${order.customerName} has confirmed delivery of Order #${order.id?.slice(-8).toUpperCase()}`,
         relatedId: order.id,
         customerName: order.customerName
       });
@@ -129,8 +129,8 @@ export default function OrderTrackingPage() {
       // Notify admin
       await addNotification({
          type: 'dispute',
-         title: 'Protocol Deviation',
-         message: `${order.customerName} opened a dispute on Manifest #${order.id?.slice(-8).toUpperCase()}`,
+         title: 'Dispute Opened',
+         message: `${order.customerName} opened a dispute on Order #${order.id?.slice(-8).toUpperCase()}`,
          relatedId: order.id,
          customerName: order.customerName
       });
@@ -156,8 +156,8 @@ export default function OrderTrackingPage() {
       // Notify admin
       await addNotification({
          type: 'review',
-         title: 'Intelligence Report',
-         message: `${order.customerName} left a ${rating}-star feedback for Manifest #${order.id?.slice(-8).toUpperCase()}`,
+         title: 'Product Review',
+         message: `${order.customerName} left a ${rating}-star review for Order #${order.id?.slice(-8).toUpperCase()}`,
          relatedId: order.id,
          customerName: order.customerName
       });
@@ -194,11 +194,11 @@ export default function OrderTrackingPage() {
   if (!order) {
     return (
       <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center p-8 text-center">
-        <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6 text-black/20">
+        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 text-black/30">
           <Clock className="h-10 w-10" />
         </div>
-        <h1 className="text-3xl font-black uppercase tracking-tight mb-2">Order Not Found</h1>
-        <Button asChild className="mt-8 bg-black text-white h-14 px-10 rounded-2xl font-black text-[10px] uppercase tracking-widest">
+        <h1 className="text-2xl font-bold tracking-tight mb-2">Order Not Found</h1>
+        <Button asChild className="mt-8 bg-black text-white h-12 px-8 rounded-xl font-semibold text-sm">
            <Link href="/track">Return to Tracker</Link>
         </Button>
       </div>
@@ -218,16 +218,16 @@ export default function OrderTrackingPage() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
-             <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-widest text-black/40 mb-1">
+             <div className="flex items-center space-x-2 text-xs font-semibold uppercase tracking-widest text-black/50 mb-1">
                <span>Order Tracking</span>
                <ChevronRight className="h-3 w-3" />
                <span className="text-black">{order.status}</span>
              </div>
-             <h1 className="text-xl font-black tracking-tighter">Order #{order.id?.slice(-8).toUpperCase()}</h1>
+             <h1 className="text-xl font-bold tracking-tight">Order #{order.id?.slice(-8).toUpperCase()}</h1>
           </div>
         </div>
         <div className="hidden md:flex items-center space-x-4">
-           <Button onClick={handleDownloadReceipt} variant="outline" className="h-11 px-6 border-black/5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white">
+           <Button onClick={handleDownloadReceipt} variant="outline" className="h-10 px-4 border-black/10 rounded-xl text-xs font-semibold bg-white transition-all hover:bg-black hover:text-white">
              <Download className="h-4 w-4 mr-2" />
              Download PDF Receipt
            </Button>
@@ -237,12 +237,12 @@ export default function OrderTrackingPage() {
       <main className="max-w-7xl mx-auto p-4 md:p-12 space-y-8">
         
         {/* Status Pipeline */}
-        <div className="bg-white rounded-[2rem] border border-black/5 p-6 md:p-10 shadow-sm">
+        <div className="bg-white rounded-3xl border border-black/5 p-6 md:p-10 shadow-sm">
           <div className="flex items-center justify-between mb-8">
-             <h2 className="text-sm font-black uppercase tracking-widest">Current Status</h2>
+             <h2 className="text-sm font-semibold uppercase tracking-widest text-black/60">Current Status</h2>
              <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${order.status === 'cancelled' ? 'bg-red-500' : 'bg-green-500 animate-pulse'}`} />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-black/60">
+                <span className="text-xs font-bold uppercase tracking-widest text-black/80">
                    {order.status === 'cancelled' ? 'Cancelled' : 'Active'}
                 </span>
              </div>
@@ -258,12 +258,12 @@ export default function OrderTrackingPage() {
                   <div key={step.key} className="flex md:flex-col items-center gap-4 group bg-white md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none border md:border-none border-black/5 shrink-0">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm ${
                       isCompleted ? 'bg-black text-white' : 'bg-gray-100 text-black/20'
-                    } ${isActive ? 'scale-110 shadow-md ring-4 ring-black/5' : ''}`}>
+                    } ${isActive ? 'scale-105 shadow-md ring-2 ring-black/5' : ''}`}>
                        <step.icon className="h-5 w-5" />
                     </div>
                     <div className="text-left md:text-center">
-                       <p className={`text-xs font-black uppercase tracking-wider ${isCompleted ? 'text-black' : 'text-black/30'}`}>{step.label}</p>
-                       {isActive && <p className="text-[9px] font-bold text-green-600 uppercase tracking-widest mt-1">Right Now</p>}
+                       <p className={`text-xs font-semibold tracking-wider ${isCompleted ? 'text-black' : 'text-black/40'}`}>{step.label}</p>
+                       {isActive && <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest mt-1">Right Now</p>}
                     </div>
                   </div>
                 );
@@ -275,13 +275,13 @@ export default function OrderTrackingPage() {
         {/* Action Panel for Buyers */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Action 1: Confirm Receipt */}
-          <div className="bg-white rounded-[2rem] border border-black/5 p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4">
+          <div className="bg-white rounded-3xl border border-black/5 p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4">
             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${order.isReceivedConfirmed ? 'bg-green-50 text-green-500' : 'bg-blue-50 text-blue-500'}`}>
               <CheckCircle className="h-8 w-8" />
             </div>
             <div>
-               <h3 className="font-black uppercase tracking-tight text-lg">Confirm Delivery</h3>
-               <p className="text-xs text-black/40 mt-1 font-medium">Let us know if you received your package safely.</p>
+               <h3 className="font-bold tracking-tight text-lg">Confirm Delivery</h3>
+               <p className="text-xs text-black/50 mt-1 font-medium">Let us know if you received your package safely.</p>
             </div>
             {order.isReceivedConfirmed ? (
               <div className="px-6 py-3 bg-green-500/10 text-green-600 rounded-xl text-[10px] font-black uppercase tracking-widest mt-2 flex items-center gap-2">

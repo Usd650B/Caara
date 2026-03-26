@@ -136,16 +136,20 @@ const AddProductModal = ({
               <Diamond className="h-40 w-40 rotate-12" />
             </div>
             <div className="relative z-10 space-y-8">
-              <h3 className="text-3xl font-black tracking-tight leading-tight">Asset <br/> Creation</h3>
-              <p className="text-white/40 text-sm leading-relaxed font-medium">Synchronize digital assets with our central inventory vault.</p>
-              <div className="space-y-6 pt-10">
-                <div className="flex items-center space-x-4 text-[10px] font-black uppercase tracking-widest text-white">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">1</div>
-                  <span>Basic Matrix</span>
+              <h3 className="text-2xl font-bold tracking-tight leading-tight">{isEdit ? 'Edit Product' : 'New Product'}</h3>
+              <p className="text-white/50 text-sm leading-relaxed">Fill in the product details on the right. Colors and sizes you add here will appear as choices for buyers on the store.</p>
+              <div className="space-y-4 pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs shrink-0 mt-0.5">1</div>
+                  <span className="text-sm text-white/70">Basic Info — name, price, stock</span>
                 </div>
-                <div className="flex items-center space-x-4 text-[10px] font-black uppercase tracking-widest text-white/20">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">2</div>
-                  <span>Data Deck</span>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs shrink-0 mt-0.5">2</div>
+                  <span className="text-sm text-white/70">Variants — sizes &amp; colors buyers can select</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs shrink-0 mt-0.5">3</div>
+                  <span className="text-sm text-white/70">Photos — main image + up to 3 extra styles</span>
                 </div>
               </div>
             </div>
@@ -153,50 +157,53 @@ const AddProductModal = ({
 
           {/* Right Scrollable Form Panel */}
           <div className="flex-1 overflow-y-auto px-8 py-10 md:px-12 md:py-12">
-            <div className="flex justify-between items-center mb-10">
-              <h2 className="text-2xl font-black text-black uppercase tracking-tight">{isEdit ? "Refine Protocol" : "Authorize Asset"}</h2>
-              <Button variant="ghost" size="icon" className="rounded-2xl h-12 w-12 hover:bg-black/5" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>
-                <X className="h-6 w-6" />
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-xl font-bold text-black">{isEdit ? 'Edit Product' : 'Add New Product'}</h2>
+              <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-black/5" onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}>
+                <X className="h-5 w-5" />
               </Button>
             </div>
 
             <form id="product-form" onSubmit={handleSubmit} className="space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-8">
-                  <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Legal Asset Name</Label>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-gray-700">Product Name *</Label>
                     <Input 
                       value={formData.name} 
                       onChange={e => setFormData({ ...formData, name: e.target.value })} 
                       required 
-                      className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold"
-                      placeholder="e.g. Luxury Brazilian Lace Wig"
+                      className="h-11 rounded-lg"
+                      placeholder="e.g. Floral Tote Bag"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Asset Value (USD)</Label>
-                      <Input type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold text-gray-700">Price (TSh) *</Label>
+                      <Input type="number" step="0.01" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="h-11 rounded-lg" placeholder="e.g. 25000" />
                     </div>
-                    <div className="space-y-3">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Stock Inventory</Label>
-                      <Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: Number(e.target.value) })} required className="h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold" />
+                    <div className="space-y-2">
+                      <Label className="text-xs font-semibold text-gray-700">Stock Quantity *</Label>
+                      <Input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: Number(e.target.value) })} required className="h-11 rounded-lg" placeholder="e.g. 50" />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Category</Label>
-                    <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full h-14 bg-black/[0.01] border-black/5 rounded-2xl font-bold px-4 focus:ring-0">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-gray-700">Category</Label>
+                    <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full h-11 border border-gray-200 rounded-lg font-medium px-3 focus:ring-1 focus:ring-black text-sm">
                       {categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
 
                   {/* Size Management */}
-                  <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Sizes</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-700">Available Sizes</Label>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Buyers will see these choices on the product page. Leave blank if not applicable.</p>
+                    </div>
                     <div className="flex gap-2">
-                       <Input 
+                      <Input 
                         value={newSize} 
                         onChange={e => setNewSize(e.target.value)}
                         onKeyDown={e => {
@@ -209,10 +216,10 @@ const AddProductModal = ({
                             }
                           }
                         }}
-                        className="h-12 bg-black/[0.01] border-black/5 rounded-xl font-bold"
-                        placeholder='e.g. 18", XL, 750ml...'
-                       />
-                       <Button 
+                        className="h-10 rounded-lg text-sm"
+                        placeholder='e.g. Small, Medium, Large, 26cm...'
+                      />
+                      <Button 
                         type="button"
                         onClick={() => {
                           const val = newSize.trim();
@@ -221,32 +228,38 @@ const AddProductModal = ({
                             setNewSize("");
                           }
                         }}
-                        className="h-12 w-12 bg-black text-white rounded-xl flex-shrink-0"
-                       >
-                         <Plus className="h-4 w-4" />
-                       </Button>
+                        className="h-10 w-10 bg-black text-white rounded-lg flex-shrink-0"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div className="flex flex-wrap gap-2 pt-2">
+                    <div className="flex flex-wrap gap-2">
                       {formData.sizes.map((size, idx) => (
-                        <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest group">
+                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white rounded-full text-xs font-semibold">
                           {size}
                           <button 
                             type="button"
                             onClick={() => setFormData({ ...formData, sizes: formData.sizes.filter((_, i) => i !== idx) })}
-                            className="hover:text-red-400 transition-colors"
+                            className="hover:text-red-300 transition-colors"
                           >
                             <X className="h-3 w-3" />
                           </button>
                         </div>
                       ))}
+                      {formData.sizes.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No sizes added yet</p>
+                      )}
                     </div>
                   </div>
 
                   {/* Color Management */}
-                  <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Colors</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-xs font-semibold text-gray-700">Available Colors</Label>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Buyers will see these choices on the product page. Leave blank if not applicable.</p>
+                    </div>
                     <div className="flex gap-2">
-                       <Input 
+                      <Input 
                         value={newColor} 
                         onChange={e => setNewColor(e.target.value)}
                         onKeyDown={e => {
@@ -259,10 +272,10 @@ const AddProductModal = ({
                             }
                           }
                         }}
-                        className="h-12 bg-black/[0.01] border-black/5 rounded-xl font-bold"
-                        placeholder="e.g. Jet Black, Pink, Matte..."
-                       />
-                       <Button 
+                        className="h-10 rounded-lg text-sm"
+                        placeholder="e.g. Black, Pink, Beige, Navy..."
+                      />
+                      <Button 
                         type="button"
                         onClick={() => {
                           const val = newColor.trim();
@@ -271,14 +284,14 @@ const AddProductModal = ({
                             setNewColor("");
                           }
                         }}
-                        className="h-12 w-12 bg-black text-white rounded-xl flex-shrink-0"
-                       >
-                         <Plus className="h-4 w-4" />
-                       </Button>
+                        className="h-10 w-10 bg-black text-white rounded-lg flex-shrink-0"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div className="flex flex-wrap gap-2 pt-2">
+                    <div className="flex flex-wrap gap-2">
                       {formData.colors.map((color, idx) => (
-                        <div key={idx} className="flex items-center gap-2 px-4 py-2 border border-black/10 text-black rounded-full text-[10px] font-black uppercase tracking-widest">
+                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 text-gray-800 rounded-full text-xs font-semibold">
                           {color}
                           <button 
                             type="button"
@@ -289,17 +302,23 @@ const AddProductModal = ({
                           </button>
                         </div>
                       ))}
+                      {formData.colors.length === 0 && (
+                        <p className="text-xs text-gray-400 italic">No colors added yet</p>
+                      )}
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Product Narrative</Label>
-                    <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-36 p-5 bg-black/[0.01] border-black/5 rounded-2xl font-medium text-sm focus:ring-0 resize-none" placeholder="Enter styling tips, material details, and unique product features..." />
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-gray-700">Product Description</Label>
+                    <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full h-28 p-4 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-black resize-none" placeholder="Describe the bag — material, dimensions, style, best use..." />
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Visual Capture</Label>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-700">Main Product Image *</Label>
+                    <p className="text-[10px] text-gray-400 mt-0.5">This is the primary image shown on the product card and detail page.</p>
+                  </div>
                   <ImageUpload 
                     currentImage={formData.image}
                     onImageUpload={(url) => setFormData({ ...formData, image: url })} 
@@ -308,7 +327,10 @@ const AddProductModal = ({
 
                 {/* Extra Images (up to 3) */}
                 <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30">Extra Photos (up to 3)</Label>
+                  <div>
+                    <Label className="text-xs font-semibold text-gray-700">Style Variant Photos (up to 3)</Label>
+                    <p className="text-[10px] text-gray-400 mt-0.5">Add extra photos for different styles/variants. Buyers can click these to see different angles.</p>
+                  </div>
                   <div className="grid grid-cols-3 gap-3">
                     {[0, 1, 2].map((idx) => (
                       <div key={idx} className="aspect-square rounded-2xl overflow-hidden border-2 border-dashed border-black/10 bg-black/[0.01] relative flex flex-col items-center justify-center group">
@@ -340,21 +362,21 @@ const AddProductModal = ({
         </div>
 
         {/* Fixed Footer with Buttons */}
-        <div className="p-8 md:px-12 md:py-8 border-t border-black/5 bg-white flex justify-end gap-4 z-50">
+        <div className="p-6 md:px-10 border-t border-gray-100 bg-white flex justify-end gap-3">
           <Button 
               type="button" 
               variant="ghost" 
-              className="font-black uppercase tracking-widest text-[10px] h-14 px-8 rounded-2xl" 
+              className="font-medium text-sm h-10 px-6 rounded-lg text-gray-500" 
               onClick={() => { setShowAddProduct(false); setEditingProduct(null); }}
           >
-              Abort
+            Cancel
           </Button>
           <Button 
               form="product-form"
               type="submit" 
-              className="bg-black text-white px-12 font-black uppercase tracking-widest text-[10px] h-14 rounded-2xl shadow-xl shadow-black/10 hover:scale-[1.02] transition-all"
+              className="bg-black text-white px-8 font-semibold text-sm h-10 rounded-lg"
           >
-            {isEdit ? "Apply Refinement" : "Confirm Authorization"}
+            {isEdit ? 'Save Changes' : 'Add Product'}
           </Button>
         </div>
 

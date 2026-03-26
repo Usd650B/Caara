@@ -43,17 +43,17 @@ export default function OrderHistoryPage() {
 
   const getStatusNode = (status: string) => {
     const configs: any = {
-      pending: { color: 'bg-yellow-500', label: 'Awaiting Authorization' },
-      processing: { color: 'bg-blue-500', label: 'Preparing Manifest' },
-      shipped: { color: 'bg-purple-500', label: 'Logistics Deployment' },
-      delivered: { color: 'bg-green-500', label: 'Mission Accomplished' },
-      cancelled: { color: 'bg-red-500', label: 'Manifest Voided' },
+      pending: { color: 'bg-yellow-500', label: 'Processing' },
+      processing: { color: 'bg-blue-500', label: 'Preparing Order' },
+      shipped: { color: 'bg-purple-500', label: 'Shipped' },
+      delivered: { color: 'bg-green-500', label: 'Delivered' },
+      cancelled: { color: 'bg-red-500', label: 'Cancelled' },
     };
     const config = configs[status] || { color: 'bg-black/10', label: status };
     return (
       <div className="flex items-center space-x-2">
         <div className={`w-1.5 h-1.5 rounded-full ${config.color} animate-pulse`} />
-        <span className="text-[9px] font-black uppercase tracking-widest text-black/40">{config.label}</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-black/60">{config.label}</span>
       </div>
     );
   };
@@ -76,13 +76,13 @@ export default function OrderHistoryPage() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-24 space-y-12">
         {/* Navigation */}
         <div className="flex justify-between items-center">
-           <Link href="/profile" className="group inline-flex items-center text-[10px] font-black uppercase tracking-widest text-black/30 hover:text-black transition-colors">
+           <Link href="/profile" className="group inline-flex items-center text-xs font-semibold uppercase tracking-widest text-black/50 hover:text-black transition-colors">
              <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
              Return to Profile
            </Link>
            <Link href="/products">
-             <Button variant="outline" className="h-10 px-6 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest">
-               Execute Acquisition
+             <Button variant="outline" className="h-10 px-6 rounded-xl border-black/10 font-semibold text-xs transition-all">
+               Shop Now
              </Button>
            </Link>
         </div>
@@ -90,98 +90,98 @@ export default function OrderHistoryPage() {
         {/* Hero Node */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
            <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-black uppercase" style={{ fontFamily: 'var(--font-playfair)' }}>
-                Manifest <br/> History
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-black">
+                Order <br/> History
               </h1>
-              <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.3em] max-w-sm">Chronological record of all acquisitions and logistics missions authorized via OS CARA.</p>
+              <p className="text-black/50 text-sm max-w-sm">Review your past orders and track current shipments.</p>
            </div>
            
            <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-black/5 shadow-sm">
               <div className="px-6 py-4 text-center border-r border-black/5">
-                <p className="text-2xl font-black text-black">{orders.length}</p>
-                <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Total Manifests</p>
+                <p className="text-2xl font-bold text-black">{orders.length}</p>
+                <p className="text-xs font-semibold text-black/50">Total Orders</p>
               </div>
               <div className="px-6 py-4 text-center">
-                <p className="text-2xl font-black text-green-500">${orders.reduce((s, o) => s + (o.total || 0), 0).toFixed(0)}</p>
-                <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Capital Allocated</p>
+                <p className="text-2xl font-bold text-black">${orders.reduce((s, o) => s + (o.total || 0), 0).toFixed(0)}</p>
+                <p className="text-xs font-semibold text-black/50">Total Spent</p>
               </div>
            </div>
         </div>
 
         {orders.length === 0 ? (
-          <div className="bg-white rounded-[3rem] border border-black/5 p-20 text-center space-y-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-             <div className="w-20 h-20 bg-black/5 rounded-[2rem] flex items-center justify-center mx-auto text-black/20">
-               <Package className="h-10 w-10" />
+          <div className="bg-white rounded-3xl border border-black/5 p-16 text-center space-y-6 shadow-sm">
+             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-black/30">
+               <Package className="h-8 w-8" />
              </div>
              <div className="space-y-2">
-                <h2 className="text-2xl font-black uppercase tracking-tight">Vault Empty</h2>
-                <p className="text-black/40 text-sm max-w-xs mx-auto">No acquisitions have been recorded under your digital identification node.</p>
+                <h2 className="text-2xl font-bold tracking-tight">No Orders Yet</h2>
+                <p className="text-black/50 text-sm max-w-xs mx-auto">You haven't placed any orders yet.</p>
              </div>
-             <Button asChild className="bg-black text-white px-10 h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] transition-all">
-               <Link href="/products">Initialize First Acquisition</Link>
+             <Button asChild className="bg-black text-white px-8 h-12 rounded-xl font-semibold text-sm transition-all mt-4">
+               <Link href="/products">Start Shopping</Link>
              </Button>
           </div>
         ) : (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
             {/* Search Protocol */}
             <div className="relative max-w-md">
-               <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-black/20" />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-black/30" />
                <input 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Locate manifest by ID or asset name..."
-                className="w-full pl-14 pr-6 h-14 bg-white border border-black/5 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest focus:ring-0 shadow-sm"
+                placeholder="Search by order ID or product name..."
+                className="w-full pl-12 pr-6 h-12 bg-white border border-black/10 rounded-xl text-sm focus:ring-1 focus:ring-black shadow-sm"
                />
             </div>
 
             {/* Manifest List */}
             <div className="grid grid-cols-1 gap-6">
               {filteredOrders.map((order) => (
-                <div key={order.id} className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgb(0,0,0,0.05)] transition-all duration-700">
-                  <div className="p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
-                    <div className="space-y-6 flex-1">
+                <div key={order.id} className="bg-white rounded-3xl border border-black/5 overflow-hidden group hover:shadow-md transition-all duration-300">
+                  <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div className="space-y-4 flex-1">
                        <div className="flex flex-wrap items-center gap-4">
-                          <span className="text-sm font-black text-black uppercase tracking-tight">#{order.id?.slice(-8).toUpperCase()}</span>
+                          <span className="text-sm font-semibold text-black uppercase tracking-tight">#{order.id?.slice(-8).toUpperCase()}</span>
                           {getStatusNode(order.status)}
                        </div>
                        
                        <div className="flex gap-4">
                           <div className="flex -space-x-3">
                              {order.items?.slice(0, 3).map((item, i) => (
-                               <div key={i} className="w-16 h-20 bg-black/[0.03] rounded-xl overflow-hidden border-2 border-white shadow-lg relative group/item">
-                                 <img src={item.image} className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-700" alt="" />
+                               <div key={i} className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden border-2 border-white shadow-sm relative group/item">
+                                 <img src={item.image} className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-300" alt="" />
                                </div>
                              ))}
                              {order.items && order.items.length > 3 && (
-                               <div className="w-16 h-20 bg-black text-white rounded-xl flex items-center justify-center text-[10px] font-black border-2 border-white shadow-lg">
+                               <div className="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center text-xs font-bold border-2 border-white shadow-sm">
                                   +{order.items.length - 3}
                                </div>
                              )}
                           </div>
-                          <div className="space-y-1">
-                             <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Creation Node: {new Date(order.createdAt as any).toLocaleDateString()}</p>
-                             <p className="text-lg font-black text-black uppercase tracking-tight">{order.items?.[0]?.name} {order.items && order.items.length > 1 && `+ ${order.items.length - 1} Assets`}</p>
+                          <div className="space-y-1 pt-1">
+                             <p className="text-xs font-medium text-black/50">{new Date(order.createdAt as any).toLocaleDateString()}</p>
+                             <p className="text-base font-semibold text-black">{order.items?.[0]?.name} {order.items && order.items.length > 1 && `+ ${order.items.length - 1} more`}</p>
                           </div>
                        </div>
                     </div>
 
-                    <div className="flex flex-col md:items-end gap-6 border-t md:border-t-0 md:border-l border-black/5 pt-8 md:pt-0 md:pl-10">
+                    <div className="flex flex-col md:items-end gap-6 border-t md:border-t-0 md:border-l border-black/5 pt-6 md:pt-0 md:pl-8">
                        <div className="text-right">
-                          <p className="text-[9px] font-black uppercase tracking-widest text-black/20">Authorized Allocation</p>
-                          <p className="text-2xl font-black text-black">${order.total?.toFixed(2)}</p>
+                          <p className="text-xs font-semibold text-black/50">Total Amount</p>
+                          <p className="text-2xl font-bold text-black">${order.total?.toFixed(2)}</p>
                        </div>
                        <div className="flex flex-wrap gap-3">
                           <Link href={`/order-tracking/${order.id}`}>
-                            <Button variant="outline" className="h-12 px-6 rounded-xl border-black/5 font-black text-[10px] uppercase tracking-widest bg-black/[0.01] hover:bg-black hover:text-white transition-all">
-                               Track Logic
+                            <Button variant="outline" className="h-10 px-4 rounded-xl border-black/10 font-semibold text-xs transition-all hover:bg-black hover:text-white">
+                               Track Order
                             </Button>
                           </Link>
                           <Button 
                             onClick={() => handleDownloadReceipt(order)}
-                            className="h-12 px-6 rounded-xl bg-black text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-black/10 hover:scale-[1.05] transition-all"
+                            className="h-10 px-4 rounded-xl bg-black text-white font-semibold text-xs shadow-sm hover:opacity-90 transition-all"
                           >
-                            <Download className="h-3.5 w-3.5 mr-2" />
-                            Receipt.pdf
+                            <Download className="h-3 w-3 mr-2" />
+                            Receipt
                           </Button>
                        </div>
                     </div>
