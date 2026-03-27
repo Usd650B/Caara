@@ -632,26 +632,26 @@ interface OrdersContentProps {
 
 const OrdersContent = ({ orders, handleDeleteOrder, handleProcessOrder }: OrdersContentProps) => (
   <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 border-b border-black/5">
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-black/5">
       <div>
-        <h2 className="text-4xl font-black tracking-tighter text-black uppercase italic" style={{ fontFamily: 'var(--font-playfair)' }}>
-          Fulfillment Stream
+        <h2 className="text-2xl font-black tracking-tight text-black uppercase italic" style={{ fontFamily: 'var(--font-playfair)' }}>
+          Fulfillment Registry
         </h2>
-        <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.2em] mt-3">Active Logistics Threads: {orders.length}</p>
+        <p className="text-black/40 text-[9px] font-black uppercase tracking-[0.2em] mt-2">Active Logistics Threads: {orders.length}</p>
       </div>
     </div>
 
-    <div className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
+    <div className="bg-white rounded-[2rem] border border-black/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+      <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-black/10">
+        <table className="w-full text-left border-collapse relative">
+          <thead className="sticky top-0 z-10">
             <tr className="bg-black text-white">
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Global Order ID</th>
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Agent / Client</th>
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Asset Value</th>
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Fulfillment Status</th>
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Buyer Signals</th>
-              <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-right">Operational Actions</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest whitespace-nowrap">Order ID</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest whitespace-nowrap">Agent / Client</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest whitespace-nowrap">Asset Value</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest whitespace-nowrap">Status</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest whitespace-nowrap">Signals</th>
+              <th className="px-8 py-5 text-[9px] font-black uppercase tracking-widest text-right whitespace-nowrap">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/5">
@@ -1270,12 +1270,12 @@ export default function AdminPage() {
           {/* Breadcrumb / Tab Indicator */}
           <div className="mb-12 flex items-center justify-between">
             <div>
-              <div className="flex items-center space-x-2 text-[9px] font-black uppercase tracking-[0.3em] text-black/20 mb-3">
+              <div className="flex items-center space-x-2 text-[9px] font-black uppercase tracking-[0.3em] text-black/20 mb-2">
                 <span>SheDoo OS</span>
-                <ChevronRight className="h-3 w-3" />
+                <ChevronRight className="h-2 w-2" />
                 <span className="text-black">{currentTabTitle}</span>
               </div>
-              <h1 className="text-4xl font-black tracking-tighter uppercase text-black leading-none">{currentTabTitle}</h1>
+              <h1 className="text-3xl font-black tracking-tighter uppercase text-black leading-none">{currentTabTitle}</h1>
             </div>
             {activeTab === 'products' && (
               <Button 
