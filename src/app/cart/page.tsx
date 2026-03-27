@@ -135,7 +135,7 @@ export default function CartPage() {
         <div className="mb-10">
           <h1 className="text-3xl font-bold tracking-tight text-black">{t("Your Bag")}</h1>
           <p className="text-black/50 text-sm mt-2">
-            {getTotalItems()} items in your cart
+            {getTotalItems()} {t("items in your cart")}
           </p>
         </div>
 
@@ -216,21 +216,21 @@ export default function CartPage() {
           <div className="lg:col-span-4">
             <div className="sticky top-32 space-y-8">
               <div className="bg-gray-50/50 rounded-2xl p-6 border border-black/5">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-black/50 mb-6">Order Summary</h2>
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-black/50 mb-6">{t("Order Summary")}</h2>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm text-black/60">
-                    <span>Subtotal</span>
+                    <span>{t("Subtotal")}</span>
                     <span className="text-black font-semibold">{formatPrice(getTotalPrice())}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm text-black/60">
-                    <span>Shipping</span>
-                    <span className="text-green-600 font-semibold">Free</span>
+                    <span>{t("Shipping")}</span>
+                    <span className="text-green-600 font-semibold">{t("Free")}</span>
                   </div>
                   
                   <div className="pt-6 border-t border-black/5">
                     <div className="flex justify-between items-baseline mb-6">
-                      <span className="text-sm font-bold text-black">Estimated Total</span>
+                      <span className="text-sm font-bold text-black">{t("Estimated Total")}</span>
                       <span className="text-2xl font-bold text-black">{formatPrice(getTotalPrice())}</span>
                     </div>
 
@@ -248,7 +248,7 @@ export default function CartPage() {
                   onClick={clearCart}
                   className="text-xs font-semibold text-black/40 hover:text-black transition-colors"
                 >
-                   Clear Cart
+                   {t("Clear Cart")}
                 </button>
               </div>
             </div>

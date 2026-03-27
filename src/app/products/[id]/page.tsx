@@ -337,11 +337,15 @@ export default function ProductDetailPage() {
                   <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4" /> Add to Bag</span>
                 )}
               </Button>
-              <Link href="/checkout" className="flex-1">
-                <Button className="w-full h-11 text-sm font-semibold rounded bg-orange-500 hover:bg-orange-600 text-white">
-                  Buy Now
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => {
+                  addToCart();
+                  router.push('/checkout');
+                }}
+                className="flex-1 h-11 text-sm font-semibold rounded bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                Buy Now
+              </Button>
             </div>
 
             {/* Trust badges */}

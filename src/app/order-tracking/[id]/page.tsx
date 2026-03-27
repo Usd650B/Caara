@@ -14,8 +14,10 @@ import { getOrders, Order, updateOrder, addNotification } from "@/lib/firestore"
 import { downloadReceipt, generateReceiptNumber, ReceiptData } from "@/lib/receipt";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSettings } from "@/lib/settings";
 
 export default function OrderTrackingPage() {
+  const { formatPrice, t } = useSettings();
   const params = useParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -376,7 +378,7 @@ export default function OrderTrackingPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className="font-black text-sm">${(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="font-black text-sm">{formatPrice(item.price * item.quantity)}</span>
                         </div>
                      </div>
                    ))}
@@ -404,16 +406,16 @@ export default function OrderTrackingPage() {
                  <h3 className="text-xs font-black uppercase tracking-widest mb-6">Payment Summary</h3>
                  <div className="space-y-4 text-sm font-medium">
                     <div className="flex justify-between text-black/60">
-                       <span>Subtotal</span>
-                       <span>${(order.subtotal || order.total).toFixed(2)}</span>
+                       <span>{t("Subtotal")}</span>
+                       <span>{formatPrice(order.subtotal || order.total)}</span>
                     </div>
                     <div className="flex justify-between text-black/60">
-                       <span>Shipping</span>
-                       <span className="text-green-600 font-bold">Free</span>
+                       <span>{t("Shipping")}</span>
+                       <span className="text-green-600 font-bold">{t("Free")}</span>
                     </div>
                     <div className="flex justify-between pt-4 border-t border-black/5 font-black text-lg">
-                       <span>Total</span>
-                       <span>${order.total.toFixed(2)}</span>
+                       <span>{t("Total")}</span>
+                       <span>{formatPrice(order.total)}</span>
                     </div>
                  </div>
                  
