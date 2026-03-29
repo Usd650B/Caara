@@ -8,6 +8,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { ProductCard } from "@/components/ui/product-card";
 
 export default function ProductDetailPage() {
   const { formatPrice, t } = useSettings();
@@ -178,7 +179,7 @@ export default function ProductDetailPage() {
                 {/* Wishlist */}
                 <button
                   onClick={() => setIsFavorited(!isFavorited)}
-                  className={`absolute top-2 right-2 w-8 h-8 rounded-full border flex items-center justify-center bg-white shadow-sm transition-all ${
+                  className={`absolute top-2 right-2 w-8 h-8 rounded-full border flex items-center justify-center bg-white shadow-sm transition-all z-10 ${
                     isFavorited ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 text-gray-400 hover:border-gray-400'
                   }`}
                 >
@@ -387,30 +388,11 @@ export default function ProductDetailPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {relatedProducts.map((p) => (
-                <Link key={p.id} href={`/products/${p.id}`} className="group bg-white border border-gray-200 hover:border-gray-400 transition-colors block">
-                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                    <LazyImage
-                      src={p.image || ""}
-                      alt={p.name}
-                      className="group-hover:scale-105 transition-transform duration-500"
-                      aspectRatio="aspect-[3/4]"
-                    />
-                    {p.badge && (
-                      <span className="absolute top-1 left-1 text-[8px] font-bold uppercase bg-black text-white px-1 py-0.5">
-                        {t(p.badge)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-1.5">
-                    <h3 className="text-xs text-gray-700 line-clamp-1 mb-1">{p.name}</h3>
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-bold text-gray-900">{formatPrice(p.price)}</span>
-                      {p.originalPrice && (
-                        <span className="text-[10px] text-gray-400 line-through">{formatPrice(p.originalPrice)}</span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
+                <ProductCard 
+                  key={p.id} 
+                  product={p} 
+                  variant="compact"
+                />
               ))}
             </div>
           </div>

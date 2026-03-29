@@ -9,6 +9,7 @@ import {
 import { getProducts, Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { ProductCard } from "@/components/ui/product-card";
 
 export default function Home() {
   const { t, formatPrice } = useSettings();
@@ -121,54 +122,10 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {products.map((product) => (
-              <Link
+              <ProductCard
                 key={product.id}
-                href={`/products/${product.id}`}
-                className="group bg-white border border-gray-200 hover:border-gray-400 transition-colors block"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                  <LazyImage
-                    src={product.image || ""}
-                    alt={product.name}
-                    className="group-hover:scale-105 transition-transform duration-500"
-                    aspectRatio="aspect-[3/4]"
-                  />
-                  {product.badge && (
-                    <span className="absolute top-2 left-2 text-[9px] font-bold uppercase bg-black text-white px-1.5 py-0.5">
-                      {product.badge}
-                    </span>
-                  )}
-                  <button
-                    onClick={(e) => { e.preventDefault(); }}
-                    className="absolute top-2 right-2 w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                  >
-                    <Heart className="h-3.5 w-3.5 text-gray-400 hover:text-red-500 transition-colors" />
-                  </button>
-                </div>
-
-                <div className="p-2">
-                  <h3 className="text-xs text-gray-700 line-clamp-2 leading-tight mb-1">{product.name}</h3>
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className="text-sm font-bold text-gray-900">{formatPrice(product.price)}</span>
-                    {product.originalPrice && (
-                      <span className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
-                    )}
-                  </div>
-                  {product.originalPrice && (
-                    <span className="text-[10px] font-semibold text-orange-600">
-                      {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
-                    </span>
-                  )}
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map(s => (
-                        <Star key={s} className={`h-2.5 w-2.5 ${s <= 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
-                      ))}
-                    </div>
-                    <span className="text-[10px] text-gray-400">({product.reviews || 120})</span>
-                  </div>
-                </div>
-              </Link>
+                product={product}
+              />
             ))}
           </div>
         )}

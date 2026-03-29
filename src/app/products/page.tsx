@@ -15,6 +15,8 @@ const priceRanges = [
   { label: "Over TSh 100,000", min: 100000, max: Infinity },
 ];
 
+import { ProductCard } from "@/components/ui/product-card";
+
 export default function ProductsPage() {
   const { t, formatPrice } = useSettings();
   const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
@@ -201,65 +203,12 @@ export default function ProductsPage() {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 {sortedProducts.map((p) => (
-                  <Link
+                  <ProductCard
                     key={p.id}
-                    href={`/products/${p.id}`}
-                    className="group bg-white border border-gray-200 hover:border-gray-400 transition-colors block"
-                  >
-                    {/* Image */}
-                    <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                      <LazyImage
-                        src={p.image || ""}
-                        alt={p.name}
-                        className="group-hover:scale-105 transition-transform duration-500"
-                        aspectRatio="aspect-[3/4]"
-                      />
-
-                      {/* Badge */}
-                      {p.badge && (
-                        <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wide bg-black text-white px-1.5 py-0.5">
-                          {p.badge}
-                        </span>
-                      )}
-                      {p.stock !== undefined && p.stock < 10 && (
-                        <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wide bg-red-500 text-white px-1.5 py-0.5">
-                          Only {p.stock} Left
-                        </span>
-                      )}
-
-                      {/* Wishlist */}
-                      <button
-                        onClick={(e) => toggleFavorite(e, p.id as string)}
-                        className="absolute top-2 right-2 w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                      >
-                        <Heart className={`h-3.5 w-3.5 ${favoritedItems.has(p.id as string) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-                      </button>
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-2">
-                      <h3 className="text-xs text-gray-700 line-clamp-2 leading-tight mb-1">{p.name}</h3>
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-sm font-bold text-gray-900">{formatPrice(p.price)}</span>
-                        {p.originalPrice && (
-                          <span className="text-xs text-gray-400 line-through">{formatPrice(p.originalPrice)}</span>
-                        )}
-                      </div>
-                      {p.originalPrice && (
-                        <span className="text-[10px] font-semibold text-orange-600">
-                          {Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF
-                        </span>
-                      )}
-                      <div className="flex items-center gap-1 mt-1">
-                        <div className="flex">
-                          {[1, 2, 3, 4, 5].map(s => (
-                            <Star key={s} className={`h-2.5 w-2.5 ${s <= 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
-                          ))}
-                        </div>
-                        <span className="text-[10px] text-gray-400">({p.reviews || 120})</span>
-                      </div>
-                    </div>
-                  </Link>
+                    product={p}
+                    isFavorited={favoritedItems.has(p.id as string)}
+                    onToggleFavorite={toggleFavorite}
+                  />
                 ))}
               </div>
             )}
