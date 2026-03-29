@@ -105,10 +105,10 @@ export default function Home() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-            {[1, 2, 3, 4, 5].map(i => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map(i => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-gray-200 mb-2" />
+                <div className="aspect-[3/4] bg-gray-200 mb-2 rounded-xl" />
                 <div className="h-2.5 bg-gray-200 rounded w-3/4 mb-1" />
                 <div className="h-2.5 bg-gray-200 rounded w-1/2" />
               </div>
@@ -120,7 +120,7 @@ export default function Home() {
             <p className="text-sm text-gray-400">Coming Soon</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
             {products.map((product) => (
               <ProductCard
                 key={product.id}

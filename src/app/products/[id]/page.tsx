@@ -121,38 +121,42 @@ export default function ProductDetailPage() {
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
-          <Link href="/" className="hover:text-black">Home</Link>
-          <span>/</span>
-          <Link href="/products" className="hover:text-black">Handbags</Link>
-          <span>/</span>
-          <span className="text-gray-800 line-clamp-1">{product.name}</span>
+        <nav className="relative z-20 flex items-center gap-2 text-[13px] sm:text-sm font-medium text-gray-500 mb-6">
+          <Link href="/" className="hover:text-black hover:underline transition-colors px-1 -ml-1 py-1 cursor-pointer">
+            Home
+          </Link>
+          <span className="text-gray-300">/</span>
+          <Link href="/products" className="hover:text-black hover:underline transition-colors px-1 py-1 cursor-pointer">
+            Products
+          </Link>
+          <span className="text-gray-300">/</span>
+          <span className="text-black line-clamp-1 px-1 py-1">{product.name}</span>
         </nav>
 
         {/* Main grid: Image + Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
 
           {/* LEFT: Image Gallery */}
-          <div className="lg:col-span-6 xl:col-span-5">
+          <div className="w-full">
             {/* Thumbnails + Main image */}
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {/* Vertical thumbnails on desktop */}
               {productMedia.length > 1 && (
-                <div className="hidden sm:flex flex-col gap-2 w-14 shrink-0">
+                <div className="hidden sm:flex flex-col gap-3 w-16 shrink-0">
                   {productMedia.map((media, idx) => (
                     <button
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
-                      className={`relative aspect-square overflow-hidden border-2 rounded transition-all ${
-                        currentImageIndex === idx ? 'border-black' : 'border-gray-200 hover:border-gray-400'
+                      className={`relative aspect-[4/5] overflow-hidden rounded-lg transition-all ${
+                        currentImageIndex === idx ? 'ring-1 ring-black ring-offset-2' : 'opacity-60 hover:opacity-100 bg-[#f7f7f7]'
                       }`}
                     >
                       {media.includes('video') ? (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                          <Play className="h-3 w-3 text-gray-500" />
+                          <Play className="h-4 w-4 text-gray-500" />
                         </div>
                       ) : (
-                        <LazyImage src={media} alt="" className="w-full h-full" aspectRatio="aspect-square" />
+                        <img src={media} alt="" className="w-full h-full object-cover" />
                       )}
                     </button>
                   ))}
@@ -161,17 +165,17 @@ export default function ProductDetailPage() {
 
               {/* Main image */}
               <div className="flex-1 relative">
-                <div className="aspect-square bg-gray-50 border border-gray-200 overflow-hidden rounded">
+                <div className="aspect-[4/5] bg-[#F7F7F7] overflow-hidden rounded-2xl flex items-center justify-center p-4 sm:p-8">
                   {productMedia[currentImageIndex]?.includes('video') ? (
-                    <video src={productMedia[currentImageIndex]} controls className="w-full h-full object-cover" preload="metadata" />
+                    <video src={productMedia[currentImageIndex]} controls className="w-full h-full object-contain rounded-lg" preload="metadata" />
                   ) : (
-                    <LazyImage src={productMedia[currentImageIndex]} alt={product.name} className="w-full h-full" />
+                    <img src={productMedia[currentImageIndex]} alt={product.name} className="w-full h-full object-contain mix-blend-multiply transition-opacity duration-300" />
                   )}
                 </div>
 
                 {/* Badge */}
                 {product.badge && (
-                  <span className="absolute top-2 left-2 text-[10px] font-bold uppercase bg-black text-white px-2 py-0.5">
+                  <span className="absolute top-4 left-4 text-[10px] font-bold uppercase tracking-wider bg-black text-white px-2.5 py-1 rounded-sm shadow-sm">
                     {product.badge}
                   </span>
                 )}
@@ -179,8 +183,8 @@ export default function ProductDetailPage() {
                 {/* Wishlist */}
                 <button
                   onClick={() => setIsFavorited(!isFavorited)}
-                  className={`absolute top-2 right-2 w-8 h-8 rounded-full border flex items-center justify-center bg-white shadow-sm transition-all z-10 ${
-                    isFavorited ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 text-gray-400 hover:border-gray-400'
+                  className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center shadow-sm transition-all z-10 bg-white/90 backdrop-blur-sm ${
+                    isFavorited ? 'text-red-500 scale-110' : 'text-gray-400 hover:scale-110 hover:text-gray-600'
                   }`}
                 >
                   <Heart className={`h-4 w-4 ${isFavorited ? 'fill-current' : ''}`} />
@@ -190,35 +194,28 @@ export default function ProductDetailPage() {
 
             {/* Mobile thumbnails */}
             {productMedia.length > 1 && (
-              <div className="flex sm:hidden gap-2 mt-3 overflow-x-auto">
+              <div className="flex sm:hidden gap-3 mt-4 overflow-x-auto pb-2 snap-x">
                 {productMedia.map((media, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
-                    className={`shrink-0 w-14 h-14 border-2 rounded overflow-hidden transition-all ${
-                      currentImageIndex === idx ? 'border-black' : 'border-gray-200'
+                    className={`shrink-0 w-16 aspect-[4/5] rounded-lg overflow-hidden transition-all snap-center ${
+                      currentImageIndex === idx ? 'ring-1 ring-black ring-offset-2' : 'opacity-60 bg-[#f7f7f7]'
                     }`}
                   >
                     {media.includes('video') ? (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center"><Play className="h-3 w-3" /></div>
                     ) : (
-                      <LazyImage src={media} alt="" className="w-full h-full" aspectRatio="aspect-square" />
+                      <img src={media} alt="" className="w-full h-full object-cover" />
                     )}
                   </button>
                 ))}
               </div>
             )}
-
-            {/* Indicator on desktop */}
-            {productMedia.length > 1 && (
-              <p className="hidden sm:block text-[10px] text-gray-400 mt-2 text-center">
-                {t("Select Style")} — {productMedia.length} {t("options")}
-              </p>
-            )}
           </div>
 
           {/* RIGHT: Product Details */}
-          <div className="lg:col-span-6 xl:col-span-7 space-y-4">
+          <div className="w-full max-w-lg space-y-6 lg:sticky lg:top-28">
 
             {/* Category & title */}
             <div>
@@ -380,18 +377,17 @@ export default function ProductDetailPage() {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-12 pt-8 border-t border-gray-100">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
               <h2 className="text-base font-semibold text-gray-900">You May Also Like</h2>
               <Link href="/products" className="text-xs font-medium text-gray-500 hover:text-black flex items-center gap-1">
                 View All
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-              {relatedProducts.map((p) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8">
+              {relatedProducts.slice(0, 6).map((p) => (
                 <ProductCard 
                   key={p.id} 
-                  product={p} 
-                  variant="compact"
+                  product={p}
                 />
               ))}
             </div>
