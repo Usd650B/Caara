@@ -203,6 +203,14 @@ const createOrUpdateUser = async (email: string, additionalData?: { name?: strin
         smsNotifications: false
       }
     })
+    
+    // Track signup analytics
+    try {
+      const { trackSignup } = await import('./analytics');
+      await trackSignup();
+    } catch (e) {
+      console.error('Failed to log signup analytics', e);
+    }
   } else {
     await updateDoc(userRef, {
       lastLoginAt: serverTimestamp(),

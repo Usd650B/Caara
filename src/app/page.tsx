@@ -7,6 +7,7 @@ import {
   ShoppingBag, Star, Truck, Shield, ArrowRight, Heart, Zap, CheckCircle
 } from "lucide-react";
 import { getProducts, Product } from "@/lib/firestore";
+import { trackVisitor } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/ui/product-card";
@@ -17,6 +18,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    trackVisitor();
     const loadProducts = async () => {
       setIsLoading(true);
       const all = await getProducts();
@@ -132,16 +134,16 @@ export default function Home() {
       </section>
 
       {/* Brand promise strip */}
-      <section className="bg-black mx-4 mb-10 rounded-xl py-10 px-6">
-        <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="text-pink-400 text-xs font-semibold uppercase tracking-widest mb-1">Our Promise</p>
-            <h3 className="text-xl sm:text-3xl font-bold text-white">
+      <section className="mx-4 sm:mx-6 mb-20">
+        <div className="bg-black rounded-2xl max-w-screen-xl mx-auto py-12 px-8 sm:px-16 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
+          <div className="text-center md:text-left">
+            <p className="text-pink-400 text-xs font-bold uppercase tracking-[0.2em] mb-2">Our Promise</p>
+            <h3 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
               Affordable. Premium. SheDoo.
             </h3>
           </div>
-          <Link href="/products">
-            <Button className="bg-white text-black hover:bg-pink-500 hover:text-white h-10 px-6 text-sm font-semibold rounded transition-colors">
+          <Link href="/products" className="shrink-0">
+            <Button className="bg-white text-black hover:bg-pink-500 hover:text-white h-12 px-8 text-sm font-bold rounded-full transition-colors">
               Shop the Collection
             </Button>
           </Link>

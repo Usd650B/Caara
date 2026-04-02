@@ -22,6 +22,7 @@ import {
   getOrders, Order, updateOrder, deleteOrder, 
   getNotifications, markNotificationRead, markAllNotificationsRead, Notification 
 } from "@/lib/firestore";
+import { getDashboardAnalytics } from "@/lib/analytics";
 import { clearAllProducts } from "@/lib/clear-products";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { VideoUpload } from "@/components/ui/video-upload";
@@ -393,10 +394,16 @@ interface DashboardContentProps {
     totalProducts: number;
     totalCustomers: number;
   };
+  analytics: {
+    totalVisitors: number;
+    totalProductViews: number;
+    abandonedCarts: number;
+    totalSignups: number;
+  } | null;
   orders: Order[];
 }
 
-const DashboardContent = ({ stats, orders }: DashboardContentProps) => (
+const DashboardContent = ({ stats, orders, analytics }: DashboardContentProps) => (
   <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
@@ -420,7 +427,39 @@ const DashboardContent = ({ stats, orders }: DashboardContentProps) => (
       <StatCard title="Elite Customers" value={stats.totalCustomers} icon={Users} trend="up" trendValue="24.8" color="bg-orange-600" />
     </div>
 
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div className="flex items-center space-x-2 mt-8 mb-4">
+      <Activity className="h-5 w-5 text-black" />
+      <h3 className="text-xl font-black uppercase tracking-widest text-black">Real-Time User Analytics</h3>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+      <StatCard 
+        title="Daily Visitors" 
+        value={analytics?.totalVisitors || 0} 
+        icon={Eye} 
+        color="bg-pink-500" 
+      />
+      <StatCard 
+        title="Product Clicks" 
+        value={analytics?.totalProductViews || 0} 
+        icon={Target} 
+        color="bg-indigo-500" 
+      />
+      <StatCard 
+        title="Verified Signups" 
+        value={analytics?.totalSignups || 0} 
+        icon={ShieldCheck} 
+        color="bg-teal-500" 
+      />
+      <StatCard 
+        title="Abandoned Carts" 
+        value={analytics?.abandonedCarts || 0} 
+        icon={AlertCircle} 
+        color="bg-red-500" 
+      />
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-12">
       <div className="lg:col-span-2 space-y-8">
         <div className="bg-white rounded-[2.5rem] border border-black/5 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
           <div className="flex items-center justify-between mb-12">
@@ -1050,6 +1089,7 @@ export default function AdminPage() {
   const [processingOrder, setProcessingOrder] = useState<Order | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [analytics, setAnalytics] = useState<any>(null);
   const router = useRouter();
 
   const loadProducts = async () => {
@@ -1077,6 +1117,12 @@ export default function AdminPage() {
     loadProducts();
     loadOrders();
     loadNotifications();
+
+    const loadAnalytics = async () => {
+      const data = await getDashboardAnalytics();
+      setAnalytics(data);
+    };
+    loadAnalytics();
 
     const interval = setInterval(loadNotifications, 30000); // 30s polling
     return () => clearInterval(interval);
@@ -1287,7 +1333,7 @@ export default function AdminPage() {
               </Button>
             )}
           </div>
-          {activeTab === "dashboard" && <DashboardContent stats={stats} orders={orders} />}
+          {activeTab === "dashboard" && <DashboardContent stats={stats} orders={orders} analytics={analytics} />}
           {activeTab === "products" && (
             <ProductsContent 
               products={products}

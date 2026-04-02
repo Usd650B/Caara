@@ -1,109 +1,98 @@
 "use client"
 
 import Link from "next/link";
-import { Mail, Phone, ShoppingBag, Crown } from "lucide-react";
+import { Mail, Phone, ShoppingBag, Crown, ArrowRight } from "lucide-react";
 import { useSettings } from "@/lib/settings";
 
 export function Footer() {
   const { t } = useSettings();
+  
   return (
-    <footer className="relative bg-background border-t border-white/10 overflow-hidden pt-16 sm:pt-24 pb-12">
-      {/* Background Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"></div>
-      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          {/* Brand - Span 2 Columns */}
-          <div className="lg:col-span-2 space-y-8">
-            <Link href="/" className="inline-block group">
-              <div className="flex items-center gap-2 mb-2">
-                <Crown className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
-                <span className="text-2xl sm:text-3xl tracking-tighter">
-                  <span className="font-bold text-black">She</span>
-                  <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
+    <footer className="bg-white border-t border-gray-100 pt-16 pb-8 font-sans mt-auto">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6">
+        
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-16">
+          
+          {/* Brand Info (Span 4) */}
+          <div className="md:col-span-4 lg:col-span-5 pr-8">
+            <Link href="/" className="inline-block mb-6">
+              <div className="flex items-center gap-1.5">
+                <Crown className="h-5 w-5 text-pink-500" />
+                <span className="text-2xl tracking-tight">
+                  <span className="font-bold text-gray-900">She</span>
+                  <span className="font-light italic text-pink-500">Doo</span>
                 </span>
               </div>
-              <div className="h-1 w-8 bg-pink-500 rounded-full transition-all duration-500 group-hover:w-full opacity-30 group-hover:opacity-100"></div>
             </Link>
-            <p className="text-muted-foreground text-xs leading-relaxed max-w-sm font-medium">
-              {t("Premium luxury handbags at prices you can afford.")}
+            <p className="text-gray-500 text-sm leading-relaxed max-w-sm mb-8">
+              {t("Premium luxury handbags at prices you can afford. Elegance and style delivered globally.")}
             </p>
-            <div className="flex items-center space-x-4">
-              <a href="mailto:shabanimnango99@gmail.com" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
-                <Mail className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            <div className="flex gap-4">
+              <a href="mailto:shabanimnango99@gmail.com" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-pink-500 hover:text-pink-500 transition-colors">
+                <Mail className="h-4 w-4" />
               </a>
-              <a href="tel:+255749097220" className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:scale-110 transition-all hover:shadow-2xl group border border-white/5">
-                <Phone className="h-5 w-5 text-muted-foreground group-hover:text-secondary transition-colors" />
+              <a href="tel:+255749097220" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-pink-500 hover:text-pink-500 transition-colors">
+                <Phone className="h-4 w-4" />
               </a>
-              <div className="flex-1"></div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary">{t("Explore")}</h3>
-            <ul className="space-y-4">
-              {["Discover", "Collections", "Popular", "Concierge"].map((link) => (
-                <li key={link}>
-                  <Link href="/products" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
-                    <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
-                    {t(link)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Customer Service */}
-          <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-secondary">{t("Help")}</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link href="/track" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
-                  <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
-                  {t("Track Order")}
-                </Link>
-              </li>
-              {["Shipping Info", "Returns Policy", "FAQ", "Sustainability"].map((link) => (
-                <li key={link}>
-                  <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-all flex items-center group font-medium">
-                    <span className="w-0 group-hover:w-4 h-[1px] gradient-bg mr-0 group-hover:mr-3 transition-all"></span>
-                    {t(link)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Free Shipping Highlight */}
-        <div className="mt-16 sm:mt-24 p-8 glass rounded-[2.5rem] border border-white/10 relative overflow-hidden group">
-          <div className="absolute inset-0 gradient-bg opacity-0 group-hover:opacity-5 transition-opacity duration-700"></div>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center space-x-6">
-              <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-2xl flex-shrink-0 animate-bounce-slow">
-                <ShoppingBag className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold tracking-tight">{t("Free Delivery Everywhere")}</h4>
-                <p className="text-muted-foreground font-light">{t("We deliver for free because we care about you.")}</p>
-              </div>
+          {/* Links (Span 8) */}
+          <div className="md:col-span-8 lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">{t("Explore")}</h3>
+              <ul className="space-y-4">
+                {["Discover", "Collections", "Popular", "Concierge"].map((link) => (
+                  <li key={link}>
+                    <Link href="/products" className="text-sm text-gray-500 hover:text-black transition-colors block">
+                      {t(link)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="px-8 py-3 glass-white text-primary font-black rounded-xl uppercase tracking-widest text-xs shadow-sm">
-              Global Standard
+
+            <div>
+              <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">{t("Help")}</h3>
+              <ul className="space-y-4">
+                <li>
+                  <Link href="/track" className="text-sm text-gray-500 hover:text-black transition-colors block">
+                    {t("Track Order")}
+                  </Link>
+                </li>
+                {["Shipping Info", "Returns", "FAQ", "Contact Us"].map((link) => (
+                  <li key={link}>
+                    <Link href="/contact" className="text-sm text-gray-500 hover:text-black transition-colors block">
+                      {t(link)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Feature Box */}
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 flex flex-col items-start justify-center">
+              <div className="w-10 h-10 bg-white shadow-sm rounded-full flex items-center justify-center mb-4">
+                <ShoppingBag className="h-5 w-5 text-pink-500" />
+              </div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-1">{t("Free Worldwide Delivery")}</h4>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">{t("Global standard shipping wrapped with care.")}</p>
+              <Link href="/products" className="text-xs font-semibold text-pink-500 flex items-center hover:text-pink-600 transition-colors">
+                Shop Now <ArrowRight className="ml-1 h-3 w-3" />
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
-            &copy; 2026 <span className="gradient-text font-black">SheDoo</span>. All rights reserved.
+        <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-gray-400">
+            &copy; 2026 {t("SheDoo. All rights reserved.")}
           </p>
-          <div className="flex items-center space-x-6">
-            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">{t("Privacy")}</Link>
-            <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em] font-bold">{t("Terms")}</Link>
+          <div className="flex gap-6">
+            <Link href="/privacy" className="text-xs text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider">{t("Privacy Policy")}</Link>
+            <Link href="/terms" className="text-xs text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider">{t("Terms of Service")}</Link>
           </div>
         </div>
       </div>

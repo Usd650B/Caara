@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Product, createOrder } from "@/lib/firestore";
 import { calculateShippingCost, getFreeShippingThreshold } from "@/lib/shipping";
 import { getCurrentUser } from "@/lib/customer-auth";
+import { trackOrderCompleted } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 
 interface CartItem extends Product {
@@ -149,6 +150,7 @@ export default function CheckoutPage() {
         if (result.id) {
           setCreatedOrderId(result.id);
           setIsSuccess(true);
+          trackOrderCompleted();
         }
         
         // Scroll to top

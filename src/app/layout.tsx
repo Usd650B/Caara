@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Poppins } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
-const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-poppins" });
 
 export const metadata: Metadata = {
   title: "SheDoo - Premium Luxury Handbags",
@@ -75,7 +74,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon.png" />
       </head>
       <body
-        className={`${inter.variable} ${poppins.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
+        className={`${outfit.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
       >
         <SettingsProvider>
           <Header />
