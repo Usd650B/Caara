@@ -6,7 +6,7 @@ import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, 
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, Product } from "@/lib/firestore";
-import { trackProductClick, trackAddToCart } from "@/lib/analytics";
+import { trackDetailedProductClick, trackAddToCart, syncCartState } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/ui/product-card";
@@ -41,7 +41,7 @@ export default function ProductDetailPage() {
         setSelectedSize(foundProduct.sizes?.[0] || "");
         setSelectedColor(foundProduct.colors?.[0] || "");
         setCurrentImageIndex(0);
-        trackProductClick();
+        trackDetailedProductClick(foundProduct);
       }
       setRelatedProducts(products.filter(p => p.id !== productId).slice(0, 6));
     } catch (error) {
@@ -91,6 +91,7 @@ export default function ProductDetailPage() {
     window.dispatchEvent(new CustomEvent('cart-updated'));
     setIsAdded(true);
     trackAddToCart();
+    syncCartState(existingCart);
     setTimeout(() => setIsAdded(false), 2500);
   };
 

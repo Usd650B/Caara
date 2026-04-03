@@ -1,5 +1,6 @@
-import { doc, getDoc, setDoc, updateDoc, increment, collection, getDocs, query } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc, increment, collection, getDocs, query, orderBy, limit, Timestamp, deleteDoc } from 'firebase/firestore'
 import { getDb } from './firebase'
+import { Product } from './firestore'
 
 // We will track statistics by day using the "YYYY-MM-DD" format.
 // This prevents infinite document creation and naturally limits document size.
@@ -15,6 +16,17 @@ export interface DailyAnalytics {
   addedToCart: number;
   completedOrders: number;
   signups: number;
+}
+
+// Session Generator
+const getSessionId = () => {
+  if (typeof window === 'undefined') return 'server';
+  let sessionId = localStorage.getItem('caara_session_id');
+  if (!sessionId) {
+    sessionId = 'session_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('caara_session_id', sessionId);
+  }
+  return sessionId;
 }
 
 // Ensure the daily document exists. If not, it creates it with baseline numbers.
@@ -69,6 +81,33 @@ export const trackProductClick = async () => {
   }
 }
 
+export const trackDetailedProductClick = async (product: Product, user: any = null) => {
+  // First, do the general count increment
+  await trackProductClick();
+
+  if (typeof window === 'undefined') return;
+  const db = getDb();
+  if (!db) return;
+
+  try {
+    const sessionId = getSessionId();
+    // Let Firestore generate an ID
+    const clickRef = doc(collection(db, 'analytics_product_clicks'));
+    await setDoc(clickRef, {
+      productId: product.id,
+      productName: product.name,
+      productImage: product.image || (product.images && product.images[0]) || '',
+      price: product.price,
+      sessionId,
+      userEmail: user?.email || 'Anonymous',
+      userName: user?.name || 'Guest',
+      timestamp: Timestamp.now()
+    });
+  } catch (err) {
+    console.error("Failed to track detailed product click", err);
+  }
+}
+
 export const trackAddToCart = async () => {
   if (typeof window === 'undefined') return
   try {
@@ -82,8 +121,66 @@ export const trackAddToCart = async () => {
   }
 }
 
-export const trackOrderCompleted = async () => {
-  if (typeof window === 'undefined') return
+export const syncCartState = async (cartItems: any[], user: any = null, contactInfo: any = null) => {
+  if (typeof window === 'undefined') return;
+  const db = getDb();
+  if (!db) return;
+
+  try {
+    const sessionId = getSessionId();
+    const cartRef = doc(db, 'analytics_carts', sessionId);
+    
+    if (cartItems.length === 0) {
+      // Cart emptied naturally, remove tracking doc
+      await deleteDoc(cartRef).catch(() => {});
+      return;
+    }
+
+    const totalValue = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const resolvedUserEmail = contactInfo?.email || user?.email;
+    const resolvedUserName = (contactInfo?.firstName ? `${contactInfo.firstName} ${contactInfo.lastName}` : null) || user?.name || user?.displayName;
+    const resolvedPhone = contactInfo?.phone || user?.phone;
+
+    await setDoc(cartRef, {
+      sessionId,
+      items: cartItems.map(item => ({
+        id: item.id || '',
+        name: item.name || '',
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+        size: item.size || '',
+        color: item.color || '',
+        image: item.image || ''
+      })),
+      totalValue,
+      itemCount: cartItems.reduce((acc, item) => acc + item.quantity, 0),
+      userEmail: resolvedUserEmail || 'Anonymous',
+      userName: resolvedUserName || 'Guest',
+      phone: resolvedPhone || '',
+      updatedAt: Timestamp.now(),
+      status: 'abandoned_pending' 
+    }, { merge: true });
+
+  } catch (err) {
+    console.error("Failed to sync cart state", err);
+  }
+}
+
+export const markCartConverted = async () => {
+  if (typeof window === 'undefined') return;
+  const db = getDb();
+  if (!db) return;
+
+  try {
+    const sessionId = getSessionId();
+    const cartRef = doc(db, 'analytics_carts', sessionId);
+    // Delete since order succeeded
+    await deleteDoc(cartRef).catch(() => {});
+  } catch (err) {
+    console.error("Failed to clear cart state", err);
+  }
+
+  // Also track generic completion
   try {
     const today = getTodayDocId()
     const docRef = await initializeDailyDoc(today)
@@ -93,6 +190,10 @@ export const trackOrderCompleted = async () => {
   } catch (err) {
     console.error("Failed to track order completion", err)
   }
+}
+
+export const trackOrderCompleted = async () => {
+  await markCartConverted();
 }
 
 export const trackSignup = async () => {
@@ -107,6 +208,36 @@ export const trackSignup = async () => {
     console.error("Failed to track signup", err)
   }
 }
+
+// Data Fetchers for Admin
+export const getActiveAbandonedCarts = async () => {
+  const db = getDb();
+  if (!db) return [];
+  
+  try {
+    const q = query(collection(db, 'analytics_carts'), orderBy('updatedAt', 'desc'), limit(50));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Failed to fetch abandoned carts:", error);
+    return [];
+  }
+}
+
+export const getRecentProductClicks = async () => {
+  const db = getDb();
+  if (!db) return [];
+  
+  try {
+    const q = query(collection(db, 'analytics_product_clicks'), orderBy('timestamp', 'desc'), limit(50));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Failed to fetch recent product clicks:", error);
+    return [];
+  }
+}
+
 
 // Dashboard Aggregation
 export const getDashboardAnalytics = async (): Promise<{
@@ -145,8 +276,6 @@ export const getDashboardAnalytics = async (): Promise<{
     })
 
     // Abandoned Carts = items added to cart minus completed orders
-    // The metric implies that if 10 checkouts were started or explicitly abandoned
-    // If it's negative, we clamp to 0.
     const abandonedCarts = Math.max(0, totalAddedToCart - totalCompletedOrders)
 
     return {

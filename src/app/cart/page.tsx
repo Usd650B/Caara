@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useSettings } from "@/lib/settings";
+import { syncCartState } from "@/lib/analytics";
 
 interface CartItem {
   id: string;
@@ -63,6 +64,7 @@ export default function CartPage() {
     
     setCartItems(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
+    syncCartState(updatedCart);
     
     // Dispatch event to update header cart count
     window.dispatchEvent(new CustomEvent('cart-updated'));
@@ -75,6 +77,7 @@ export default function CartPage() {
     
     setCartItems(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
+    syncCartState(updatedCart);
     
     // Dispatch event to update header cart count
     window.dispatchEvent(new CustomEvent('cart-updated'));
@@ -91,6 +94,7 @@ export default function CartPage() {
   const clearCart = () => {
     setCartItems([]);
     localStorage.setItem('cart', JSON.stringify([]));
+    syncCartState([]);
     
     // Dispatch event to update header cart count
     window.dispatchEvent(new CustomEvent('cart-updated'));

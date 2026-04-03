@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { Product, createOrder } from "@/lib/firestore";
 import { calculateShippingCost, getFreeShippingThreshold } from "@/lib/shipping";
 import { getCurrentUser } from "@/lib/customer-auth";
-import { trackOrderCompleted } from "@/lib/analytics";
+import { trackOrderCompleted, syncCartState, markCartConverted } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 
 interface CartItem extends Product {
@@ -49,6 +49,7 @@ export default function CheckoutPage() {
     if (savedCart) {
       const cartItems = JSON.parse(savedCart);
       setItems(cartItems);
+      syncCartState(cartItems, null, formData);
     }
 
     // Pre-fill user data if logged in
@@ -64,6 +65,15 @@ export default function CheckoutPage() {
       }));
     }
   }, []);
+
+  useEffect(() => {
+    if (items.length > 0 && formData.email) {
+      const timeoutId = setTimeout(() => {
+        syncCartState(items, user, formData);
+      }, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [items, user, formData.email, formData.firstName]);
 
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = 0; // Always free shipping
@@ -150,7 +160,7 @@ export default function CheckoutPage() {
         if (result.id) {
           setCreatedOrderId(result.id);
           setIsSuccess(true);
-          trackOrderCompleted();
+          markCartConverted();
         }
         
         // Scroll to top

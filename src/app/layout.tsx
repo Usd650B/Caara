@@ -62,6 +62,7 @@ export const metadata: Metadata = {
 };
 
 import { SettingsProvider } from "@/lib/settings";
+import { ConditionalHeader, ConditionalFooter } from "@/components/layout/conditional-layout";
 
 export default function RootLayout({
   children,
@@ -77,11 +78,11 @@ export default function RootLayout({
         className={`${outfit.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
       >
         <SettingsProvider>
-          <Header />
+          <ConditionalHeader />
           <main className="flex-1">
             {children}
           </main>
-          <Footer />
+          <ConditionalFooter />
         </SettingsProvider>
       </body>
     </html>
