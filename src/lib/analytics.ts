@@ -215,9 +215,16 @@ export const getActiveAbandonedCarts = async () => {
   if (!db) return [];
   
   try {
-    const q = query(collection(db, 'analytics_carts'), orderBy('updatedAt', 'desc'), limit(50));
+    const q = query(collection(db, 'analytics_carts'), limit(50));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const carts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+    
+    // Sort in JS to avoid requiring a Firestore composite index
+    return carts.sort((a, b) => {
+      const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+      const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+      return timeB - timeA;
+    });
   } catch (error) {
     console.error("Failed to fetch abandoned carts:", error);
     return [];
