@@ -6,26 +6,29 @@ import { Button } from "@/components/ui/button";
 import {
   ShoppingBag, Star, Truck, Shield, ArrowRight, Heart, Zap, CheckCircle
 } from "lucide-react";
-import { getProducts, Product } from "@/lib/firestore";
+import { getProducts, getPromos, Product, Promo } from "@/lib/firestore";
 import { trackVisitor } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/ui/product-card";
+import { getPromoPrice } from "@/lib/promo-utils";
 
 export default function Home() {
   const { t, formatPrice } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
+  const [promos, setPromos] = useState<Promo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     trackVisitor();
-    const loadProducts = async () => {
+    const loadData = async () => {
       setIsLoading(true);
-      const all = await getProducts();
+      const [all, promosData] = await Promise.all([getProducts(), getPromos()]);
       setProducts(all.filter(p => p.category === "Handbags"));
+      setPromos(promosData);
       setIsLoading(false);
     };
-    loadProducts();
+    loadData();
   }, []);
 
   return (
@@ -107,12 +110,12 @@ export default function Home() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map(i => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-gray-200 mb-2 rounded-xl" />
-                <div className="h-2.5 bg-gray-200 rounded w-3/4 mb-1" />
-                <div className="h-2.5 bg-gray-200 rounded w-1/2" />
+                <div className="aspect-[4/5] bg-gray-100 mb-2 rounded-xl" />
+                <div className="h-2.5 bg-gray-100 rounded w-3/4 mb-1" />
+                <div className="h-2.5 bg-gray-100 rounded w-1/2" />
               </div>
             ))}
           </div>
@@ -122,15 +125,53 @@ export default function Home() {
             <p className="text-sm text-gray-400">Coming Soon</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {products.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
+                promoPrice={getPromoPrice(product.id || '', product.price, promos)}
+                variant="compact"
               />
             ))}
           </div>
         )}
+      </section>
+
+      {/* Why Choose Us — Social Proof Strip */}
+      <section className="px-4 sm:px-6 py-12 max-w-screen-xl mx-auto">
+        <div className="text-center mb-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-pink-500 mb-1">Why SheDoo</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">What makes us different</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[
+            { emoji: "✨", title: "Premium Quality", desc: "Every bag is handpicked for superior craftsmanship and materials you can feel." },
+            { emoji: "🚚", title: "Fast Delivery", desc: "Free shipping in Dar es Salaam. Regional orders arrive within 5-7 business days." },
+            { emoji: "🛡️", title: "Buyer Protection", desc: "100% secure checkout with full buyer protection and hassle-free returns." },
+          ].map(({ emoji, title, desc }) => (
+            <div key={title} className="bg-white border border-gray-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
+              <span className="text-3xl mb-3 block">{emoji}</span>
+              <h3 className="text-sm font-bold text-gray-900 mb-1.5">{title}</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="mx-4 sm:mx-6 mb-8">
+        <div className="bg-gray-50 border border-gray-100 rounded-2xl max-w-screen-xl mx-auto py-10 px-8 sm:px-16 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2">Stay in the loop</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Never miss a drop</h3>
+          <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">Be the first to know about new arrivals, exclusive promos, and limited collections.</p>
+          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input type="email" placeholder="Enter your email" className="flex-1 h-11 px-4 border border-gray-200 rounded-xl text-sm focus:border-black focus:outline-none transition-colors" />
+            <Button className="bg-black text-white hover:bg-gray-800 h-11 px-6 text-sm font-semibold rounded-xl shrink-0">
+              Subscribe
+            </Button>
+          </div>
+        </div>
       </section>
 
       {/* Brand promise strip */}

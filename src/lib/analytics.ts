@@ -219,7 +219,6 @@ export const getActiveAbandonedCarts = async () => {
     const snapshot = await getDocs(q);
     const carts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
     
-    // Sort in JS to avoid requiring a Firestore composite index
     return carts.sort((a, b) => {
       const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
       const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
@@ -245,6 +244,59 @@ export const getRecentProductClicks = async () => {
   }
 }
 
+// Aggregate product clicks by productId to get click counts per product
+export const getProductClickCounts = async (): Promise<{ productId: string; productName: string; productImage: string; price: number; clicks: number }[]> => {
+  const db = getDb();
+  if (!db) return [];
+
+  try {
+    const q = query(collection(db, 'analytics_product_clicks'), orderBy('timestamp', 'desc'), limit(1000));
+    const snapshot = await getDocs(q);
+    const counts: Record<string, any> = {};
+
+    snapshot.docs.forEach(doc => {
+      const d = doc.data() as any;
+      const pid = d.productId;
+      if (!pid) return;
+      if (!counts[pid]) {
+        counts[pid] = { productId: pid, productName: d.productName, productImage: d.productImage, price: d.price, clicks: 0 };
+      }
+      counts[pid].clicks += 1;
+    });
+
+    return Object.values(counts).sort((a: any, b: any) => b.clicks - a.clicks);
+  } catch (err) {
+    console.error("Failed to get product click counts:", err);
+    return [];
+  }
+}
+
+// Get daily analytics for a date range (returns array of DailyAnalytics sorted by date asc)
+export const getAnalyticsRange = async (range: 'today' | 'week' | 'month' | 'year'): Promise<DailyAnalytics[]> => {
+  const db = getDb();
+  if (!db) return [];
+
+  try {
+    const now = new Date();
+    const q = query(collection(db, 'analytics_daily'));
+    const snapshot = await getDocs(q);
+    const all: DailyAnalytics[] = snapshot.docs.map(d => d.data() as DailyAnalytics);
+
+    const startDate = new Date(now);
+    if (range === 'today') startDate.setHours(0, 0, 0, 0);
+    else if (range === 'week') startDate.setDate(now.getDate() - 6);
+    else if (range === 'month') startDate.setDate(now.getDate() - 29);
+    else if (range === 'year') startDate.setFullYear(now.getFullYear() - 1);
+
+    const fmtStart = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`;
+    const fmtEnd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    return all.filter(d => d.date >= fmtStart && d.date <= fmtEnd).sort((a, b) => a.date.localeCompare(b.date));
+  } catch (err) {
+    console.error("Failed to get analytics range:", err);
+    return [];
+  }
+}
 
 // Dashboard Aggregation
 export const getDashboardAnalytics = async (): Promise<{
@@ -282,7 +334,6 @@ export const getDashboardAnalytics = async (): Promise<{
       totalSignups += data.signups || 0
     })
 
-    // Abandoned Carts = items added to cart minus completed orders
     const abandonedCarts = Math.max(0, totalAddedToCart - totalCompletedOrders)
 
     return {

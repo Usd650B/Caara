@@ -17,6 +17,7 @@ import { getDb } from './firebase';
 const PRODUCTS_COLLECTION = 'products';
 const ORDERS_COLLECTION = 'orders';
 const NOTIFICATIONS_COLLECTION = 'notifications';
+const PROMOS_COLLECTION = 'promos';
 
 export interface Notification {
   id?: string;
@@ -87,8 +88,16 @@ export interface Order {
   disputeReason?: string;
   rating?: number;
   review?: string;
+  adminReply?: string;
+  messages?: OrderMessage[];
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+}
+
+export interface OrderMessage {
+  sender: 'buyer' | 'admin';
+  text: string;
+  timestamp: string; // ISO string
 }
 
 export interface OrderItem {
@@ -320,4 +329,76 @@ export const markAllNotificationsRead = async () => {
     console.error('Error marking all notifications read:', error);
     return { success: false };
   }
+};
+
+export const replyToReview = async (orderId: string, reply: string) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  try {
+    await updateDoc(doc(db, ORDERS_COLLECTION, orderId), { adminReply: reply, updatedAt: Timestamp.now() });
+    return { success: true };
+  } catch (error) {
+    console.error('Error replying to review:', error);
+    return { success: false };
+  }
+};
+
+// ── Promos ──
+export interface Promo {
+  id?: string;
+  name: string;
+  type: 'percent' | 'fixed';
+  value: number;            // e.g. 20 means 20% or $20 off
+  productIds: string[];     // empty = all products
+  active: boolean;
+  startDate?: string;       // YYYY-MM-DD
+  endDate?: string;
+  createdAt?: Timestamp;
+}
+
+export const getPromos = async (): Promise<Promo[]> => {
+  const db = getDb();
+  if (!db) return [];
+  try {
+    const q = query(collection(db, PROMOS_COLLECTION), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as Promo));
+  } catch { return []; }
+};
+
+export const addPromo = async (promo: Omit<Promo, 'id' | 'createdAt'>) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  try {
+    await addDoc(collection(db, PROMOS_COLLECTION), { ...promo, createdAt: Timestamp.now() });
+    return { success: true };
+  } catch { return { success: false }; }
+};
+
+export const updatePromo = async (id: string, data: Partial<Promo>) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  try {
+    await updateDoc(doc(db, PROMOS_COLLECTION, id), data);
+    return { success: true };
+  } catch { return { success: false }; }
+};
+
+export const deletePromo = async (id: string) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  try {
+    await deleteDoc(doc(db, PROMOS_COLLECTION, id));
+    return { success: true };
+  } catch { return { success: false }; }
+};
+
+// Quick stock update
+export const updateProductStock = async (productId: string, newStock: number) => {
+  const db = getDb();
+  if (!db) return { success: false };
+  try {
+    await updateDoc(doc(db, PRODUCTS_COLLECTION, productId), { stock: newStock, updatedAt: Timestamp.now() });
+    return { success: true };
+  } catch { return { success: false }; }
 };

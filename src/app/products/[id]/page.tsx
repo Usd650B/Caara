@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
-import { getProducts, Product } from "@/lib/firestore";
+import { getProducts, getOrders, getPromos, Product, Order, Promo } from "@/lib/firestore";
 import { trackDetailedProductClick, trackAddToCart, syncCartState } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/ui/product-card";
+import { getPromoPrice } from "@/lib/promo-utils";
 
 export default function ProductDetailPage() {
   const { formatPrice, t } = useSettings();
@@ -24,6 +25,18 @@ export default function ProductDetailPage() {
   const [isAdded, setIsAdded] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState("Dar es salaam");
+  const [productReviews, setProductReviews] = useState<{rating: number, review: string, customer: string, date: string, adminReply?: string}[]>([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [promos, setPromos] = useState<Promo[]>([]);
+
+  useEffect(() => {
+    // Try to load any previously selected delivery region
+    const savedRegion = typeof window !== 'undefined' ? localStorage.getItem('deliveryRegion') : null;
+    if (savedRegion) {
+      setSelectedRegion(savedRegion);
+    }
+  }, []);
 
   useEffect(() => {
     if (params.id) {
@@ -31,24 +44,56 @@ export default function ProductDetailPage() {
     }
   }, [params.id]);
 
-  const loadProduct = async (productId: string) => {
+  const loadProduct = async (slugOrId: string) => {
     setIsLoading(true);
     try {
-      const products = await getProducts();
-      const foundProduct = products.find(p => p.id === productId);
+      const [products, promosData] = await Promise.all([getProducts(), getPromos()]);
+      setPromos(promosData);
+      // Pluck the last segment after the dash to find the ID (e.g. "luxury-bag-A1b2C" -> "A1b2C")
+      const realId = slugOrId.split('-').pop();
+      const foundProduct = products.find(p => p.id === slugOrId || p.id === realId);
       setProduct(foundProduct || null);
+      
       if (foundProduct) {
         setSelectedSize(foundProduct.sizes?.[0] || "");
         setSelectedColor(foundProduct.colors?.[0] || "");
         setCurrentImageIndex(0);
         trackDetailedProductClick(foundProduct);
+
+        // Load real reviews from delivered orders
+        const allOrders = await getOrders();
+        const reviewsData: {rating: number, review: string, customer: string, date: string, adminReply?: string}[] = [];
+        let totalRating = 0;
+
+        allOrders.forEach(order => {
+          if (order.rating && order.items?.some(item => item.productId === foundProduct.id)) {
+            const dateStr = order.createdAt ? new Date((order.createdAt as any).seconds * 1000).toLocaleDateString() : 'Recent';
+            reviewsData.push({
+              rating: order.rating,
+              review: order.review || '',
+              customer: order.customerName,
+              date: dateStr,
+              adminReply: order.adminReply || ''
+            });
+            totalRating += order.rating;
+          }
+        });
+
+        setProductReviews(reviewsData);
+        if (reviewsData.length > 0) {
+          setAverageRating(Math.round((totalRating / reviewsData.length) * 10) / 10);
+        } else {
+          setAverageRating(foundProduct.rating || 0); // fallback to db or 0
+        }
       }
-      setRelatedProducts(products.filter(p => p.id !== productId).slice(0, 6));
+      setRelatedProducts(products.filter(p => p.id !== foundProduct?.id).slice(0, 6));
     } catch (error) {
       console.error('Error loading product:', error);
     }
     setIsLoading(false);
   };
+
+  const promoPrice = product ? getPromoPrice(product.id || '', product.price, promos) : null;
 
   // Build the media array: main image first, then additional images
   const productImages: string[] = [];
@@ -122,10 +167,10 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4">
+      <div className="max-w-screen-lg mx-auto px-4 sm:px-6 py-4">
 
         {/* Breadcrumb */}
-        <nav className="relative z-20 flex items-center gap-2 text-[13px] sm:text-sm font-medium text-gray-500 mb-6">
+        <nav className="relative z-20 flex items-center gap-2 text-[13px] sm:text-[13px] font-medium text-gray-500 mb-4">
           <Link href="/" className="hover:text-black hover:underline transition-colors px-1 -ml-1 py-1 cursor-pointer">
             Home
           </Link>
@@ -138,7 +183,7 @@ export default function ProductDetailPage() {
         </nav>
 
         {/* Main grid: Image + Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-start">
 
           {/* LEFT: Image Gallery */}
           <div className="w-full">
@@ -219,23 +264,25 @@ export default function ProductDetailPage() {
           </div>
 
           {/* RIGHT: Product Details */}
-          <div className="w-full max-w-lg space-y-6 lg:sticky lg:top-28">
+          <div className="w-full max-w-lg space-y-4 md:sticky md:top-28">
 
             {/* Category & title */}
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t(product.category)}</p>
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 leading-snug">{product.name}</h1>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">{t(product.category)}</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">{product.name}</h1>
             </div>
 
             {/* Rating */}
             <div className="flex items-center gap-2">
               <div className="flex">
                 {[1,2,3,4,5].map(s => (
-                  <Star key={s} className={`h-3.5 w-3.5 ${s <= (product.rating || 4) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
+                  <Star key={s} className={`h-3.5 w-3.5 ${s <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
                 ))}
               </div>
-              <span className="text-xs font-medium text-gray-700">{product.rating || "4.8"}</span>
-              <span className="text-xs text-gray-400">({product.reviews || 120} reviews)</span>
+              <span className="text-xs font-medium text-gray-700">{averageRating.toFixed(1)}</span>
+              <a href="#reviews" className="text-xs text-blue-500 hover:underline">
+                ({productReviews.length > 0 ? productReviews.length : (product.reviews || 0)} reviews)
+              </a>
             </div>
 
             {/* Divider */}
@@ -243,20 +290,72 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="flex items-baseline gap-3">
-              <span className="text-2xl font-bold text-gray-900">{formatPrice(product.price)}</span>
-              {product.originalPrice && (
+              {promoPrice != null ? (
                 <>
-                  <span className="text-sm text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
-                  <span className="text-xs font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">
-                    {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                  <span className="text-2xl font-bold text-gray-900">{formatPrice(promoPrice)}</span>
+                  <span className="text-sm text-gray-400 line-through">{formatPrice(product.price)}</span>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                    {Math.round(((product.price - promoPrice) / product.price) * 100)}% OFF — PROMO
                   </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-2xl font-bold text-gray-900">{formatPrice(product.price)}</span>
+                  {(() => {
+                    const originalPrice = product.originalPrice && product.originalPrice > product.price 
+                      ? product.originalPrice 
+                      : product.price * 1.35;
+                    const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+                    return (
+                      <>
+                        <span className="text-sm text-gray-400 line-through">{formatPrice(originalPrice)}</span>
+                        <span className="text-xs font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">
+                          {discount}% OFF
+                        </span>
+                      </>
+                    );
+                  })()}
                 </>
               )}
             </div>
             <p className="text-xs text-gray-500 -mt-2 flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-green-500" /> Tax included &nbsp;·&nbsp;
-              <Truck className="h-3 w-3 text-blue-500" /> Free shipping
+              <CheckCircle className="h-3 w-3 text-green-500" /> Tax included
             </p>
+
+            {/* Delivery Region Selection */}
+            <div className="space-y-2 pt-2 border-t border-gray-100">
+              <p className="text-xs font-semibold text-gray-700">
+                Delivery Region
+              </p>
+              <select 
+                value={selectedRegion}
+                onChange={(e) => {
+                   setSelectedRegion(e.target.value);
+                   // Persist globally for the checkout session
+                   localStorage.setItem('deliveryRegion', e.target.value);
+                }}
+                className="w-full bg-white border border-gray-200 rounded p-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
+              >
+                <option value="Dar es salaam">Dar es salaam — Free Shipping</option>
+                <optgroup label="Regions / Mikoani (10,000 TZS)">
+                  <option value="Arusha">Arusha</option>
+                  <option value="Kilimanjaro">Kilimanjaro</option>
+                  <option value="Mwanza">Mwanza</option>
+                  <option value="Tanga">Tanga</option>
+                  <option value="Dodoma">Dodoma</option>
+                  <option value="Morogoro">Morogoro</option>
+                </optgroup>
+              </select>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <Truck className="h-4 w-4 text-gray-500" />
+                <span className="text-xs font-medium text-gray-700">
+                  {selectedRegion === "Dar es salaam" 
+                    ? "Free doorstep delivery in Dar es salaam" 
+                    : `Estimated shipping to ${selectedRegion}: ${formatPrice(3.81)}`}
+                </span>
+              </div>
+            </div>
 
             {/* Color */}
             {product.colors && product.colors.length > 0 && (
@@ -307,7 +406,7 @@ export default function ProductDetailPage() {
             )}
 
             {/* Quantity */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <p className="text-xs font-semibold text-gray-700">
                 Quantity
                 {product.stock !== undefined && product.stock < 10 && (
@@ -315,12 +414,12 @@ export default function ProductDetailPage() {
                 )}
               </p>
               <div className="inline-flex items-center border border-gray-300 rounded overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors">
-                  <Minus className="h-3.5 w-3.5" />
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <Minus className="h-3 w-3" />
                 </button>
-                <span className="w-10 text-center text-sm font-semibold border-x border-gray-300">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors">
-                  <Plus className="h-3.5 w-3.5" />
+                <span className="w-10 text-center text-xs font-semibold border-x border-gray-300">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <Plus className="h-3 w-3" />
                 </button>
               </div>
             </div>
@@ -329,14 +428,14 @@ export default function ProductDetailPage() {
             <div className="flex gap-3 pt-1">
               <Button
                 onClick={addToCart}
-                className={`flex-1 h-11 text-sm font-semibold rounded transition-all ${
+                className={`flex-1 h-10 text-xs font-semibold rounded-lg transition-all ${
                   isAdded ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-black text-white hover:bg-gray-800'
                 }`}
               >
                 {isAdded ? (
-                  <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Added to Bag</span>
+                  <span className="flex items-center gap-1.5"><CheckCircle className="h-3 w-3" /> Added to Bag</span>
                 ) : (
-                  <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4" /> Add to Bag</span>
+                  <span className="flex items-center gap-1.5"><ShoppingBag className="h-3 w-3" /> Add to Bag</span>
                 )}
               </Button>
               <Button 
@@ -344,7 +443,7 @@ export default function ProductDetailPage() {
                   addToCart();
                   router.push('/checkout');
                 }}
-                className="flex-1 h-11 text-sm font-semibold rounded bg-orange-500 hover:bg-orange-600 text-white"
+                className="flex-1 h-10 text-xs font-semibold rounded-lg bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
               >
                 Buy Now
               </Button>
@@ -376,6 +475,72 @@ export default function ProductDetailPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Customer Reviews Section */}
+        <div id="reviews" className="mt-16 pt-12 border-t border-gray-100 scroll-mt-24">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Customer Reviews</h2>
+              <div className="flex items-center gap-3 mt-2">
+                <div className="flex">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`h-5 w-5 ${s <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
+                  ))}
+                </div>
+                <span className="text-lg font-bold text-gray-900">{averageRating.toFixed(1)} out of 5</span>
+                <span className="text-sm text-gray-500">Based on {productReviews.length > 0 ? productReviews.length : (product.reviews || 0)} ratings</span>
+              </div>
+            </div>
+          </div>
+
+          {productReviews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {productReviews.map((rev, idx) => (
+                <div key={idx} className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm">
+                        {rev.customer?.charAt(0).toUpperCase() || 'A'}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm text-gray-900">{rev.customer || 'Anonymous Buyer'}</p>
+                        <p className="text-xs font-medium text-green-600 flex items-center gap-1 mt-0.5">
+                          <CheckCircle className="h-3 w-3" /> Verified Purchase
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-medium text-gray-400">{rev.date}</span>
+                  </div>
+                  
+                  <div className="flex mb-3">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className={`h-3 w-3 ${s <= rev.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                    ))}
+                  </div>
+                  
+                  {rev.review ? (
+                     <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{rev.review}&rdquo;</p>
+                  ) : (
+                     <p className="text-sm text-gray-400 italic">No written review provided.</p>
+                  )}
+                  
+                  {rev.adminReply && (
+                    <div className="mt-3 ml-4 border-l-2 border-black/10 pl-3">
+                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Seller Reply</p>
+                      <p className="text-xs text-gray-600 leading-relaxed">{rev.adminReply}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+               <Star className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+               <p className="font-semibold text-gray-700">No reviews yet</p>
+               <p className="text-sm text-gray-500 mt-1">Be the first to review this product after purchase!</p>
+            </div>
+          )}
         </div>
 
         {/* Related Products */}

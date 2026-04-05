@@ -32,7 +32,13 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { VideoUpload } from "@/components/ui/video-upload";
 import { useSettings } from "@/lib/settings";
 import Link from "next/link";
-
+import AnalyticsTab from "./components/AnalyticsTab";
+import ReviewsTab from "./components/ReviewsTab";
+import CustomersTab from "./components/CustomersTab";
+import InventoryTab from "./components/InventoryTab";
+import PromosTab from "./components/PromosTab";
+import MessagesTab from "./components/MessagesTab";
+import { MessageCircle, Star as StarIcon, Percent, AlertTriangle } from "lucide-react";
 
 
 const categories = ["Handbags"];
@@ -40,42 +46,46 @@ const categories = ["Handbags"];
 const tabs = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'products', label: 'Inventory', icon: Box },
+  { id: 'products', label: 'Products', icon: Box },
   { id: 'orders', label: 'Fulfillment', icon: ClipboardList },
+  { id: 'messages', label: 'Messages', icon: MessageCircle },
+  { id: 'stock', label: 'Inventory', icon: AlertTriangle },
+  { id: 'promos', label: 'Promos', icon: Percent },
+  { id: 'reviews', label: 'Reviews', icon: StarIcon },
+  { id: 'customers', label: 'Revenue', icon: DollarSign },
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }: any) => {
-  // Translate vibrant colors to luxury subtle variants
-  const colorMap: Record<string, string> = {
-    'bg-blue-600': 'bg-neutral-100 text-neutral-800',
-    'bg-emerald-600': 'bg-neutral-100 text-neutral-800',
-    'bg-purple-600': 'bg-neutral-100 text-neutral-800',
-    'bg-orange-600': 'bg-neutral-100 text-neutral-800',
-    'bg-pink-500': 'bg-neutral-100 text-neutral-800',
-    'bg-indigo-500': 'bg-neutral-100 text-neutral-800',
-    'bg-teal-500': 'bg-neutral-100 text-neutral-800',
-    'bg-rose-500': 'bg-neutral-100 text-neutral-800',
+const StatCard = ({ title, value, icon: Icon, trend, trendValue, accent }: any) => {
+  const accentConfig: Record<string, { bg: string; text: string; iconBg: string }> = {
+    blue:    { bg: 'bg-blue-50',    text: 'text-blue-600',    iconBg: 'bg-blue-100'   },
+    green:   { bg: 'bg-emerald-50', text: 'text-emerald-600', iconBg: 'bg-emerald-100' },
+    purple:  { bg: 'bg-purple-50',  text: 'text-purple-600',  iconBg: 'bg-purple-100'  },
+    amber:   { bg: 'bg-amber-50',   text: 'text-amber-600',   iconBg: 'bg-amber-100'   },
+    rose:    { bg: 'bg-rose-50',    text: 'text-rose-600',    iconBg: 'bg-rose-100'    },
+    teal:    { bg: 'bg-teal-50',    text: 'text-teal-600',    iconBg: 'bg-teal-100'    },
   };
-  const theme = colorMap[color] || 'bg-neutral-100 text-neutral-800';
+  const cfg = accentConfig[accent] || { bg: 'bg-neutral-50', text: 'text-neutral-600', iconBg: 'bg-neutral-100' };
 
   return (
-    <div className="bg-white rounded-3xl border border-neutral-100 p-8 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300">
-      <div className="flex justify-between items-start mb-6">
-        <div className={`p-4 rounded-full ${theme.split(' ')[0]} flex items-center justify-center`}>
-          <Icon className={`h-5 w-5 ${theme.split(' ')[1]}`} strokeWidth={1.5} />
-        </div>
-        {trend && (
-          <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider ${trend === 'up' ? 'bg-emerald-50 text-emerald-600' : 'bg-neutral-50 text-neutral-600'}`}>
-            {trend === 'up' ? <TrendingUpIcon className="h-3 w-3" /> : <Activity className="h-3 w-3" />}
-            <span>{trendValue}%</span>
+    <div className="bg-white rounded-2xl border border-neutral-100 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden relative">
+      <div className={`absolute inset-0 ${cfg.bg} opacity-30 pointer-events-none`} />
+      <div className="relative">
+        <div className="flex items-center justify-between mb-4">
+          <div className={`w-9 h-9 rounded-xl ${cfg.iconBg} flex items-center justify-center`}>
+            <Icon className={`h-4.5 w-4.5 ${cfg.text}`} strokeWidth={2} />
           </div>
-        )}
-      </div>
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-neutral-500 mb-1">{title}</p>
-        <h3 className="text-3xl font-bold tracking-tight text-neutral-900" style={{ fontFamily: 'var(--font-playfair)' }}>{value}</h3>
+          {trend && (
+            <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold ${
+              trend === 'up' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'
+            }`}>
+              {trend === 'up' ? '↑' : '↓'} {trendValue}%
+            </div>
+          )}
+        </div>
+        <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-1">{title}</p>
+        <p className="text-2xl font-bold text-neutral-900 tracking-tight">{value}</p>
       </div>
     </div>
   );
@@ -425,79 +435,117 @@ interface DashboardContentProps {
 }
 
 const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], recentClicks = [] }: DashboardContentProps) => (
-  <div className="space-y-12">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-      <StatCard title="Gross Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="12.5" color="bg-blue-600" />
-      <StatCard title="Active Orders" value={stats.totalOrders} icon={ShoppingCart} trend="up" trendValue="8.2" color="bg-emerald-600" />
-      <StatCard title="Inventory Count" value={stats.totalProducts} icon={Package} trend="down" trendValue="3.1" color="bg-purple-600" />
-      <StatCard title="Elite Customers" value={stats.totalCustomers} icon={Users} trend="up" trendValue="24.8" color="bg-orange-600" />
+  <div className="space-y-8">
+    {/* KPI Metrics Row */}
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCard title="Total Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="12.5" accent="blue" />
+      <StatCard title="Orders" value={stats.totalOrders} icon={ShoppingCart} trend="up" trendValue="8.2" accent="green" />
+      <StatCard title="Products" value={stats.totalProducts} icon={Package} accent="purple" />
+      <StatCard title="Customers" value={stats.totalCustomers} icon={Users} trend="up" trendValue="24.8" accent="amber" />
     </div>
 
-    <div className="flex items-center space-x-3 mt-10 mb-6 px-2">
-      <Activity className="h-5 w-5 text-neutral-400" />
-      <h3 className="text-[14px] font-bold uppercase tracking-widest text-neutral-900">Real-Time Pulse</h3>
+    {/* Live Metrics Row */}
+    <div>
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <p className="text-[11px] font-bold uppercase tracking-widest text-neutral-500">Live Metrics</p>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Today's Visitors" value={analytics?.totalVisitors || 0} icon={Eye} accent="teal" />
+        <StatCard title="Product Clicks" value={analytics?.totalProductViews || 0} icon={Target} accent="blue" />
+        <StatCard title="New Signups" value={analytics?.totalSignups || 0} icon={ShieldCheck} accent="green" />
+        <StatCard title="Abandoned Carts" value={analytics?.abandonedCarts || 0} icon={AlertCircle} accent="rose" />
+      </div>
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-      <StatCard 
-        title="Daily Visitors" 
-        value={analytics?.totalVisitors || 0} 
-        icon={Eye} 
-        color="bg-pink-500" 
-      />
-      <StatCard 
-        title="Product Clicks" 
-        value={analytics?.totalProductViews || 0} 
-        icon={Target} 
-        color="bg-indigo-500" 
-      />
-      <StatCard 
-        title="Verified Signups" 
-        value={analytics?.totalSignups || 0} 
-        icon={ShieldCheck} 
-        color="bg-teal-500" 
-      />
-      <StatCard 
-        title="Abandoned Carts" 
-        value={analytics?.abandonedCarts || 0} 
-        icon={AlertCircle} 
-        color="bg-rose-500" 
-      />
-    </div>
+    {/* Main Content Grid */}
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      {/* Left — Abandoned Carts + Recent Orders */}
+      <div className="xl:col-span-2 space-y-6">
 
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-      <div className="lg:col-span-2 space-y-8">
-        <div className="bg-white rounded-3xl border border-neutral-100 p-8 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-neutral-900">Abandoned Carts</h3>
+        {/* Recent Orders */}
+        <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-50">
+            <h3 className="text-sm font-bold text-neutral-900">Recent Orders</h3>
+            <span className="text-[10px] font-semibold text-neutral-400">{orders.slice(0,5).length} of {orders.length}</span>
           </div>
-          <div className="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-            {abandonedCartsList.length === 0 ? (
-              <p className="text-[11px] tracking-wide font-medium text-neutral-400">No current abandoned sessions.</p>
-            ) : (
-              abandonedCartsList.map((cart, idx) => (
-                <div key={idx} className="flex flex-col p-5 rounded-2xl bg-neutral-50 hover:bg-neutral-100 transition-colors border border-neutral-100/50 space-y-4">
-                  <div className="flex justify-between items-center border-b border-neutral-200/60 pb-3">
-                    <div>
-                      <p className="font-bold text-neutral-900 text-sm">{cart.userName || cart.userEmail}</p>
-                      <p className="text-[10px] font-semibold text-neutral-500 mt-1">
-                        {cart.phone ? `${cart.phone} • ` : ''}{cart.items?.length || 0} items
-                      </p>
+          <div className="divide-y divide-neutral-50">
+            {orders.length === 0 && (
+              <p className="text-center py-8 text-sm text-neutral-400">No orders yet.</p>
+            )}
+            {orders.slice(0, 5).map((order) => {
+              const statusColors: Record<string, string> = {
+                pending:    'bg-amber-50 text-amber-600',
+                processing: 'bg-blue-50 text-blue-600',
+                shipped:    'bg-purple-50 text-purple-600',
+                delivered:  'bg-emerald-50 text-emerald-600',
+                cancelled:  'bg-rose-50 text-rose-600',
+              };
+              return (
+                <div key={order.id} className="flex items-center justify-between px-6 py-4 hover:bg-neutral-50/50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-neutral-900 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      {order.customerName?.charAt(0).toUpperCase() || 'S'}
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-neutral-900 text-sm">${cart.totalValue}</p>
-                      <p className="text-[9px] font-medium text-neutral-400 mt-1">
-                        {cart.updatedAt?.toDate ? cart.updatedAt.toDate().toLocaleString() : 'N/A'}
-                      </p>
+                    <div>
+                      <p className="text-sm font-semibold text-neutral-900">{order.customerName}</p>
+                      <p className="text-[10px] text-neutral-400 mt-0.5">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}</p>
                     </div>
                   </div>
-                  <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                  <div className="flex items-center gap-4">
+                    <span className={`text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg ${statusColors[order.status] || 'bg-neutral-100 text-neutral-500'}`}>
+                      {order.status}
+                    </span>
+                    <p className="text-sm font-bold text-neutral-900 w-20 text-right">${order.total.toFixed(2)}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Abandoned Carts */}
+        <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-50">
+            <h3 className="text-sm font-bold text-neutral-900">Abandoned Carts</h3>
+            {abandonedCartsList.length > 0 && (
+              <span className="bg-rose-100 text-rose-600 text-[10px] font-bold px-2.5 py-1 rounded-full">{abandonedCartsList.length} active</span>
+            )}
+          </div>
+          <div className="divide-y divide-neutral-50 max-h-80 overflow-y-auto custom-scrollbar">
+            {abandonedCartsList.length === 0 ? (
+              <p className="text-sm text-neutral-400 text-center py-8">No abandoned carts right now.</p>
+            ) : (
+              abandonedCartsList.map((cart, idx) => (
+                <div key={idx} className="px-6 py-4 hover:bg-neutral-50/50 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm font-semibold text-neutral-900">{cart.userName || cart.userEmail}</p>
+                      <p className="text-[10px] text-neutral-400 mt-0.5">{cart.items?.length || 0} items in cart</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-neutral-900">${cart.totalValue}</p>
+                      <div className="flex gap-1">
+                        {cart.phone && (
+                          <a href={`tel:${cart.phone}`} className="w-7 h-7 bg-green-50 text-green-600 rounded-lg flex items-center justify-center hover:bg-green-100" title="Call">
+                            <Phone className="h-3 w-3" />
+                          </a>
+                        )}
+                        {cart.userEmail && cart.userEmail !== 'Anonymous' && (
+                          <a href={`mailto:${cart.userEmail}`} className="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100" title="Email">
+                            <Mail className="h-3 w-3" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 overflow-x-auto">
                     {cart.items?.map((item: any, i: number) => (
-                      <div key={i} className="flex items-center gap-3 min-w-[140px] bg-white p-2.5 rounded-xl border border-neutral-100 shadow-sm">
-                        <img src={item.image} alt="" className="w-10 h-10 rounded-lg object-cover bg-neutral-50" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-bold text-neutral-900 truncate">{item.name}</p>
-                          <p className="text-[9px] font-medium text-neutral-500 capitalize">{item.color} / {item.size}</p>
+                      <div key={i} className="flex items-center gap-2 min-w-[120px] bg-neutral-50 p-2 rounded-lg border border-neutral-100">
+                        <img src={item.image} alt="" className="w-8 h-8 rounded-md object-cover" />
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-semibold text-neutral-800 truncate">{item.name}</p>
+                          <p className="text-[9px] text-neutral-400">{item.color}</p>
                         </div>
                       </div>
                     ))}
@@ -507,91 +555,49 @@ const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], r
             )}
           </div>
         </div>
-              <div className="bg-white rounded-3xl border border-neutral-100 p-8 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-neutral-900">Recent Orders</h3>
-            <Button variant="ghost" className="text-[10px] font-bold uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-              View All Orders <ChevronRight className="h-3 w-3 ml-2" />
-            </Button>
-          </div>
-          <div className="space-y-4">
-            {orders.slice(0, 5).map((order) => (
-              <div key={order.id} className="flex items-center justify-between p-5 rounded-2xl bg-neutral-50 hover:bg-neutral-100 transition-colors border border-neutral-100/50">
-                <div className="flex items-center space-x-5">
-                  <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center text-white font-bold text-lg" style={{ fontFamily: 'var(--font-playfair)' }}>
-                    {order.customerName?.charAt(0).toUpperCase() || 'S'}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-neutral-900 text-[13px] tracking-wide">{order.customerName}</h4>
-                    <p className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mt-1">{order.status}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-neutral-900 text-sm tracking-wide">${order.total}</p>
-                  <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mt-1">
-                    {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
       
-      <div className="space-y-8">
-        <div className="bg-[#0f0f0f] text-white rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.15)] relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 p-8 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-700">
-             <Globe className="h-64 w-64 text-white" />
+      {/* Right — Quick Info Column */}
+      <div className="space-y-6">
+        {/* Recently Viewed Products */}
+        <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm">
+          <div className="px-6 py-4 border-b border-neutral-50">
+            <h3 className="text-sm font-bold text-neutral-900">Browsing Activity</h3>
           </div>
-          <div className="relative z-10 space-y-4">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">Global Logistics</h3>
-              <h4 className="text-3xl font-bold tracking-tight text-white capitalize space-y-1" style={{ fontFamily: 'var(--font-playfair)' }}>SheDoo <span className="block text-white/80 italic font-light">Global</span></h4>
-              <p className="text-white/40 text-[11px] leading-relaxed max-w-xs font-medium tracking-wide">Managing luxury fashion logistics and supply chain for the worldwide SheDoo network.</p>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-neutral-900 to-black text-white rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.15)] relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-700">
-             <Diamond className="h-48 w-48 text-white" />
-          </div>
-          <div className="relative z-10 space-y-8">
-            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md">
-              <Sparkles className="h-6 w-6 text-yellow-400" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight leading-none mb-3" style={{ fontFamily: 'var(--font-playfair)' }}>Elite Intelligence</h3>
-              <p className="text-white/50 text-[11px] leading-relaxed font-medium">System node detected growth in the "Luxury Bags" sector. Acquisition costs reduced by 14%.</p>
-            </div>
-            <Button className="w-full bg-white text-black hover:bg-neutral-100 font-bold tracking-wider uppercase text-[10px] h-12 rounded-xl shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5">
-              Access Strategic Data
-            </Button>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-3xl border border-neutral-100 p-8 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-          <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-neutral-900 mb-6">Recently Viewed Products</h3>
-          <div className="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="divide-y divide-neutral-50 max-h-72 overflow-y-auto custom-scrollbar">
             {recentClicks.length === 0 ? (
-              <p className="text-[11px] font-medium text-neutral-400 text-center py-4">No recent views.</p>
+              <p className="text-sm text-neutral-400 text-center py-8">No recent activity.</p>
             ) : (
               recentClicks.map((click, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200/50">
-                  <div className="flex items-center gap-3">
-                    <img src={click.productImage} alt="" className="w-12 h-12 rounded-xl object-cover shadow-sm bg-white" />
-                    <div>
-                      <p className="font-bold text-neutral-900 text-[11px] tracking-wide">{click.productName}</p>
-                      <p className="text-[9px] font-semibold text-neutral-500 uppercase tracking-wider mt-1">By {click.userName || click.userEmail}</p>
-                    </div>
+                <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-neutral-50/50 transition-colors">
+                  <img src={click.productImage} alt="" className="w-10 h-10 rounded-xl object-cover bg-neutral-100 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-neutral-800 truncate">{click.productName}</p>
+                    <p className="text-[9px] text-neutral-400 mt-0.5 truncate">{click.userName || click.userEmail}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-neutral-900 text-[12px] tracking-wide">${click.price}</p>
-                    <p className="text-[9px] font-semibold text-neutral-400 uppercase tracking-wider mt-1">
-                      {click.timestamp?.toDate ? click.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
-                    </p>
-                  </div>
+                  <p className="text-[10px] font-bold text-neutral-600 shrink-0">${click.price}</p>
                 </div>
               ))
             )}
+          </div>
+        </div>
+
+        {/* Quick Link Card */}
+        <div className="bg-neutral-950 text-white rounded-2xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-5">
+            <Diamond className="h-32 w-32" />
+          </div>
+          <div className="relative space-y-4">
+            <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-1">Intelligence</p>
+              <h4 className="text-lg font-bold leading-tight">"Luxury Bags" sector growing 14% MoM</h4>
+            </div>
+            <Button className="w-full bg-white text-black hover:bg-neutral-100 font-bold uppercase text-[10px] h-10 rounded-xl transition-all">
+              Access Analytics
+            </Button>
           </div>
         </div>
       </div>
@@ -1262,107 +1268,100 @@ export default function AdminPage() {
   return (
     <div className="flex bg-[#F9F9F9] min-h-screen font-sans text-neutral-900 selection:bg-black selection:text-white relative">
       {/* Sidebar for Desktop */}
-      <aside className="hidden xl:flex flex-col w-72 fixed inset-y-0 left-0 bg-white border-r border-neutral-200/60 z-50 shadow-[4px_0_24px_rgba(0,0,0,0.01)]">
-        <div className="h-24 flex items-center px-10 border-b border-neutral-100/50">
-           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white shadow-lg">
-                <Crown className="h-5 w-5 text-yellow-400" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl tracking-tighter leading-none">
-                  <span className="font-extrabold text-black">She</span>
-                  <span className="font-light italic text-neutral-500 ml-0.5">Doo</span>
-                </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-neutral-400 mt-1">Admin Portal</span>
-              </div>
-           </div>
+      <aside className="hidden xl:flex flex-col w-64 fixed inset-y-0 left-0 bg-white border-r border-neutral-100 z-50">
+        {/* Logo */}
+        <div className="h-16 flex items-center px-6 border-b border-neutral-100/80">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-sm">
+              <Crown className="h-4 w-4 text-yellow-400" />
+            </div>
+            <div>
+              <span className="text-base font-extrabold text-black tracking-tight">Caara</span>
+              <p className="text-[10px] text-neutral-400 font-medium leading-none mt-0.5">Admin Portal</p>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex-1 py-8 px-6 space-y-1.5 overflow-y-auto">
-           {tabs.map((tab) => (
-             <button
-               key={tab.id}
-               onClick={() => setActiveTab(tab.id)}
-               className={`w-full flex items-center space-x-4 px-4 h-12 rounded-xl transition-all duration-300 group ${
-                  activeTab === tab.id 
-                  ? 'bg-black text-white shadow-md hover:-translate-y-0.5' 
-                  : 'text-neutral-500 hover:bg-neutral-100 hover:text-black'
-               }`}
-             >
-               <tab.icon className={`h-4.5 w-4.5 ${activeTab === tab.id ? 'text-white' : 'text-neutral-400 group-hover:text-black transition-colors'}`} />
-               <span className="text-[11px] font-semibold tracking-wide capitalize">{tab.label}</span>
-             </button>
-           ))}
+        <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-neutral-300 px-3 mb-3 mt-2">Navigation</p>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`w-full flex items-center gap-3 px-3 h-10 rounded-xl transition-all text-left group ${
+                activeTab === tab.id 
+                ? 'bg-neutral-950 text-white' 
+                : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'
+              }`}
+            >
+              <tab.icon className={`h-4 w-4 shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-600'}`} />
+              <span className="text-[12px] font-semibold">{tab.label}</span>
+            </button>
+          ))}
         </nav>
 
-        <div className="p-6 border-t border-neutral-100/50">
-           <button onClick={handleSignOut} className="w-full flex items-center justify-between px-4 h-12 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors group">
-             <span className="text-[11px] font-semibold tracking-wide capitalize group-hover:text-rose-600">Secure Logout</span>
-             <LogOut className="h-4.5 w-4.5 opacity-60 group-hover:opacity-100" />
-           </button>
-           <div className="mt-4 text-center">
-             <span className="text-[9px] font-medium text-neutral-300 uppercase tracking-widest">© 2026 SheDoo Global</span>
-           </div>
+        <div className="p-3 border-t border-neutral-100">
+          <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 h-10 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors">
+            <LogOut className="h-4 w-4" />
+            <span className="text-[12px] font-semibold">Sign Out</span>
+          </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 xl:ml-72 flex flex-col min-h-screen">
+      <main className="flex-1 xl:ml-64 flex flex-col min-h-screen">
          {/* Top Header */}
-         <header className="h-24 bg-white/70 backdrop-blur-xl border-b border-neutral-200/60 px-8 lg:px-12 flex items-center justify-between sticky top-0 z-40 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.01)]">
-            <div className="flex items-center">
-               <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="xl:hidden h-12 w-12 rounded-xl mr-4 bg-white border border-neutral-200 hover:bg-neutral-50 shadow-sm">
-                 <Menu className="h-5 w-5 text-neutral-600" />
+         <header className="h-16 bg-white border-b border-neutral-100 px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40">
+            <div className="flex items-center gap-4">
+               <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)} className="xl:hidden h-9 w-9 rounded-xl border border-neutral-200">
+                 <Menu className="h-4 w-4 text-neutral-600" />
                </Button>
-               {/* Search */}
-               <div className="hidden md:flex relative items-center group">
-                 <Search className="absolute left-4 h-4.5 w-4.5 text-neutral-400 group-focus-within:text-black transition-colors" />
+               <div className="relative hidden md:block">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
                  <Input 
-                   placeholder="Search the registry..." 
+                   placeholder="Search..."
                    value={searchTerm}
                    onChange={(e) => setSearchTerm(e.target.value)}
-                   className="w-80 h-12 pl-12 bg-white border border-neutral-200 focus:border-black focus:ring-black rounded-2xl text-[12px] font-medium tracking-wide shadow-sm transition-all"
+                   className="w-64 h-9 pl-9 bg-neutral-50 border-neutral-200 rounded-xl text-[12px] focus:border-neutral-400"
                  />
                </div>
             </div>
 
-            <div className="flex items-center space-x-4 md:space-x-8">
-               <Button 
-                 variant="ghost"
+            <div className="flex items-center gap-3">
+               <button 
                  onClick={() => setShowNotifications(true)}
-                 className="h-12 w-12 bg-white border border-neutral-200 hover:bg-neutral-50 rounded-2xl shadow-sm relative transition-all group"
+                 className="h-9 w-9 bg-neutral-50 border border-neutral-200 rounded-xl flex items-center justify-center relative hover:bg-neutral-100 transition-colors"
                >
-                 <Bell className="h-5 w-5 text-neutral-600 group-hover:text-black" />
+                 <Bell className="h-4 w-4 text-neutral-600" />
                  {unreadCount > 0 && (
-                   <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md ring-2 ring-white">
+                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full flex items-center justify-center text-[9px] font-bold">
                      {unreadCount}
                    </span>
                  )}
-               </Button>
+               </button>
                
-               <div className="h-8 w-px bg-neutral-200 hidden md:block" />
+               <div className="w-px h-5 bg-neutral-200" />
 
-               <div className="flex items-center space-x-4 cursor-pointer group" onClick={() => setActiveTab('profile')}>
+               <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('profile')}>
                  <div className="text-right hidden sm:block">
-                   <p className="text-[12px] font-bold text-neutral-900 tracking-wide">Administrator</p>
-                   <p className="text-[10px] font-medium text-neutral-400 mt-0.5">Root Access</p>
+                   <p className="text-[12px] font-semibold text-neutral-900">Admin</p>
+                   <p className="text-[10px] text-neutral-400">Super Access</p>
                  </div>
-                 <div className="h-12 w-12 bg-black rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-105 group-hover:shadow-xl transition-all">
-                   <User className="h-5 w-5 opacity-90" />
+                 <div className="h-9 w-9 bg-neutral-900 rounded-xl flex items-center justify-center text-white">
+                   <User className="h-4 w-4" />
                  </div>
                </div>
             </div>
          </header>
 
          {/* Scrollable Content View */}
-         <div className="flex-1 overflow-y-auto w-full max-w-[1700px] mx-auto p-6 md:p-10 lg:p-14">
-            <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+         <div className="flex-1 overflow-y-auto p-6 md:p-8">
+            <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <div className="flex items-center space-x-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-neutral-500 mb-3">
-                   <span>SheDoo Manage /</span>
-                   <span className="text-black">{currentTabTitle}</span>
-                 </div>
-                 <h1 className="text-4xl md:text-[2.75rem] font-bold tracking-tight text-neutral-900 capitalize" style={{ fontFamily: 'var(--font-playfair)' }}>
+                 <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400 mb-1">
+                   Caara Admin / {currentTabTitle}
+                 </p>
+                 <h1 className="text-2xl font-bold text-neutral-900">
                    {currentTabTitle}
                  </h1>
                </div>
@@ -1370,10 +1369,10 @@ export default function AdminPage() {
                {activeTab === 'products' && (
                  <Button 
                    onClick={() => setShowAddProduct(true)}
-                   className="h-14 px-8 bg-black text-white hover:bg-neutral-800 rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.16)] hover:-translate-y-0.5 transition-all font-semibold text-[12px] tracking-wide"
+                   className="h-10 px-5 bg-neutral-950 text-white hover:bg-neutral-800 rounded-xl text-[12px] font-semibold"
                  >
-                   <Plus className="h-4.5 w-4.5 mr-2" />
-                   New Asset
+                   <Plus className="h-4 w-4 mr-1.5" />
+                   Add Product
                  </Button>
                )}
             </div>
@@ -1400,22 +1399,12 @@ export default function AdminPage() {
               )}
               {activeTab === "settings" && <SettingsContent />}
               {activeTab === "profile" && <ProfileContent />}
-              {activeTab === "analytics" && (
-                <div className="flex flex-col items-center justify-center py-32 space-y-8 bg-white rounded-[2rem] border border-neutral-100 p-12 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
-                  <div className="w-24 h-24 bg-neutral-50 rounded-[1.5rem] flex items-center justify-center shadow-inner">
-                    <BarChart3 className="h-10 w-10 text-neutral-400" />
-                  </div>
-                  <div className="text-center max-w-md">
-                    <h3 className="text-3xl font-bold text-neutral-900 mb-3" style={{ fontFamily: 'var(--font-playfair)' }}>Analytics Suite</h3>
-                    <p className="text-neutral-500 text-[13px] leading-relaxed">The advanced analytics and predictive performance modules are currently syncing with external intelligence streams.</p>
-                  </div>
-                  <Link href="/admin/analytics">
-                    <Button className="bg-black hover:bg-neutral-800 text-white h-14 px-10 rounded-2xl font-semibold text-[12px] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                      Access Data Room
-                    </Button>
-                  </Link>
-                </div>
-              )}
+              {activeTab === "analytics" && <AnalyticsTab />}
+              {activeTab === "reviews" && <ReviewsTab />}
+              {activeTab === "customers" && <CustomersTab />}
+              {activeTab === "stock" && <InventoryTab />}
+              {activeTab === "promos" && <PromosTab />}
+              {activeTab === "messages" && <MessagesTab />}
             </div>
          </div>
          

@@ -63,6 +63,7 @@ export const metadata: Metadata = {
 
 import { SettingsProvider } from "@/lib/settings";
 import { ConditionalHeader, ConditionalFooter } from "@/components/layout/conditional-layout";
+import { GoogleOneTapPrompt } from "@/components/ui/google-one-tap";
 
 export default function RootLayout({
   children,
@@ -79,6 +80,7 @@ export default function RootLayout({
       >
         <SettingsProvider>
           <ConditionalHeader />
+          <GoogleOneTapPrompt />
           <main className="flex-1">
             {children}
           </main>

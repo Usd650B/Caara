@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Heart, Star, Filter, Search, ChevronDown, X, SlidersHorizontal } from "lucide-react";
-import { getProducts, Product } from "@/lib/firestore";
+import { getProducts, getPromos, Product, Promo } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
 import { ProductCard } from "@/components/ui/product-card";
+import { getPromoPrice } from "@/lib/promo-utils";
 
 const priceRanges = [
   { label: "All Prices", min: 0, max: Infinity },
@@ -21,6 +22,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<Product[]>([]);
+  const [promos, setPromos] = useState<Promo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [favoritedItems, setFavoritedItems] = useState<Set<string>>(new Set());
@@ -37,14 +39,15 @@ export default function ProductsPage() {
   };
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadData = async () => {
       setIsLoading(true);
-      const productsData = await getProducts();
+      const [productsData, promosData] = await Promise.all([getProducts(), getPromos()]);
       setProducts(productsData);
+      setPromos(promosData);
       setIsLoading(false);
     };
-    loadProducts();
-  }, []);
+    loadData();
+  }, []);;
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -242,6 +245,7 @@ export default function ProductsPage() {
                     product={p}
                     isFavorited={favoritedItems.has(p.id as string)}
                     onToggleFavorite={toggleFavorite}
+                    promoPrice={getPromoPrice(p.id || '', p.price, promos)}
                   />
                 ))}
               </div>
