@@ -3,6 +3,9 @@ import { Heart, Star } from "lucide-react";
 import { Product } from "@/lib/firestore";
 import { useSettings } from "@/lib/settings";
 import React from "react";
+import { isCustomerAuthenticated } from "@/lib/customer-auth";
+import { openAuthModal } from "./global-auth-modal";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +23,7 @@ export function ProductCard({
   promoPrice
 }: ProductCardProps) {
   const { formatPrice, t } = useSettings();
+  const router = useRouter();
 
   const colorCount = product.colors?.length || 0;
   const optionsCount = (product.colors?.length || 0) + (product.sizes?.length || 0);
@@ -31,13 +35,23 @@ export function ProductCard({
     return `${slug}-${id}`;
   };
 
+  const productUrl = `/products/${generateSlug(product.name, product.id || '')}`;
+
+  const handleProductClick = (e: React.MouseEvent) => {
+    if (!isCustomerAuthenticated()) {
+      e.preventDefault();
+      openAuthModal(productUrl);
+    }
+  };
+
   // If promo price exists and is lower, use it
   const displayPrice = promoPrice != null && promoPrice < product.price ? promoPrice : product.price;
   const hasPromo = promoPrice != null && promoPrice < product.price;
 
   return (
     <Link
-      href={`/products/${generateSlug(product.name, product.id || '')}`}
+      href={productUrl}
+      onClick={handleProductClick}
       className={`group flex flex-col h-full bg-transparent transition-all duration-300 hover:-translate-y-1 ${isCompact ? '' : 'hover:-translate-y-1.5'}`}
     >
       {/* Image Container */}

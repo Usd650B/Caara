@@ -64,6 +64,7 @@ export const metadata: Metadata = {
 import { SettingsProvider } from "@/lib/settings";
 import { ConditionalHeader, ConditionalFooter } from "@/components/layout/conditional-layout";
 import { GoogleOneTapPrompt } from "@/components/ui/google-one-tap";
+import { GlobalAuthModal } from "@/components/ui/global-auth-modal";
 
 export default function RootLayout({
   children,
@@ -79,6 +80,7 @@ export default function RootLayout({
         className={`${outfit.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
       >
         <SettingsProvider>
+          <GlobalAuthModal />
           <ConditionalHeader />
           <GoogleOneTapPrompt />
           <main className="flex-1">
