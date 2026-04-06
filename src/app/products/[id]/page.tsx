@@ -11,6 +11,8 @@ import { useSettings } from "@/lib/settings";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { ProductCard } from "@/components/ui/product-card";
 import { getPromoPrice } from "@/lib/promo-utils";
+import { isCustomerAuthenticated } from "@/lib/customer-auth";
+import { openAuthModal } from "@/components/ui/global-auth-modal";
 
 export default function ProductDetailPage() {
   const { formatPrice, t } = useSettings();
@@ -101,8 +103,13 @@ export default function ProductDetailPage() {
   if (product?.images?.length) productImages.push(...product.images);
   if (productImages.length === 0) productImages.push('https://images.unsplash.com/photo-1490481659019-ba6fbc3c2bf5?w=800&h=800&fit=crop');
   const productMedia = product?.video ? [...productImages, product.video] : productImages;
-
   const addToCart = () => {
+    // Check for authentication first
+    if (!isCustomerAuthenticated()) {
+      openAuthModal();
+      return;
+    }
+
     if (!product) return;
     if (product.sizes?.length && !selectedSize) { alert('Please select a size'); return; }
     if (product.colors?.length && !selectedColor) { alert('Please select a color'); return; }
@@ -440,6 +447,10 @@ export default function ProductDetailPage() {
               </Button>
               <Button 
                 onClick={() => {
+                  if (!isCustomerAuthenticated()) {
+                    openAuthModal();
+                    return;
+                  }
                   addToCart();
                   router.push('/checkout');
                 }}
