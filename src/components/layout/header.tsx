@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight, Crown } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight, Crown, Globe } from "lucide-react";
 import { getCurrentUser, signOutCustomer } from "@/lib/customer-auth";
 import { useSettings } from "@/lib/settings";
 import { openAuthModal } from "@/components/ui/global-auth-modal";
@@ -200,72 +200,138 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-8 glass rounded-[2.5rem] mt-4 mb-4 border border-white/10 animate-in slide-in-from-top-4 duration-300 overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-            <nav className="flex flex-col space-y-4 px-8 relative z-10">
-              <Link href="/products" onClick={() => setIsMenuOpen(false)} className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                <span>Shop All</span>
-                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
-              </Link>
-              <Link href="/products" onClick={() => setIsMenuOpen(false)} className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                <span>Collections</span>
-                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
-              </Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                <span>Concierge</span>
-                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
-              </Link>
-              <Link href="/track" onClick={() => setIsMenuOpen(false)} className="text-xl font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                <span>Track Order</span>
-                <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" />
-              </Link>
-              
-              {!user ? (
-                <button onClick={() => { handleSignIn(); setIsMenuOpen(false); }} className="text-xl font-black uppercase tracking-widest text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 w-full text-left">
-                  <span>Sign In</span>
-                  <div className="bg-white p-1.5 rounded-full shadow-sm">
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
+        {/* Mobile Luxury Sidebar (Drawer) */}
+        <div className={`fixed inset-0 z-[100] md:hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'visible' : 'invisible'}`}>
+          {/* Backdrop */}
+          <div 
+            className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+            onClick={() => setIsMenuOpen(false)}
+          />
+          
+          {/* Drawer Content */}
+          <div className={`absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl transition-transform duration-500 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="flex flex-col h-full">
+              {/* Header inside drawer */}
+              <div className="p-6 flex items-center justify-between border-b border-gray-50">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                    <Crown className="h-4 w-4 text-white" />
                   </div>
-                </button>
-              ) : (
-                <div className="pt-4 mt-2 border-t border-white/10 flex flex-col space-y-2">
-                  <div className="flex items-center gap-3 py-2">
-                    <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center flex-shrink-0">
-                      {user.avatar ? (
-                        <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-lg object-cover" />
-                      ) : (
-                        <User className="h-5 w-5 text-white" />
-                      )}
+                  <span className="font-bold text-sm tracking-widest uppercase">Member Lounge</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-full hover:bg-gray-100"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto py-8">
+                {/* Greeting / Profile Section */}
+                <div className="px-6 mb-10">
+                  {user ? (
+                    <div className="flex items-center gap-4 bg-gray-50 p-5 rounded-3xl border border-gray-100">
+                      <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center text-white font-bold text-lg">
+                        {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <p className="font-black text-[10px] uppercase tracking-widest text-pink-500 mb-1">Welcome back</p>
+                        <p className="font-bold text-gray-900 truncate">{user.name || user.email?.split('@')[0]}</p>
+                      </div>
                     </div>
-                    <div className="overflow-hidden">
-                      <p className="text-sm font-bold truncate">{user.name || user.email?.split('@')[0]}</p>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground truncate">{user.email}</p>
+                  ) : (
+                    <div className="bg-black text-white p-6 rounded-3xl relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/20 rounded-full -mr-8 -mt-8 blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
+                      <p className="text-xl font-bold mb-4 relative z-10">Sign in for exclusive drops</p>
+                      <Button 
+                        onClick={() => { handleSignIn(); setIsMenuOpen(false); }}
+                        className="bg-white text-black hover:bg-white/90 rounded-xl font-bold text-xs uppercase tracking-widest relative z-10 h-11 w-full"
+                      >
+                        Sign In Now
+                      </Button>
                     </div>
+                  )}
+                </div>
+
+                {/* Main Links */}
+                <nav className="px-6 space-y-2 mb-10">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300 ml-2 mb-4">Collection</p>
+                  <Link href="/products" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 group transition-all">
+                    <span className="text-lg font-bold text-gray-800">Shop All</span>
+                    <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all" />
+                  </Link>
+                  <Link href="/products" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 group transition-all">
+                    <span className="text-lg font-bold text-gray-800">Best Sellers</span>
+                    <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all" />
+                  </Link>
+                  <Link href="/track" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 group transition-all">
+                    <span className="text-lg font-bold text-gray-800">Track Manifest</span>
+                    <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all" />
+                  </Link>
+                </nav>
+
+                {/* Personalized Support */}
+                <div className="px-6 mb-10">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300 ml-2 mb-4">Concierge</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <a href="https://wa.me/255749097220" className="flex flex-col items-center justify-center p-4 bg-green-50 rounded-2xl group transition-all">
+                      <Phone className="h-5 w-5 text-green-600 mb-2" />
+                      <span className="text-[10px] font-bold text-green-700 uppercase tracking-tighter">WhatsApp</span>
+                    </a>
+                    <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-2xl group transition-all">
+                      <Mail className="h-5 w-5 text-blue-600 mb-2" />
+                      <span className="text-[10px] font-bold text-blue-700 uppercase tracking-tighter">Email HQ</span>
+                    </Link>
                   </div>
-                  <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between border-b border-white/5 group">
-                    <span>{t("Profile")}</span>
-                    <User className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
-                  </Link>
-                  <Link href="/orders" onClick={() => setIsMenuOpen(false)} className="text-lg font-black uppercase tracking-widest hover:text-primary transition-all py-3 flex items-center justify-between group">
-                    <span>{t("Order History")}</span>
-                    <Package className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
-                  </Link>
-                  <button onClick={() => { signOutCustomer(); setIsMenuOpen(false); }} className="text-lg font-black uppercase tracking-widest text-red-500 hover:text-red-400 transition-all py-3 flex items-center justify-between w-full text-left group">
-                    <span>{t("Sign Out")}</span>
-                    <LogOut className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-all" />
-                  </button>
+                </div>
+
+                {/* 🌍 Region & Language Settings */}
+                <div className="px-6 mb-10 pt-8 border-t border-gray-50">
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-300 ml-2 mb-4">Preferences</p>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setLanguage(language === 'EN' ? 'SW' : 'EN')} 
+                      className="flex-1 py-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between px-5 group active:scale-95 transition-all text-left"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-black mb-1">Language</span>
+                        <span className="text-xs font-bold">{language === 'EN' ? 'English' : 'Kiswahili'}</span>
+                      </div>
+                      <Globe className="h-3 w-3 text-gray-300 group-hover:text-black" />
+                    </button>
+                    <button 
+                      onClick={() => setCurrency(currency === 'USD' ? 'TZS' : 'USD')}
+                      className="flex-1 py-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between px-5 group active:scale-95 transition-all text-left"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-black mb-1">Currency</span>
+                        <span className="text-xs font-bold">{currency}</span>
+                      </div>
+                      <Crown className="h-3 w-3 text-gray-300 group-hover:text-black" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer inside drawer */}
+              {user && (
+                <div className="p-6 border-t border-gray-50">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => { signOutCustomer(); setIsMenuOpen(false); }}
+                    className="w-full h-14 rounded-2xl text-red-500 hover:bg-red-50 hover:text-red-600 font-bold uppercase tracking-widest text-xs"
+                  >
+                    <LogOut className="h-4 w-4 mr-3" />
+                    Sign Out
+                  </Button>
                 </div>
               )}
-            </nav>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );
