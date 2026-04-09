@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
   Search, Package, ArrowRight, ShieldCheck, 
-  Activity, Globe, Lock, ChevronRight, Sparkles
+  Activity, Globe, Lock, ChevronRight, Sparkles, MessageCircle, Phone, ArrowLeft
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getOrder } from "@/lib/firestore";
@@ -34,8 +34,6 @@ export default function TrackOrderPage() {
       const order = await getOrder(orderId.trim());
       if (!order) {
         setError("Manifest not located. Please verify your ID and try again.");
-      } else if (email && order.customerEmail.toLowerCase() !== email.toLowerCase().trim()) {
-        setError("Identity mismatch. Security protocol blocked access.");
       } else {
         router.push(`/order-tracking/${orderId.trim()}`);
       }
@@ -47,102 +45,90 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
-      {/* Background Architectural Elements */}
-      <div className="absolute top-0 right-0 p-24 opacity-[0.02] -mr-20 -mt-20">
-        <Globe className="h-96 w-96 rotate-12" />
-      </div>
-      <div className="absolute bottom-0 left-0 p-24 opacity-[0.02] -ml-20 -mb-20">
-        <Activity className="h-80 w-80 -rotate-12" />
-      </div>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans overflow-hidden relative">
+      {/* 🎭 Artistic Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-500/5 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse"></div>
 
-      <div className="w-full max-w-xl relative z-10 space-y-12">
-        <div className="text-center space-y-6">
-          <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group">
-            <Package className="h-8 w-8 text-black/50" />
-          </div>
-          <div className="space-y-3">
-             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-black">
-               Track <br/> Order
-             </h1>
-             <p className="text-black/50 text-sm max-w-sm mx-auto">
-               Enter your details to track your order.
-             </p>
+      <div className="w-full max-w-[480px] relative">
+        {/* Navigation */}
+        <div className="mb-8 flex justify-between items-center animate-in fade-in slide-in-from-top-4 duration-700">
+          <Link href="/" className="group flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-black transition-all">
+            <div className="p-1.5 rounded-full bg-white border border-gray-100 group-hover:bg-gray-50">
+              <ArrowLeft className="h-3 w-3" />
+            </div>
+            {t("Return to Store")}
+          </Link>
+          <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest font-black text-gray-300">
+            <ShieldCheck className="h-3 w-3" /> SSL SECURE
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-black/5 p-8 md:p-12 shadow-sm space-y-8">
-           <div className="space-y-2">
-              <h2 className="text-xl font-bold tracking-tight text-black">Order Details</h2>
-              <p className="text-sm font-medium text-black/50 leading-relaxed">Enter your unique order ID to track its status.</p>
-           </div>
+        {/* 📦 Main Tracking Card */}
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] p-8 sm:p-10 relative overflow-hidden animate-in zoom-in-95 fade-in duration-700">
+          
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-green-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+              <MessageCircle className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
+              Direct <span className="text-green-500">Tracking</span>
+            </h1>
+            <p className="text-gray-400 text-sm font-medium">Connect with our team to locate your manifest instantly.</p>
+          </div>
 
-           <form onSubmit={handleTrack} className="space-y-8">
-              {error && (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-semibold flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  {error}
-                </div>
-              )}
-              
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-black/50 px-2">Order ID</label>
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black/30" />
-                    <Input
-                      type="text"
-                      placeholder="e.g. 12345678"
-                      value={orderId}
-                      onChange={(e) => setOrderId(e.target.value)}
-                      className="pl-12 h-14 bg-white border border-gray-200 focus:border-black rounded-xl text-sm shadow-sm"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-black/50 px-2">Email Address</label>
-                  <div className="relative">
-                    <ShieldCheck className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black/30" />
-                    <Input
-                      type="email"
-                      placeholder="email@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-12 h-14 bg-white border border-gray-200 focus:border-black rounded-xl text-sm shadow-sm"
-                    />
-                  </div>
-                </div>
+          <div className="space-y-6">
+            {/* 🛡️ SECURITY PRECAUTION */}
+            <div className="p-5 bg-red-50 rounded-3xl border border-red-100 flex items-start gap-4">
+              <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <ShieldCheck className="h-4 w-4 text-red-500" />
               </div>
+              <div>
+                <p className="text-[10px] font-black text-red-800 uppercase tracking-widest mb-1">Security Precaution</p>
+                <p className="text-[11px] text-red-700/80 leading-relaxed font-bold">
+                  Never share your order details on social media comments. Only contact us via the official channels on this page.
+                </p>
+              </div>
+            </div>
 
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-                className="w-full h-14 bg-black text-white hover:bg-black/80 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-3 group"
+            {/* 📋 INSTRUCTIONS */}
+            <div className="p-5 bg-gray-50 rounded-3xl border border-gray-100">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Process</p>
+              <div className="flex items-center gap-4 text-xs font-bold text-gray-600">
+                <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[10px] shrink-0">1</div>
+                <p>Click "Track on WhatsApp" below</p>
+              </div>
+              <div className="flex items-center gap-4 text-xs font-bold text-gray-600 mt-4">
+                <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[10px] shrink-0">2</div>
+                <p>Send a photo or screenshot of your receipt</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <a 
+                href="https://wa.me/255749097220?text=Hello%2C%20I%27d%20like%20to%20track%20my%20order.%20I%20have%20my%20receipt%20ready." 
+                className="w-full h-16 bg-[#25D366] text-white hover:shadow-2xl hover:shadow-green-500/20 hover:-translate-y-0.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-3 group"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {isLoading ? "Tracking..." : (
-                  <>
-                    Track Order
-                    <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </Button>
-           </form>
+                <MessageCircle className="h-5 w-5" />
+                Track on WhatsApp
+              </a>
 
-           <div className="flex items-center justify-between pt-8 border-t border-black/5">
-              <div className="flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                 <span className="text-xs font-semibold text-black/40">Secure Connection</span>
-              </div>
-           </div>
+              <a 
+                href="sms:+255749097220?body=Hello%2C%20I%27d%20like%20to%20track%20my%20order." 
+                className="w-full h-16 bg-black text-white hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-0.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-3 group"
+              >
+                <Phone className="h-5 w-5" />
+                Track via SMS
+              </a>
+            </div>
+          </div>
         </div>
 
-        <div className="text-center">
-           <Link href="/" className="text-xs font-bold text-black/40 hover:text-black transition-colors inline-flex items-center group">
-              Return Home
-              <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-           </Link>
+        {/* Footer info */}
+        <div className="mt-8 text-center animate-in fade-in duration-1000 slide-in-from-bottom-2">
+          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">SheDoo Logistics • Mbezi Mwisho HQ</p>
         </div>
       </div>
     </div>

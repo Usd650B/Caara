@@ -116,10 +116,12 @@ export default function ProductDetailPage() {
 
     const selectedMedia = productMedia[currentImageIndex];
     const isVideo = selectedMedia?.includes('video');
+    const finalPrice = (promoPrice != null && promoPrice < product.price) ? promoPrice : product.price;
+    
     const cartItem = {
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: finalPrice,
       originalPrice: product.originalPrice,
       category: product.category,
       image: isVideo ? product.image : selectedMedia,
@@ -297,30 +299,42 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="flex items-baseline gap-3">
-              {promoPrice != null ? (
+              {promoPrice != null && promoPrice < product.price ? (
                 <>
-                  <span className="text-2xl font-bold text-gray-900">{formatPrice(promoPrice)}</span>
-                  <span className="text-sm text-gray-400 line-through">{formatPrice(product.price)}</span>
-                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                  <span className="text-3xl font-bold text-gray-900">{formatPrice(promoPrice)}</span>
+                  <span className="text-base text-gray-400 line-through">{formatPrice(product.price)}</span>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
                     {Math.round(((product.price - promoPrice) / product.price) * 100)}% OFF — PROMO
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="text-2xl font-bold text-gray-900">{formatPrice(product.price)}</span>
+                  <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
                   {(() => {
-                    const originalPrice = product.originalPrice && product.originalPrice > product.price 
-                      ? product.originalPrice 
-                      : product.price * 1.35;
-                    const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
-                    return (
-                      <>
-                        <span className="text-sm text-gray-400 line-through">{formatPrice(originalPrice)}</span>
-                        <span className="text-xs font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">
-                          {discount}% OFF
-                        </span>
-                      </>
-                    );
+                    // Same logic as ProductCard for consistency
+                    const isClearance = product.id ? product.id.charCodeAt(0) % 3 === 0 : false;
+                    const hasExplicitOriginal = product.originalPrice && product.originalPrice > product.price;
+                    
+                    if (hasExplicitOriginal || isClearance) {
+                      const originalPrice = hasExplicitOriginal 
+                        ? product.originalPrice 
+                        : product.price * (1.2 + (isClearance ? 0.15 : 0));
+                      const originalPriceNum = originalPrice as number;
+                      const discount = Math.round(((originalPriceNum - product.price) / originalPriceNum) * 100);
+                      
+                      return (
+                        <div className="flex items-center gap-3">
+                          <span className="text-base text-gray-400 line-through">{formatPrice(originalPrice!)}</span>
+                          <span className="px-2 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-md border border-red-100">
+                             {isClearance && !hasExplicitOriginal ? 'Supplier Clearance' : 'Limited Offer'}
+                          </span>
+                          <span className="text-xs font-bold text-red-600">
+                            {discount}% OFF
+                          </span>
+                        </div>
+                      );
+                    }
+                    return null;
                   })()}
                 </>
               )}

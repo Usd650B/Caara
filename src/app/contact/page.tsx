@@ -93,9 +93,9 @@ export default function ContactPage() {
             <CardContent className="p-6">
               <MapPin className="h-8 w-8 text-black mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">Visit Us</h3>
-              <p className="text-gray-600 mb-4">123 Fashion Ave, Style City</p>
-              <Button variant="outline" className="w-full">
-                <a href="https://maps.google.com/?q=123+Fashion+Ave+Style+City" target="_blank" rel="noopener noreferrer">
+              <p className="text-gray-600 mb-4 text-sm">Mbezi Mwisho, Dar es Salaam<br />(Warehouse & HQ)</p>
+              <Button variant="outline" className="w-full" asChild>
+                <a href="https://maps.google.com/?q=Mbezi+Mwisho+Dar+es+Salaam" target="_blank" rel="noopener noreferrer">
                   Get Directions
                 </a>
               </Button>

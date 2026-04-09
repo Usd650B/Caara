@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CreditCard, Truck, Shield, ArrowLeft, ArrowRight, CheckCircle2, ShoppingBag, Lock, Gift, Package, Star } from "lucide-react";
+import { CreditCard, Truck, Shield, ArrowLeft, ArrowRight, CheckCircle2, ShoppingBag, Lock, Gift, Package, Star, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Product, createOrder } from "@/lib/firestore";
@@ -167,24 +167,28 @@ export default function CheckoutPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 text-left space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">{t("Order Number")}</span>
-              <span className="text-gray-900 font-bold font-mono">#{createdOrderId?.slice(-8).toUpperCase()}</span>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 text-left space-y-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">{t("Order Number")}</span>
+                <span className="text-gray-900 font-bold font-mono">#{createdOrderId?.slice(-8).toUpperCase()}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest font-sans">Confirmation sent to</span>
+                <span className="text-gray-700 font-medium text-xs">{formData.email}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Total Paid</span>
+                <span className="text-gray-900 font-bold">{formatPrice(total)}</span>
+              </div>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Confirmation sent to</span>
-              <span className="text-gray-700 font-medium text-xs">{formData.email}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Total Paid</span>
-              <span className="text-gray-900 font-bold">{formatPrice(total)}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Delivery</span>
-              <span className="text-gray-700 text-xs">
-                {savedRegion === "Dar es salaam" || !savedRegion ? "2-3 days" : `5-7 days (${savedRegion})`}
-              </span>
+
+            {/* Safety Warning */}
+            <div className="p-3 bg-red-50 rounded-xl border border-red-100 flex items-start gap-3">
+              <Shield className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+              <p className="text-[10px] text-red-800 leading-relaxed font-bold">
+                CRITICAL: Please save this receipt or take a screenshot now. You must not lose your Order ID until your product has been delivered at Mbezi Mwisho or your home.
+              </p>
             </div>
           </div>
 
@@ -203,12 +207,30 @@ export default function CheckoutPage() {
           <div className="space-y-3 pt-2">
             <Link href={`/order-tracking/${createdOrderId}`}>
               <Button className="w-full h-12 bg-black text-white hover:bg-gray-800 rounded-xl font-semibold flex items-center justify-center gap-2 group">
-                Track Your Order <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                Track on Website <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <a 
+                href={`https://wa.me/255749097220?text=Hello%2C%20I%20just%20placed%20order%20%23${createdOrderId?.slice(-8).toUpperCase()}%20and%20want%20to%20track%20it.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 h-11 bg-green-50 text-green-700 border border-green-100 rounded-xl text-xs font-bold hover:bg-green-100 transition-all"
+              >
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+              <a 
+                href={`sms:+255749097220?body=Hello%2C%20I%20just%20placed%20order%20%23${createdOrderId?.slice(-8).toUpperCase()}%20and%20want%20to%20track%20it.`}
+                className="flex items-center justify-center gap-2 h-11 bg-blue-50 text-blue-700 border border-blue-100 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all"
+              >
+                <Phone className="h-4 w-4" /> SMS
+              </a>
+            </div>
+
             <Link href="/">
-              <Button variant="ghost" className="w-full h-10 text-gray-500 hover:text-gray-900 font-semibold text-sm">
-                Continue Shopping
+              <Button variant="ghost" className="w-full h-10 text-gray-400 hover:text-gray-900 font-semibold text-[10px] uppercase tracking-widest">
+                Return to Store
               </Button>
             </Link>
           </div>

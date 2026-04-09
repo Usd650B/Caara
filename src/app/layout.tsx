@@ -78,6 +78,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${outfit.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
+        suppressHydrationWarning
       >
         <SettingsProvider>
           <GlobalAuthModal />

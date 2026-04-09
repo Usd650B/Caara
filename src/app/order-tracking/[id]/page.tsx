@@ -7,7 +7,7 @@ import {
   ArrowLeft, Package, Truck, CheckCircle, Clock, 
   MapPin, Download, ShoppingBag, Activity, 
   ShieldCheck, Mail, Phone, Send,
-  AlertTriangle, Star, Check, MessageCircle, X
+  AlertTriangle, Star, Check, MessageCircle, X, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import { getOrders, Order, OrderMessage, updateOrder, addNotification } from "@/lib/firestore";
@@ -452,16 +452,48 @@ export default function OrderTrackingPage() {
               </div>
             </div>
 
-            {/* Need Help */}
-            <div className="mt-4 bg-white rounded-2xl border border-gray-100 p-4">
-              <p className="text-xs font-bold text-gray-900 mb-2">Need help?</p>
-              <div className="flex gap-3">
-                <a href="tel:+255749097220" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
-                  <Phone className="h-3 w-3" /> Call
-                </a>
-                <a href="mailto:shabanimnango99@gmail.com" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
-                  <Mail className="h-3 w-3" /> Email
-                </a>
+            {/* Need Help & WhatsApp/SMS Tracking */}
+            <div className="mt-4 bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
+              <div>
+                <p className="text-xs font-bold text-gray-900 mb-1">Track via Mobile</p>
+                <p className="text-[10px] text-gray-400 mb-3">Instant support for Order #{order.id?.slice(-8).toUpperCase()}</p>
+                <div className="flex flex-col gap-2">
+                  <a 
+                    href={`https://wa.me/255749097220?text=Hello%2C%20I%27d%20like%20to%20track%20my%20order%20%23${order.id?.slice(-8).toUpperCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-3 bg-green-50 rounded-xl border border-green-100 group hover:shadow-sm transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4 text-green-600" />
+                      <span className="text-[11px] font-bold text-green-700">Track on WhatsApp</span>
+                    </div>
+                    <ArrowRight className="h-3 w-3 text-green-300 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                  
+                  <a 
+                    href={`sms:+255749097220?body=Hello%2C%20I%27d%20like%20to%20track%20my%20order%20%23${order.id?.slice(-8).toUpperCase()}`}
+                    className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-100 group hover:shadow-sm transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Activity className="h-4 w-4 text-blue-600" />
+                      <span className="text-[11px] font-bold text-blue-700">Track via SMS</span>
+                    </div>
+                    <ArrowRight className="h-3 w-3 text-blue-300 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+              </div>
+              
+              <div className="pt-3 border-t border-gray-50">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Direct Contact</p>
+                <div className="flex gap-4">
+                  <a href="tel:+255749097220" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
+                    <Phone className="h-3 w-3" /> Call Support
+                  </a>
+                  <a href="mailto:shabanimnango99@gmail.com" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
+                    <Mail className="h-3 w-3" /> Email us
+                  </a>
+                </div>
               </div>
             </div>
           </div>

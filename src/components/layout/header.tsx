@@ -72,16 +72,16 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/products" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                {t("Discover")}
+                {t("Shop All")}
               </Link>
               <Link href="/products" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                {t("Collections")}
+                {t("Our Bags")}
               </Link>
               <Link href="/track" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                {t("Track Order")}
+                {t("My Order")}
               </Link>
               <Link href="/contact" className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors py-2">
-                {t("Concierge")}
+                {t("Help")}
               </Link>
             </nav>
           </div>
@@ -89,20 +89,18 @@ export function Header() {
           {/* Center - Highly Brandable Logo */}
           <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 group">
             <div className="flex flex-col items-center">
-              <div className="flex items-center gap-1 sm:gap-1.5 opacity-0 animate-in fade-in slide-in-from-bottom-2 duration-1000">
-                <Crown className="h-2 w-2 sm:h-3 sm:w-3 text-yellow-500 fill-yellow-500/20 rotate-12" />
-                <div className="h-[1px] w-4 sm:w-6 bg-yellow-500/30" />
-                <Crown className="h-2 w-2 sm:h-3 sm:w-3 text-yellow-500 fill-yellow-500/20 -rotate-12" />
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-[1px] w-8 bg-black/10 transition-all duration-700 group-hover:w-12 group-hover:bg-pink-500/30" />
+                <Crown className="h-4 w-4 text-pink-500 fill-pink-500/5 transition-transform duration-700 group-hover:rotate-[360deg]" />
+                <div className="h-[1px] w-8 bg-black/10 transition-all duration-700 group-hover:w-12 group-hover:bg-pink-500/30" />
               </div>
-              <span className="text-2xl sm:text-3xl tracking-tighter transition-all duration-700 group-hover:tracking-normal">
-                <span className="font-black text-black">She</span>
-                <span className="font-light italic text-pink-500 ml-0.5">Doo</span>
+              <span className="text-3xl sm:text-4xl tracking-[0.1em] transition-all duration-700 group-hover:tracking-[0.2em] font-light">
+                <span className="text-black uppercase font-bold">She</span>
+                <span className="text-pink-500 italic lowercase -ml-1">Doo</span>
               </span>
-              <div className="flex items-center gap-1.5 mt-0.5 h-1">
-                <div className="h-[1.5px] w-0 group-hover:w-8 bg-black transition-all duration-500 rounded-full opacity-0 group-hover:opacity-100"></div>
-                <div className="w-1 h-1 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-300 shadow-[0_0_8px_rgba(236,72,153,0.5)]"></div>
-                <div className="h-[1.5px] w-0 group-hover:w-8 bg-pink-500 transition-all duration-500 rounded-full opacity-0 group-hover:opacity-100"></div>
-              </div>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-gray-400 mt-1 transition-colors duration-500 group-hover:text-pink-400">
+                Premium Fashion
+              </span>
             </div>
           </Link>
 

@@ -46,7 +46,7 @@ export interface Product {
   colors?: string[];
   rating?: number;
   reviews?: number;
-  badge?: 'Sale' | 'New' | 'Premium' | null;
+  badge?: string | null;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
