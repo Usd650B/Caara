@@ -187,12 +187,12 @@ export function ProductCard({
             <span className="text-[11px] font-bold text-gray-900">
               {product.rating && Number(product.rating) > 0 
                 ? Number(product.rating).toFixed(1) 
-                : (4.7 + (Math.random() * 0.3)).toFixed(1)}
+                : (4.7 + (product.id ? (product.id.charCodeAt(0) % 3) * 0.1 : 0.1)).toFixed(1)}
             </span>
             <span className="text-[10px] text-gray-400 font-medium">
               ({product.reviews && product.reviews > 0 
                 ? product.reviews 
-                : Math.floor(12 + (Math.random() * 36))} reviews)
+                : (product.id ? Math.floor(18 + (product.id.charCodeAt(0) % 25)) : 24)} reviews)
             </span>
           </div>
           
