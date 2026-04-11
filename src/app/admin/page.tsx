@@ -64,7 +64,6 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, accent }: any) 
     teal:    { bg: 'bg-teal-50',    text: 'text-teal-600',    iconBg: 'bg-teal-100'   },
     amber:   { bg: 'bg-amber-50',   text: 'text-amber-600',   iconBg: 'bg-amber-100'   },
     rose:    { bg: 'bg-rose-50',    text: 'text-rose-600',    iconBg: 'bg-rose-100'    },
-    teal:    { bg: 'bg-teal-50',    text: 'text-teal-600',    iconBg: 'bg-teal-100'    },
   };
   const cfg = accentConfig[accent] || { bg: 'bg-neutral-50', text: 'text-neutral-600', iconBg: 'bg-neutral-100' };
 
