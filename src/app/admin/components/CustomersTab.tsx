@@ -56,8 +56,8 @@ export default function CustomersTab() {
           <p className="text-xl font-bold text-neutral-900 mt-1">${completedRevenue.toFixed(2)}</p>
         </div>
         <div className="bg-white rounded-2xl border border-neutral-100 p-5">
-          <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center mb-3">
-            <ShoppingCart className="h-4 w-4 text-purple-600" />
+          <div className="w-8 h-8 bg-teal-50 rounded-lg flex items-center justify-center mb-3">
+            <ShoppingCart className="h-4 w-4 text-teal-600" />
           </div>
           <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Total Orders</p>
           <p className="text-xl font-bold text-neutral-900 mt-1">{orders.length}</p>

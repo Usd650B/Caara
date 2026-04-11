@@ -12,6 +12,7 @@ import { calculateShippingCost, getFreeShippingThreshold } from "@/lib/shipping"
 import { getCurrentUser } from "@/lib/customer-auth";
 import { trackOrderCompleted, syncCartState, markCartConverted } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
+import { getBestDiscount, markSignupBonusUsed, markReferralBonusUsed } from "@/lib/bonus";
 
 interface CartItem extends Product {
   quantity: number;
@@ -76,7 +77,8 @@ export default function CheckoutPage() {
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const savedRegion = typeof window !== 'undefined' ? localStorage.getItem('deliveryRegion') : "Dar es salaam";
   const shipping = savedRegion && savedRegion !== "Dar es salaam" ? 3.81 : 0;
-  const total = subtotal + shipping;
+  const discount = getBestDiscount(subtotal);
+  const total = subtotal + shipping - discount.amount;
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
 
   const handleInputChange = (field: string, value: string) => {
@@ -135,6 +137,9 @@ export default function CheckoutPage() {
           setCreatedOrderId(result.id);
           setIsSuccess(true);
           markCartConverted();
+          // Mark bonus as used
+          if (discount.type === 'signup') markSignupBonusUsed();
+          if (discount.type === 'referral') markReferralBonusUsed();
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
@@ -260,23 +265,23 @@ export default function CheckoutPage() {
             <div key={step.id} className="flex items-center">
               <button
                 onClick={() => step.id < activeStep ? setActiveStep(step.id) : null}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-black transition-all ${
                   activeStep === step.id
-                    ? 'bg-black text-white shadow-md'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-lg scale-105'
                     : activeStep > step.id
-                    ? 'bg-green-50 text-green-700 cursor-pointer'
-                    : 'bg-gray-100 text-gray-400'
+                    ? 'bg-[var(--brand-accent)] text-[var(--brand-dark)] cursor-pointer'
+                    : 'bg-white text-gray-400 border-2 border-transparent'
                 }`}
               >
                 {activeStep > step.id ? (
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <CheckCircle2 className="h-4 w-4" />
                 ) : (
-                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold">{step.id}</span>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${activeStep === step.id ? 'bg-white/20' : 'bg-gray-100'}`}>{step.id}</span>
                 )}
                 {step.label}
               </button>
               {i < steps.length - 1 && (
-                <div className={`w-8 sm:w-12 h-0.5 mx-1 rounded-full ${activeStep > step.id ? 'bg-green-300' : 'bg-gray-200'}`} />
+                <div className={`w-8 sm:w-16 h-1.5 mx-1.5 rounded-full ${activeStep > step.id ? 'bg-[var(--brand-accent)]' : 'bg-white'}`} />
               )}
             </div>
           ))}
@@ -287,9 +292,9 @@ export default function CheckoutPage() {
           <div className="lg:col-span-7">
             {/* Step 1: Shipping */}
             {activeStep === 1 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5 animate-in fade-in duration-300">
-                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <Truck className="h-5 w-5 text-gray-400" /> {t("Shipping Address")}
+              <div className="bg-white rounded-[2rem] border-transparent shadow-sm p-6 sm:p-8 space-y-5 animate-in fade-in duration-300">
+                <h2 className="text-xl font-black text-[var(--brand-dark)] flex items-center gap-2 mb-2">
+                  <Truck className="h-6 w-6 text-[var(--brand-primary)]" /> {t("Shipping Address")}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
@@ -319,10 +324,10 @@ export default function CheckoutPage() {
                     <Input value={formData.zipCode} onChange={e => handleInputChange("zipCode", e.target.value)} className="h-11 bg-gray-50 border-gray-200 rounded-xl focus:border-gray-900 text-sm" />
                   </div>
                 </div>
-                <div className="pt-2">
+                <div className="pt-4">
                   <Button type="button" onClick={() => setActiveStep(2)} disabled={!canAdvance()}
-                    className="h-11 px-8 bg-black text-white hover:bg-gray-800 rounded-xl text-sm font-semibold">
-                    Continue to Contact <ArrowRight className="ml-2 h-4 w-4" />
+                    className="btn-primary w-full sm:w-auto h-14 px-10 text-base">
+                    Continue to Contact <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </div>
               </div>
@@ -330,9 +335,9 @@ export default function CheckoutPage() {
 
             {/* Step 2: Contact */}
             {activeStep === 2 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5 animate-in fade-in duration-300">
-                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-gray-400" /> {t("Contact Information")}
+              <div className="bg-white rounded-[2rem] border-transparent shadow-sm p-6 sm:p-8 space-y-5 animate-in fade-in duration-300">
+                <h2 className="text-xl font-black text-[var(--brand-dark)] flex items-center gap-2 mb-2">
+                  <CreditCard className="h-6 w-6 text-[var(--brand-primary)]" /> {t("Contact Information")}
                 </h2>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold text-gray-500">{t("Email Address")} *</Label>
@@ -354,13 +359,13 @@ export default function CheckoutPage() {
                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-gray-900 focus:outline-none text-sm h-20 resize-none"
                     placeholder="Special instructions for delivery..." />
                 </div>
-                <div className="flex gap-3 pt-2">
-                  <Button type="button" variant="ghost" onClick={() => setActiveStep(1)} className="h-11 px-6 text-gray-500 hover:text-gray-900 rounded-xl text-sm font-semibold">
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button type="button" variant="ghost" onClick={() => setActiveStep(1)} className="h-14 px-8 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-full text-base font-bold transition-all">
+                    <ArrowLeft className="mr-2 h-5 w-5" /> Back
                   </Button>
                   <Button type="button" onClick={() => setActiveStep(3)} disabled={!canAdvance()}
-                    className="h-11 px-8 bg-black text-white hover:bg-gray-800 rounded-xl text-sm font-semibold">
-                    Review Order <ArrowRight className="ml-2 h-4 w-4" />
+                    className="btn-primary flex-1 h-14 text-base">
+                    Review Order <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </div>
               </div>
@@ -395,16 +400,16 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                  <Button type="button" variant="ghost" onClick={() => setActiveStep(2)} className="h-11 px-6 text-gray-500 hover:text-gray-900 rounded-xl text-sm font-semibold">
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button type="button" variant="ghost" onClick={() => setActiveStep(2)} className="h-14 px-8 text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-full text-base font-bold transition-all">
+                    <ArrowLeft className="mr-2 h-5 w-5" /> Back
                   </Button>
                   <Button type="submit" disabled={isSubmitting}
-                    className="h-12 px-8 bg-black text-white hover:bg-gray-800 rounded-xl text-sm font-bold flex-1 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                    className="btn-primary flex-1 h-14 text-base shadow-xl">
                     {isSubmitting ? (
-                      <span className="flex items-center gap-2"><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</span>
+                      <span className="flex items-center gap-2"><span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</span>
                     ) : (
-                      <span className="flex items-center justify-center gap-2"><Lock className="h-4 w-4" /> Place Order — {formatPrice(total)}</span>
+                      <span className="flex items-center justify-center gap-2"><Lock className="h-5 w-5" /> Place Order — {formatPrice(total)}</span>
                     )}
                   </Button>
                 </div>
@@ -446,6 +451,15 @@ export default function CheckoutPage() {
                       {shipping === 0 ? t("Free") : formatPrice(shipping)}
                     </span>
                   </div>
+                  {discount.amount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-emerald-600 flex items-center gap-1">
+                        <Gift className="h-3 w-3" />
+                        {discount.label}
+                      </span>
+                      <span className="text-emerald-600 font-bold">-{formatPrice(discount.amount)}</span>
+                    </div>
+                  )}
                   <div className="border-t border-gray-100 pt-3">
                     <div className="flex justify-between items-baseline">
                       <span className="text-sm font-bold text-gray-900">{t("Total")}</span>

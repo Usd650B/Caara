@@ -57,7 +57,7 @@ export default function AnalyticsTab() {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
             {[
               { label: 'Visitors', value: totals.visitors, icon: Eye, color: 'bg-blue-50 text-blue-600' },
-              { label: 'Product Views', value: totals.productViews, icon: Target, color: 'bg-purple-50 text-purple-600' },
+              { label: 'Product Views', value: totals.productViews, icon: Target, color: 'bg-teal-50 text-teal-600' },
               { label: 'Added to Cart', value: totals.addedToCart, icon: ShoppingCart, color: 'bg-amber-50 text-amber-600' },
               { label: 'Orders', value: totals.completedOrders, icon: TrendingUp, color: 'bg-emerald-50 text-emerald-600' },
               { label: 'Signups', value: totals.signups, icon: Users, color: 'bg-rose-50 text-rose-600' },

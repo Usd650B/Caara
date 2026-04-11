@@ -140,7 +140,7 @@ export function AuthModal({
       />
       
       {/* Modal Content */}
-      <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 fade-in duration-300">
+      <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 fade-in duration-300 border border-white/50">
         
         {/* Close Button */}
         <button 
@@ -152,24 +152,24 @@ export function AuthModal({
 
         <div className="flex flex-col md:flex-row h-full">
           {/* Left Side - Visual/Marketing (Hidden on mobile small) */}
-          <div className="hidden md:flex w-2/5 bg-black relative flex-col justify-end p-8 text-white overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-pink-500/20 rounded-full -mr-20 -mt-20 blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-500/10 rounded-full -ml-20 -mb-20 blur-3xl" />
+          <div className="hidden md:flex w-2/5 relative flex-col justify-end p-8 overflow-hidden bg-[var(--brand-primary)]">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full -mr-20 -mt-20 blur-3xl opacity-50 bg-[var(--brand-accent)]" />
             
             <div className="relative z-10 space-y-4">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 mb-2">
-                <Star className="h-6 w-6 text-pink-400 fill-pink-400" />
+              <div className="w-14 h-14 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-4">
+                <Star className="h-7 w-7 text-[var(--brand-accent)] fill-[var(--brand-accent)]" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-pink-400">Exclusive Access</p>
-              <h3 className="text-2xl font-bold leading-tight">Join SheDoo Elite</h3>
-              <ul className="space-y-3 pt-2">
+              <p className="text-xs font-black uppercase tracking-widest text-[#FFFBEB]">VIP Access</p>
+              <h3 className="text-3xl font-black leading-tight text-white">Join SheDoo<br/>Family</h3>
+              <ul className="space-y-3 pt-4">
                 {[
-                  { icon: Zap, text: "Early drop access" },
-                  { icon: ShieldCheck, text: "Premium warranty" },
-                  { icon: CheckCircle2, text: "Personal concierge" }
+                  { icon: Zap, text: "Early access drops" },
+                  { icon: ShieldCheck, text: "Lifetime warranty" },
+                  { icon: CheckCircle2, text: "VIP support" }
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-white/70">
-                    <item.icon className="h-4 w-4 text-pink-500" />
+                  <li key={i} className="flex items-center gap-3 text-sm text-white font-bold">
+                    <item.icon className="h-5 w-5 text-[var(--brand-accent)]" />
                     <span>{item.text}</span>
                   </li>
                 ))}
@@ -178,7 +178,7 @@ export function AuthModal({
           </div>
 
           {/* Right Side - Forms */}
-          <div className="flex-1 p-8 md:p-10">
+          <div className="w-full md:w-3/5 p-8 sm:p-10 flex flex-col justify-center bg-white">
             {success ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-10">
                 <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-2 animate-bounce-slow">

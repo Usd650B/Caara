@@ -211,6 +211,14 @@ const createOrUpdateUser = async (email: string, additionalData?: { name?: strin
     } catch (e) {
       console.error('Failed to log signup analytics', e);
     }
+    
+    // Grant 10% signup bonus
+    try {
+      const { grantSignupBonus } = await import('./bonus');
+      grantSignupBonus();
+    } catch (e) {
+      console.error('Failed to grant signup bonus', e);
+    }
   } else {
     await updateDoc(userRef, {
       lastLoginAt: serverTimestamp(),

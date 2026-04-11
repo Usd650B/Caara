@@ -61,7 +61,7 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, accent }: any) 
   const accentConfig: Record<string, { bg: string; text: string; iconBg: string }> = {
     blue:    { bg: 'bg-blue-50',    text: 'text-blue-600',    iconBg: 'bg-blue-100'   },
     green:   { bg: 'bg-emerald-50', text: 'text-emerald-600', iconBg: 'bg-emerald-100' },
-    purple:  { bg: 'bg-purple-50',  text: 'text-purple-600',  iconBg: 'bg-purple-100'  },
+    teal:    { bg: 'bg-teal-50',    text: 'text-teal-600',    iconBg: 'bg-teal-100'   },
     amber:   { bg: 'bg-amber-50',   text: 'text-amber-600',   iconBg: 'bg-amber-100'   },
     rose:    { bg: 'bg-rose-50',    text: 'text-rose-600',    iconBg: 'bg-rose-100'    },
     teal:    { bg: 'bg-teal-50',    text: 'text-teal-600',    iconBg: 'bg-teal-100'    },
@@ -440,7 +440,7 @@ const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], r
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <StatCard title="Total Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="12.5" accent="blue" />
       <StatCard title="Orders" value={stats.totalOrders} icon={ShoppingCart} trend="up" trendValue="8.2" accent="green" />
-      <StatCard title="Products" value={stats.totalProducts} icon={Package} accent="purple" />
+      <StatCard title="Products" value={stats.totalProducts} icon={Package} accent="teal" />
       <StatCard title="Customers" value={stats.totalCustomers} icon={Users} trend="up" trendValue="24.8" accent="amber" />
     </div>
 
@@ -477,7 +477,7 @@ const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], r
               const statusColors: Record<string, string> = {
                 pending:    'bg-amber-50 text-amber-600',
                 processing: 'bg-blue-50 text-blue-600',
-                shipped:    'bg-purple-50 text-purple-600',
+                shipped:    'bg-teal-50 text-teal-600',
                 delivered:  'bg-emerald-50 text-emerald-600',
                 cancelled:  'bg-rose-50 text-rose-600',
               };

@@ -147,8 +147,8 @@ export default function PromosTab() {
             return (
               <div key={promo.id} className={`px-6 py-4 flex items-center justify-between ${!promo.active || isExpired ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${promo.type === 'percent' ? 'bg-purple-50' : 'bg-blue-50'}`}>
-                    <Percent className={`h-4 w-4 ${promo.type === 'percent' ? 'text-purple-600' : 'text-blue-600'}`} />
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${promo.type === 'percent' ? 'bg-teal-50' : 'bg-blue-50'}`}>
+                    <Percent className={`h-4 w-4 ${promo.type === 'percent' ? 'text-teal-600' : 'text-blue-600'}`} />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-neutral-900">{promo.name}</p>

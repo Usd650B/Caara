@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle } from "lucide-react";
+import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, getOrders, getPromos, Product, Order, Promo } from "@/lib/firestore";
@@ -471,13 +471,41 @@ export default function ProductDetailPage() {
                     return;
                   }
                   addToCart();
-                  router.push('/checkout');
+                  router.push('/cart'); // Route to cart so they see the 15% referral prompt
                 }}
                 className="flex-1 h-10 text-xs font-semibold rounded-lg bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
               >
                 Buy Now
               </Button>
             </div>
+
+            {/* Added to cart success notice with Bonus prompt */}
+            {isAdded && (
+              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 shadow-sm">
+                <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-bold text-emerald-800">Added to your bag!</p>
+                  <p className="text-xs text-emerald-600 mt-1">
+                    <strong>Want 15% off?</strong> Buy with others to get your bonus!
+                  </p>
+                  <div className="mt-2.5 flex items-center gap-3">
+                    <Link href="/cart">
+                      <Button size="sm" className="h-8 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] uppercase font-bold tracking-wider">
+                        Invite Friends
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Static tip for both buttons */}
+            {!isAdded && (
+               <p className="text-[10px] text-gray-500 mt-3 font-medium flex items-center gap-1.5 p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+                 <Users className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                 Tip: Buy with others to get a 15% bonus on your order!
+               </p>
+            )}
 
             {/* Trust badges */}
             <div className="grid grid-cols-2 gap-3 pt-2">

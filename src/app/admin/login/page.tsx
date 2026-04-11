@@ -37,10 +37,10 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, var(--brand-primary-50), var(--brand-accent-50))' }}>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto h-12 w-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto h-12 w-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-accent))' }}>
             <Lock className="h-6 w-6 text-white" />
           </div>
           <CardTitle className="text-2xl">CARA Admin</CardTitle>
@@ -95,7 +95,8 @@ export default function AdminLoginPage() {
 
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700"
+              className="w-full"
+              style={{ background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-accent))' }}
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
