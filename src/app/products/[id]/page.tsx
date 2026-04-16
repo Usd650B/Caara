@@ -13,6 +13,8 @@ import { ProductCard } from "@/components/ui/product-card";
 import { getPromoPrice } from "@/lib/promo-utils";
 import { isCustomerAuthenticated } from "@/lib/customer-auth";
 import { openAuthModal } from "@/components/ui/global-auth-modal";
+import { COLOR_MAP } from "@/lib/colors";
+
 
 export default function ProductDetailPage() {
   const { formatPrice, t } = useSettings();
@@ -385,24 +387,46 @@ export default function ProductDetailPage() {
 
             {/* Color */}
             {product.colors && product.colors.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-700">
-                  Color: <span className="font-normal text-gray-500">{selectedColor}</span>
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.colors.map(color => (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      className={`px-3 py-1.5 text-xs border rounded transition-all ${
-                        selectedColor === color
-                          ? 'border-black bg-black text-white'
-                          : 'border-gray-300 text-gray-700 hover:border-gray-500'
-                      }`}
-                    >
-                      {t(color)}
-                    </button>
-                  ))}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-[11px] font-bold text-gray-900 uppercase tracking-widest">
+                    Color: <span className="text-gray-400 font-medium ml-1">{selectedColor}</span>
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {product.colors.map(color => {
+                    const hex = COLOR_MAP[color.toLowerCase()] || '#cbd5e1';
+                    const isWhite = color.toLowerCase() === 'white' || color.toLowerCase() === 'cream';
+                    
+                    return (
+                      <button
+                        key={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={`group relative flex items-center justify-center transition-all duration-300 ${
+                          selectedColor === color ? 'scale-110' : 'hover:scale-105'
+                        }`}
+                        title={color}
+                      >
+                        <div 
+                          className={`w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-sm flex items-center justify-center ${
+                            selectedColor === color 
+                              ? 'border-gray-900 scale-100' 
+                              : 'border-transparent group-hover:border-gray-200'
+                          }`}
+                        >
+                          <div 
+                            className={`w-8 h-8 rounded-full border border-black/5 transition-transform ${
+                              isWhite ? 'border-gray-200' : ''
+                            }`}
+                            style={{ backgroundColor: hex }}
+                          />
+                        </div>
+                        {selectedColor === color && (
+                          <div className="absolute -bottom-1 w-1 h-1 bg-gray-900 rounded-full" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

@@ -25,9 +25,6 @@ export function ProductCard({
   const { formatPrice, t } = useSettings();
   const router = useRouter();
 
-  const colorCount = product.colors?.length || 0;
-  const optionsCount = (product.colors?.length || 0) + (product.sizes?.length || 0);
-
   const isCompact = variant === 'compact';
   
   const generateSlug = (name: string, id: string) => {
@@ -126,14 +123,6 @@ export function ProductCard({
           </button>
         )}
 
-        {/* Quick View / Color count pill */}
-        {colorCount > 1 && !isCompact && (
-          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-between items-end z-10 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-400">
-            <div className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] font-bold text-gray-800 shadow-lg">
-              +{colorCount} Colors
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Product Info */}
@@ -192,8 +181,8 @@ export function ProductCard({
         </div>
 
         {/* Rating & Options */}
-        <div className={`flex items-center justify-between mt-auto ${isCompact ? 'pt-1' : 'pt-1.5'}`}>
-          <div className="flex items-center gap-1.5">
+        <div className={`flex items-center mt-auto ${isCompact ? 'pt-1' : 'pt-1.5'}`}>
+          <div className="flex items-center gap-1.5 flex-wrap">
             <div className="flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => {
                 const rating = product.rating && Number(product.rating) > 0 
@@ -215,12 +204,6 @@ export function ProductCard({
                 : (product.id ? Math.floor(18 + (product.id.charCodeAt(0) % 25)) : 24)})
             </span>
           </div>
-          
-          {optionsCount > 1 && !isCompact && (
-            <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold whitespace-nowrap bg-gray-100 px-2 py-1 rounded-full">
-              {optionsCount} COLORS
-            </span>
-          )}
         </div>
       </div>
     </Link>
