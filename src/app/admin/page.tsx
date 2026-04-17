@@ -47,7 +47,7 @@ const tabs = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   { id: 'products', label: 'Products', icon: Box },
-  { id: 'orders', label: 'Fulfillment', icon: ClipboardList },
+  { id: 'orders', label: 'Orders', icon: ClipboardList },
   { id: 'messages', label: 'Messages', icon: MessageCircle },
   { id: 'stock', label: 'Inventory', icon: AlertTriangle },
   { id: 'promos', label: 'Promos', icon: Percent },
@@ -635,7 +635,7 @@ const ProductsContent = ({
         />
       </div>
       <div className="flex items-center space-x-3 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
-        <span>Total Assets: {products.length}</span>
+        <span>{products.length} products</span>
       </div>
     </div>
     
@@ -644,10 +644,10 @@ const ProductsContent = ({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-neutral-50/50 border-b border-neutral-100">
-              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Asset Node</th>
-              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Classification</th>
-              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Value (USD)</th>
-              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Stock Protocol</th>
+              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Product</th>
+              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Category</th>
+              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Price</th>
+              <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Stock</th>
               <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400 text-right">Actions</th>
             </tr>
           </thead>
@@ -699,7 +699,7 @@ const ProductsContent = ({
           <div className="py-24 text-center">
             <Package className="h-12 w-12 text-neutral-200 mx-auto mb-4" />
             <p className="text-neutral-500 text-[13px] font-medium tracking-wide">
-              No inventory assets found matching the query.
+              No products found matching your search.
             </p>
           </div>
         )}
@@ -720,9 +720,9 @@ const OrdersContent = ({ orders, handleDeleteOrder, handleProcessOrder }: Orders
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border border-neutral-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
       <div>
         <h2 className="text-2xl font-bold tracking-tight text-neutral-900 capitalize" style={{ fontFamily: 'var(--font-playfair)' }}>
-          Fulfillment Registry
+          Orders
         </h2>
-        <p className="text-neutral-500 text-[11px] font-semibold uppercase tracking-wider mt-1">Active Logistics Threads: {orders.length}</p>
+        <p className="text-neutral-500 text-[11px] font-semibold uppercase tracking-wider mt-1">{orders.length} total orders</p>
       </div>
     </div>
 
@@ -756,7 +756,7 @@ const OrdersContent = ({ orders, handleDeleteOrder, handleProcessOrder }: Orders
                 </td>
                 <td className="px-8 py-6">
                   <p className="font-bold text-[14px] text-neutral-900 tracking-wide">${order.total}</p>
-                  <p className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-1">Paid via Protocol</p>
+                  <p className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-1">Payment received</p>
                 </td>
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-2">
@@ -1049,7 +1049,7 @@ const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps)
                <Lock className="h-5 w-5 text-white" />
              </div>
              <div className="relative z-10">
-               <h3 className="text-xl font-bold tracking-tight mb-2" style={{ fontFamily: 'var(--font-playfair)' }}>Emergency Lockdown</h3>
+               <h3 className="text-xl font-bold tracking-tight mb-2" style={{ fontFamily: 'var(--font-playfair)' }}>Security Settings</h3>
                <p className="text-white/60 text-[11px] leading-relaxed font-medium">Instantly freeze all administrative actions and force session logouts across all devices in case of a suspected breach.</p>
              </div>
              <Button className="relative z-10 w-full bg-rose-600 hover:bg-rose-700 text-white h-12 rounded-xl font-bold text-[11px] tracking-wide shadow-lg transition-transform hover:-translate-y-0.5">
@@ -1066,7 +1066,7 @@ const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps)
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-3xl border border-neutral-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-neutral-900" style={{ fontFamily: 'var(--font-playfair)' }}>
-            User Authority
+            Admin Profile
           </h2>
           <p className="text-neutral-500 text-[11px] font-medium tracking-wide mt-2">Manage your administrative identity and profile settings.</p>
         </div>
@@ -1090,7 +1090,7 @@ const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps)
               <div className="space-y-1.5">
                 <div className="flex items-center gap-3">
                   <h3 className="text-2xl font-bold tracking-tight text-neutral-900">Administrator</h3>
-                  <div className="px-2.5 py-1 bg-black text-white rounded-md text-[9px] font-bold tracking-wider uppercase">Root Access</div>
+                  <div className="px-2.5 py-1 bg-black text-white rounded-md text-[9px] font-bold tracking-wider uppercase">Owner</div>
                 </div>
                 <p className="text-neutral-500 font-medium text-[11px]">System Role: Owner / Developer</p>
               </div>
@@ -1106,8 +1106,8 @@ const ProcessOrderModal = ({ order, onClose, onUpdate }: ProcessOrderModalProps)
                 <Input defaultValue="admin@shedoo.com" className="h-12 bg-neutral-50 border-neutral-200 rounded-xl font-medium focus:bg-white focus:border-black transition-all" />
               </div>
               <div className="space-y-3">
-                <Label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Clearance Level</Label>
-                <Input disabled defaultValue="Maximum Authority" className="h-12 bg-neutral-100 border-transparent rounded-xl font-medium text-neutral-500 pointer-events-none" />
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Access Level</Label>
+                <Input disabled defaultValue="Full Access" className="h-12 bg-neutral-100 border-transparent rounded-xl font-medium text-neutral-500 pointer-events-none" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Password</Label>
@@ -1275,7 +1275,7 @@ export default function AdminPage() {
               <Crown className="h-4 w-4 text-yellow-400" />
             </div>
             <div>
-              <span className="text-base font-extrabold text-black tracking-tight">Caara</span>
+              <span className="text-base font-extrabold text-black tracking-tight">SheDoo</span>
               <p className="text-[10px] text-neutral-400 font-medium leading-none mt-0.5">Admin Portal</p>
             </div>
           </div>
@@ -1358,7 +1358,7 @@ export default function AdminPage() {
             <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
                  <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400 mb-1">
-                   Caara Admin / {currentTabTitle}
+                   SheDoo Admin / {currentTabTitle}
                  </p>
                  <h1 className="text-2xl font-bold text-neutral-900">
                    {currentTabTitle}
