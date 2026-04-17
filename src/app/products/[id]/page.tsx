@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle, Users } from "lucide-react";
+import { Minus, Plus, ArrowLeft, Truck, Shield, Star, Heart, Play, ShoppingBag, CheckCircle, Users, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getProducts, getOrders, getPromos, Product, Order, Promo } from "@/lib/firestore";
@@ -284,22 +284,25 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {[1,2,3,4,5].map(s => {
-                  const displayRating = averageRating > 0 ? averageRating : (product.id ? 4.7 + (product.id.charCodeAt(0) % 3) * 0.1 : 4.8);
-                  return (
-                    <Star key={s} className={`h-3.5 w-3.5 ${s <= displayRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
-                  );
-                })}
+            {productReviews.length > 0 ? (
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`h-3.5 w-3.5 ${s <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
+                  ))}
+                </div>
+                <span className="text-xs font-semibold text-gray-900">
+                  {averageRating.toFixed(1)}
+                </span>
+                <a href="#reviews" className="text-[11px] font-bold text-blue-500 hover:text-blue-600 transition-colors uppercase tracking-tight">
+                  ({productReviews.length} review{productReviews.length !== 1 ? 's' : ''})
+                </a>
               </div>
-              <span className="text-xs font-semibold text-gray-900">
-                {averageRating > 0 ? averageRating.toFixed(1) : (product.id ? (4.7 + (product.id.charCodeAt(0) % 3) * 0.1).toFixed(1) : '4.8')}
-              </span>
-              <a href="#reviews" className="text-[11px] font-bold text-blue-500 hover:text-blue-600 transition-colors uppercase tracking-tight">
-                ({productReviews.length > 0 ? productReviews.length : (product.reviews && product.reviews > 0 ? product.reviews : (product.id ? Math.floor(18 + (product.id.charCodeAt(0) % 25)) : 24))} reviews)
+            ) : (
+              <a href="#reviews" className="text-[11px] font-medium text-gray-400 hover:text-gray-600 transition-colors">
+                No reviews yet — be the first!
               </a>
-            </div>
+            )}
 
             {/* Divider */}
             <hr className="border-gray-100" />
@@ -351,33 +354,35 @@ export default function ProductDetailPage() {
             </p>
 
             {/* Delivery Region Selection */}
-            <div className="space-y-2 pt-2 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-700">
+            <div className="space-y-2.5 pt-3 border-t border-gray-100">
+              <p className="text-[11px] font-bold text-gray-900 uppercase tracking-widest">
                 Delivery Region
               </p>
-              <select 
-                value={selectedRegion}
-                onChange={(e) => {
-                   setSelectedRegion(e.target.value);
-                   // Persist globally for the checkout session
-                   localStorage.setItem('deliveryRegion', e.target.value);
-                }}
-                className="w-full bg-white border border-gray-200 rounded p-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-              >
-                <option value="Dar es salaam">Dar es salaam — Free Shipping</option>
-                <optgroup label="Regions / Mikoani (10,000 TZS)">
-                  <option value="Arusha">Arusha</option>
-                  <option value="Kilimanjaro">Kilimanjaro</option>
-                  <option value="Mwanza">Mwanza</option>
-                  <option value="Tanga">Tanga</option>
-                  <option value="Dodoma">Dodoma</option>
-                  <option value="Morogoro">Morogoro</option>
-                </optgroup>
-              </select>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <select 
+                  value={selectedRegion}
+                  onChange={(e) => {
+                     setSelectedRegion(e.target.value);
+                     localStorage.setItem('deliveryRegion', e.target.value);
+                  }}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2.5 text-sm font-medium appearance-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white outline-none transition-all cursor-pointer hover:bg-gray-100"
+                >
+                  <option value="Dar es salaam">Dar es salaam — Free Shipping</option>
+                  <optgroup label="Regions / Mikoani (10,000 TZS)">
+                    <option value="Arusha">Arusha</option>
+                    <option value="Kilimanjaro">Kilimanjaro</option>
+                    <option value="Mwanza">Mwanza</option>
+                    <option value="Tanga">Tanga</option>
+                    <option value="Dodoma">Dodoma</option>
+                    <option value="Morogoro">Morogoro</option>
+                  </optgroup>
+                </select>
+              </div>
               
-              <div className="flex items-center gap-2 mt-2">
-                <Truck className="h-4 w-4 text-gray-500" />
-                <span className="text-xs font-medium text-gray-700">
+              <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
+                <Truck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                <span className="text-xs font-medium text-emerald-700">
                   {selectedRegion === "Dar es salaam" 
                     ? "Free doorstep delivery in Dar es salaam" 
                     : `Estimated shipping to ${selectedRegion}: ${formatPrice(3.81)}`}
@@ -564,22 +569,23 @@ export default function ProductDetailPage() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="text-xl font-bold text-gray-900">Customer Reviews</h2>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex">
-                  {[1,2,3,4,5].map(s => {
-                    const displayRating = averageRating > 0 ? averageRating : (product.id ? 4.7 + (product.id.charCodeAt(0) % 3) * 0.1 : 4.8);
-                    return (
-                      <Star key={s} className={`h-5 w-5 ${s <= displayRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
-                    );
-                  })}
+              {productReviews.length > 0 ? (
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex">
+                    {[1,2,3,4,5].map(s => (
+                      <Star key={s} className={`h-5 w-5 ${s <= averageRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200 fill-gray-200'}`} />
+                    ))}
+                  </div>
+                  <span className="text-lg font-bold text-gray-900">
+                    {averageRating.toFixed(1)} out of 5
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    Based on {productReviews.length} rating{productReviews.length !== 1 ? 's' : ''}
+                  </span>
                 </div>
-                <span className="text-lg font-bold text-gray-900">
-                  {averageRating > 0 ? averageRating.toFixed(1) : (product.id ? (4.7 + (product.id.charCodeAt(0) % 3) * 0.1).toFixed(1) : '4.8')} out of 5
-                </span>
-                <span className="text-sm text-gray-500">
-                  Based on {productReviews.length > 0 ? productReviews.length : (product.reviews && product.reviews > 0 ? product.reviews : (product.id ? Math.floor(18 + (product.id.charCodeAt(0) % 25)) : 24))} ratings
-                </span>
-              </div>
+              ) : (
+                <p className="text-sm text-gray-400 mt-2">No ratings yet</p>
+              )}
             </div>
           </div>
 

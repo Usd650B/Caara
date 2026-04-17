@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight, Crown, Globe } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, User, LogOut, Package, Mail, Phone, ArrowRight, Globe } from "lucide-react";
 import { getCurrentUser, signOutCustomer } from "@/lib/customer-auth";
 import { useSettings } from "@/lib/settings";
 import { openAuthModal } from "@/components/ui/global-auth-modal";

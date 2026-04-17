@@ -102,7 +102,7 @@ export default function ProductsPage() {
 
 
       {/* 🔎 Search & Filter Bar */}
-      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+      <div className="sticky top-[72px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
         <div className="max-w-screen-xl mx-auto px-5 sm:px-8 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             {/* Search */}
@@ -126,7 +126,7 @@ export default function ProductsPage() {
               {/* Filters toggle */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 text-sm border-2 px-5 h-12 rounded-full font-bold transition-all duration-300 ${
+                className={`flex items-center gap-2 text-sm border-2 px-5 h-11 rounded-xl font-bold transition-all duration-300 ${
                   showFilters || hasActiveFilters
                     ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white shadow-md'
                     : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'

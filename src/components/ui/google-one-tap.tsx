@@ -82,7 +82,7 @@ export function GoogleOneTapPrompt() {
 
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900 text-[15px] leading-tight mb-1">
-              Sign in to Caara
+              Sign in to SheDoo
             </h3>
             <p className="text-[13px] text-gray-500 leading-snug mb-4">
               Use your Google account to track orders and save favorites.
