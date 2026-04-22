@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Outfit, Playfair_Display } from "next/font/google";
+import { Outfit, Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
@@ -77,7 +78,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon.png" />
       </head>
       <body
-        className={`${outfit.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
+        className={`${outfit.variable} ${inter.variable} ${playfair.variable} antialiased min-h-screen flex flex-col font-sans`}
         suppressHydrationWarning
       >
         <SettingsProvider>
