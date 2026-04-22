@@ -219,16 +219,16 @@ export const getOrder = async (id: string): Promise<Order | null> => {
   if (!db) return null;
   
   try {
-    const docSnap = await getDocs(query(collection(db, ORDERS_COLLECTION), where('__name__', '==', id)));
+    const { getDoc, doc } = await import('firebase/firestore');
+    const docSnap = await getDoc(doc(db, ORDERS_COLLECTION, id));
     
-    if (docSnap.empty) {
+    if (!docSnap.exists()) {
       return null;
     }
     
-    const orderDoc = docSnap.docs[0];
     return {
-      id: orderDoc.id,
-      ...orderDoc.data()
+      id: docSnap.id,
+      ...docSnap.data()
     } as Order;
   } catch (error) {
     console.error('Error getting order:', error);

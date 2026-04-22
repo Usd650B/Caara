@@ -10,6 +10,7 @@ import { getProducts, getPromos, Product, Promo } from "@/lib/firestore";
 import { trackVisitor } from "@/lib/analytics";
 import { useSettings } from "@/lib/settings";
 import { ProductCard } from "@/components/ui/product-card";
+import { ReferralInvite } from "@/components/ui/referral-invite";
 import { getPromoPrice } from "@/lib/promo-utils";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
 
@@ -75,12 +76,12 @@ export default function Home() {
         
         <div className="section-container relative z-10">
           <div className="max-w-xl animate-fade-up">
-            <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 mb-6">
+            <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-brand-secondary mb-6">
               <Sparkles size={12} /> New Collection 2026
             </span>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
               Elegant Bags <br /> 
-              <span className="font-light italic">For Every Woman</span>
+              <span className="luxury-italic font-medium">For Every Woman</span>
             </h1>
             <p className="text-lg text-zinc-900 mb-10 max-w-md leading-relaxed font-medium">
               Affordable. Stylish. Delivered to your door. Experience minimal luxury designed for your daily life.
@@ -199,6 +200,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <ReferralInvite />
     </div>
   );
 }

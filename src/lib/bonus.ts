@@ -73,6 +73,35 @@ export function markReferralBonusUsed() {
   }
 }
 
+/**
+ * Sync referral status from Firestore to localStorage
+ * This ensures that if the user is an inviter, they get their 15% bonus.
+ */
+export async function syncReferralBonus(email: string, name: string) {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    const { getOrCreateReferral } = await import('./referral');
+    const referral = await getOrCreateReferral(email, name);
+    
+    if (referral && referral.invitees.length > 0) {
+      // User has invited someone, give them the inviter bonus
+      const existing = getReferralBonus();
+      if (!existing || (!existing.used && existing.percent < 15)) {
+        localStorage.setItem(REFERRAL_BONUS_KEY, JSON.stringify({
+          code: referral.referralCode,
+          referrerName: "System (Inviter Bonus)",
+          percent: 15,
+          applied: new Date().toISOString(),
+          used: existing?.used || false,
+        }));
+      }
+    }
+  } catch (error) {
+    console.error('Failed to sync referral bonus:', error);
+  }
+}
+
 // ─── Invite Prompt ───
 
 export function shouldShowInvitePrompt(): boolean {

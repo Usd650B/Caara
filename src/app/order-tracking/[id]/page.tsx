@@ -7,10 +7,10 @@ import {
   ArrowLeft, Package, Truck, CheckCircle, Clock, 
   MapPin, Download, ShoppingBag, Activity, 
   ShieldCheck, Mail, Phone, Send,
-  AlertTriangle, Star, Check, MessageCircle, X, ArrowRight
+  AlertTriangle, Star, Check, MessageCircle, X, ArrowRight, Sparkles
 } from "lucide-react";
 import Link from "next/link";
-import { getOrders, Order, OrderMessage, updateOrder, addNotification } from "@/lib/firestore";
+import { getOrder, updateOrder, addNotification, Order, OrderMessage } from "@/lib/firestore";
 import { downloadReceipt, generateReceiptNumber, ReceiptData } from "@/lib/receipt";
 import { useSettings } from "@/lib/settings";
 
@@ -62,8 +62,7 @@ export default function OrderTrackingPage() {
   const loadOrder = async (orderId: string) => {
     setIsLoading(true);
     try {
-      const orders = await getOrders();
-      const foundOrder = orders.find(o => o.id === orderId);
+      const foundOrder = await getOrder(orderId);
       setOrder(foundOrder || null);
       if (foundOrder) saveOrderToHistory(foundOrder);
       
@@ -229,54 +228,70 @@ export default function OrderTrackingPage() {
   const orderDate = order.createdAt ? new Date((order.createdAt as any).seconds * 1000) : new Date();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Simple header */}
-      <div className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/track" className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
-              <ArrowLeft className="h-4 w-4" />
+    <div className="min-h-screen bg-brand-muted/30 pb-20">
+      {/* Premium Header */}
+      <div className="bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-6 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/track" className="p-3 hover:bg-zinc-50 rounded-2xl transition-all border border-transparent hover:border-zinc-100 group">
+              <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
             </Link>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Order</p>
-              <h1 className="text-sm font-bold text-gray-900">#{order.id?.slice(-8).toUpperCase()}</h1>
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 font-outfit mb-1">Acquisition Details</p>
+              <h1 className="text-xl font-bold text-black tracking-tight flex items-center gap-2">
+                Order <span className="text-brand-accent">#{order.id?.slice(-8).toUpperCase()}</span>
+              </h1>
             </div>
           </div>
-          <button onClick={handleDownloadReceipt} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1.5 transition-colors">
-            <Download className="h-3.5 w-3.5" /> Receipt
+          <button onClick={handleDownloadReceipt} className="btn btn-ghost h-12 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 border border-zinc-100 hover:border-black transition-all">
+            <Download className="h-3.5 w-3.5" /> Export Receipt
           </button>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+      <div className="max-w-5xl mx-auto px-6 py-12 space-y-8 animate-fade-up">
         
-        {/* Status Timeline */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${order.status === 'cancelled' ? 'bg-red-500' : 'bg-green-500 animate-pulse'}`} />
-              <span className="text-xs font-semibold text-gray-900 capitalize">{order.status}</span>
+        {/* Status Master Card */}
+        <div className="bg-white rounded-[40px] border border-zinc-100 p-10 shadow-soft relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-secondary/5 rounded-full blur-3xl -mr-48 -mt-48 transition-transform group-hover:scale-110" />
+          
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-6 relative z-10">
+            <div>
+               <h2 className="text-3xl font-bold tracking-tight mb-2">Track your <span className="luxury-italic">Journey</span></h2>
+               <div className="flex items-center gap-3">
+                 <div className={`w-2 h-2 rounded-full ${order.status === 'cancelled' ? 'bg-red-500' : 'bg-brand-accent animate-pulse'}`} />
+                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">{order.status}</span>
+                 <span className="text-zinc-200">|</span>
+                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Initialized {orderDate.toLocaleDateString()}</span>
+               </div>
             </div>
-            <span className="text-[10px] text-gray-400">{orderDate.toLocaleDateString()}</span>
+            {order.status === 'cancelled' && (
+              <div className="px-6 py-3 bg-red-50 text-red-600 rounded-2xl border border-red-100 flex items-center gap-3">
+                <AlertTriangle size={18} />
+                <span className="text-xs font-bold uppercase tracking-widest">Order Cancelled</span>
+              </div>
+            )}
           </div>
 
-          {/* Horizontal stepper */}
-          <div className="flex items-center gap-0">
+          {/* Luxury Stepper */}
+          <div className="flex items-center gap-0 relative z-10 px-4">
             {steps.map((step, i) => {
               const isCompleted = i <= activeIndex;
               const isActive = i === activeIndex;
               return (
                 <div key={step.key} className="flex items-center flex-1 last:flex-none">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all text-xs font-bold ${
-                      isCompleted ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-300'
-                    } ${isActive ? 'ring-4 ring-green-100' : ''}`}>
-                      {isCompleted ? <Check className="h-4 w-4" /> : <step.icon className="h-4 w-4" />}
+                  <div className="flex flex-col items-center group/step">
+                    <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-700 ${
+                      isCompleted ? 'bg-black text-white' : 'bg-zinc-50 text-zinc-200'
+                    } ${isActive ? 'ring-4 ring-brand-accent/20 scale-110 shadow-lg' : ''}`}>
+                      {isCompleted ? <Check className="h-6 w-6" /> : <step.icon className="h-6 w-6" strokeWidth={1.5} />}
                     </div>
-                    <span className={`text-[10px] mt-1.5 font-semibold ${isCompleted ? 'text-gray-900' : 'text-gray-400'}`}>{step.label}</span>
+                    <span className={`text-[9px] mt-4 font-bold uppercase tracking-[0.2em] transition-colors ${isCompleted ? 'text-black' : 'text-zinc-300'}`}>{step.label}</span>
                   </div>
                   {i < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-1 rounded-full ${i < activeIndex ? 'bg-green-500' : 'bg-gray-100'}`} />
+                    <div className="flex-1 px-4">
+                       <div className={`h-[2px] rounded-full transition-all duration-1000 ${i < activeIndex ? 'bg-black' : 'bg-zinc-100'}`} />
+                    </div>
                   )}
                 </div>
               );
@@ -284,122 +299,143 @@ export default function OrderTrackingPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Left Column — Order info */}
-          <div className="lg:col-span-7 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column — Detailed Intelligence */}
+          <div className="lg:col-span-7 space-y-8">
             
-            {/* Items */}
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-              <div className="px-5 py-3 border-b border-gray-50">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">Items ({order.items.length})</h2>
+            {/* Manifest */}
+            <div className="bg-white rounded-[32px] border border-zinc-100 overflow-hidden shadow-sm">
+              <div className="px-8 py-6 border-b border-zinc-50 flex items-center justify-between bg-zinc-50/50">
+                <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Order Manifest</h2>
+                <span className="px-4 py-1.5 rounded-full bg-white text-[9px] font-bold uppercase tracking-widest border border-zinc-100">{order.items.length} Units</span>
               </div>
-              <div className="divide-y divide-gray-50">
+              <div className="divide-y divide-zinc-50">
                 {order.items.map((item, i) => (
-                  <div key={i} className="px-5 py-3 flex items-center gap-4">
-                    <div className="w-12 h-14 bg-gray-50 rounded-lg overflow-hidden shrink-0">
+                  <div key={i} className="px-8 py-5 flex items-center gap-6 group hover:bg-zinc-50/50 transition-colors">
+                    <div className="w-16 h-20 bg-zinc-50 rounded-2xl overflow-hidden shrink-0 shadow-sm transition-transform group-hover:scale-105 duration-500">
                       <img src={productImages[item.productId] || item.image || ""} className="w-full h-full object-cover" alt="" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-xs font-semibold text-gray-900 truncate">{item.name}</h3>
-                      <p className="text-[10px] text-gray-400 mt-0.5">
-                        {item.size && `${item.size}`}{item.color && ` · ${item.color}`} · Qty {item.quantity}
-                      </p>
+                      <h3 className="text-sm font-bold text-black tracking-tight mb-1">{item.name}</h3>
+                      <div className="flex items-center gap-3">
+                         <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">{item.color}</span>
+                         <span className="w-1 h-1 rounded-full bg-zinc-200" />
+                         <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Size {item.size}</span>
+                         <span className="w-1 h-1 rounded-full bg-zinc-200" />
+                         <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Qty {item.quantity}</span>
+                      </div>
                     </div>
-                    <span className="text-xs font-bold text-gray-900">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="text-sm font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
-              {/* Summary row */}
-              <div className="px-5 py-3 bg-gray-50 flex justify-between">
-                <span className="text-xs text-gray-500">Total</span>
-                <span className="text-sm font-bold text-gray-900">{formatPrice(order.total)}</span>
+              <div className="px-8 py-6 bg-zinc-900 text-white flex justify-between items-center">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Total Valuation</span>
+                <span className="text-xl font-bold tracking-tight">{formatPrice(order.total)}</span>
               </div>
             </div>
 
-            {/* Shipping Address */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Delivery To</h2>
-              <div className="flex items-start gap-3">
-                <MapPin className="h-4 w-4 text-gray-300 mt-0.5 shrink-0" />
+            {/* Destination */}
+            <div className="bg-white rounded-[32px] border border-zinc-100 p-8 shadow-sm group">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-6">Delivery Destination</h2>
+              <div className="flex items-start gap-6">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-100 group-hover:bg-black group-hover:text-white transition-all duration-500">
+                   <MapPin className="h-5 w-5" />
+                </div>
                 <div className="text-sm">
-                  <p className="font-semibold text-gray-900">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">{order.shippingAddress.address}</p>
-                  <p className="text-gray-500 text-xs">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</p>
-                  <p className="text-gray-500 text-xs mt-1">📞 {order.shippingAddress.phone}</p>
+                  <p className="font-bold text-black text-lg mb-2">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
+                  <p className="text-zinc-500 font-medium leading-relaxed mb-4">{order.shippingAddress.address}, {order.shippingAddress.city}<br />{order.shippingAddress.state} {order.shippingAddress.zipCode}</p>
+                  <div className="flex items-center gap-4">
+                     <a href={`tel:${order.shippingAddress.phone}`} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-secondary hover:text-brand-accent transition-colors">
+                        <Phone size={12} /> {order.shippingAddress.phone}
+                     </a>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Confirm Receipt */}
+            {/* Post-Acquisition Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {order.isReceivedConfirmed ? (
-                <div className="bg-green-50 border border-green-100 rounded-xl p-3 flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-[11px] font-semibold text-green-700">Delivered</span>
+                <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-6 flex flex-col gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5" />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-1">Delivered</p>
+                     <p className="text-xs font-medium text-emerald-800">You've confirmed receipt of this order.</p>
+                  </div>
                 </div>
               ) : (
-                <Button onClick={handleConfirmReceipt} disabled={!showReceiveButton || isMarkingReceived}
-                  className="bg-black text-white h-10 rounded-xl text-[11px] font-semibold disabled:opacity-40">
-                  {isMarkingReceived ? "Confirming..." : "✓ Confirm Receipt"}
-                </Button>
+                <button onClick={handleConfirmReceipt} disabled={!showReceiveButton || isMarkingReceived}
+                  className="bg-black text-white h-24 rounded-3xl text-xs font-bold uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 flex flex-col items-center justify-center gap-2">
+                  {isMarkingReceived ? "Processing..." : (
+                    <>
+                      <CheckCircle size={20} />
+                      Confirm Receipt
+                    </>
+                  )}
+                </button>
               )}
 
-              {/* Rate */}
-              {order.rating ? (
-                <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 flex items-center gap-2">
-                  <Star className="h-4 w-4 text-yellow-500 fill-yellow-400" />
-                  <span className="text-[11px] font-semibold text-yellow-700">{order.rating}/5 Rated</span>
-                </div>
+              {!order.rating ? (
+                <button onClick={() => setShowReviewModal(true)} disabled={!order.isReceivedConfirmed}
+                  className="bg-white border border-zinc-100 text-black h-24 rounded-3xl text-xs font-bold uppercase tracking-[0.2em] shadow-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 flex flex-col items-center justify-center gap-2">
+                   <Star size={20} className="text-brand-secondary" />
+                   Leave Review
+                </button>
               ) : (
-                <Button onClick={() => setShowReviewModal(true)} disabled={!order.isReceivedConfirmed}
-                  variant="outline" className="h-10 rounded-xl text-[11px] font-semibold border-gray-200 disabled:opacity-40">
-                  ★ Leave Review
-                </Button>
-              )}
-
-              {/* Dispute */}
-              {order.disputeStatus ? (
-                <div className="bg-red-50 border border-red-100 rounded-xl p-3 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-red-500" />
-                  <span className="text-[11px] font-semibold text-red-700 capitalize">Dispute {order.disputeStatus}</span>
+                <div className="bg-brand-secondary/10 border border-brand-secondary/20 rounded-3xl p-6 flex flex-col gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-brand-secondary text-white flex items-center justify-center">
+                    <Star className="h-5 w-5 fill-current" />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-bold uppercase tracking-widest text-brand-secondary mb-1">{order.rating}/5 Experience</p>
+                     <p className="text-xs font-medium text-brand-secondary/80">Thank you for your feedback.</p>
+                  </div>
                 </div>
-              ) : (
-                <Button onClick={() => setShowDisputeModal(true)} variant="outline"
-                  className="h-10 rounded-xl text-[11px] font-semibold border-red-100 text-red-500 hover:bg-red-50">
-                  ⚠ Report Issue
-                </Button>
               )}
             </div>
+            
+            <button onClick={() => setShowDisputeModal(true)} disabled={order.disputeStatus === 'open'}
+              className="w-full h-16 border border-red-50 text-red-500 rounded-3xl text-[10px] font-bold uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-3">
+              <AlertTriangle size={14} /> 
+              {order.disputeStatus === 'open' ? 'Dispute Under Review' : 'Report an Issue with this Order'}
+            </button>
           </div>
 
-          {/* Right Column — Chat */}
-          <div className="lg:col-span-5">
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col" style={{ height: '520px' }}>
+          {/* Right Column — Concierge Chat */}
+          <div className="lg:col-span-5 sticky top-32">
+            <div className="bg-white rounded-[40px] border border-zinc-100 overflow-hidden flex flex-col shadow-soft h-[640px]">
               {/* Chat Header */}
-              <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-                <MessageCircle className="h-4 w-4 text-gray-400" />
-                <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">Order Chat</h2>
-                <div className="ml-auto flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[10px] text-gray-400">Live</span>
+              <div className="px-8 py-6 border-b border-zinc-50 flex items-center gap-4 bg-zinc-50/30">
+                <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center">
+                   <MessageCircle size={20} />
+                </div>
+                <div>
+                   <h2 className="text-[11px] font-bold uppercase tracking-widest text-black">Order Concierge</h2>
+                   <div className="flex items-center gap-1.5">
+                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                     <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Priority Line</span>
+                   </div>
                 </div>
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-hide">
-                {/* System message */}
+              <div className="flex-1 overflow-y-auto px-6 py-8 space-y-6 scrollbar-hide">
                 <div className="text-center">
-                  <span className="text-[10px] text-gray-400 bg-gray-50 px-3 py-1 rounded-full">
-                    Order placed on {orderDate.toLocaleDateString()}
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-300 bg-zinc-50 px-4 py-1.5 rounded-full">
+                    Established {orderDate.toLocaleDateString()}
                   </span>
                 </div>
 
                 {messages.length === 0 && (
-                  <div className="text-center py-8">
-                    <MessageCircle className="h-8 w-8 text-gray-200 mx-auto mb-2" />
-                    <p className="text-xs text-gray-400">No messages yet.</p>
-                    <p className="text-[10px] text-gray-300 mt-1">Send a message to communicate with the seller.</p>
+                  <div className="text-center py-12 px-8">
+                    <div className="w-16 h-16 rounded-full bg-zinc-50 flex items-center justify-center mx-auto mb-6">
+                       <Sparkles className="text-zinc-200" size={24} />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-2">Direct Channel</p>
+                    <p className="text-[10px] text-zinc-300 leading-relaxed uppercase tracking-widest">Connect with our artisanal team regarding your selection.</p>
                   </div>
                 )}
 
@@ -407,20 +443,21 @@ export default function OrderTrackingPage() {
                   const isBuyer = msg.sender === 'buyer';
                   const time = new Date(msg.timestamp);
                   return (
-                    <div key={i} className={`flex ${isBuyer ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] ${isBuyer ? 'order-2' : ''}`}>
-                        <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                    <div key={i} className={`flex ${isBuyer ? 'justify-end' : 'justify-start'} animate-fade-up`}>
+                      <div className={`max-w-[85%] ${isBuyer ? 'order-2' : ''}`}>
+                        <div className={`px-5 py-4 rounded-[24px] text-sm font-medium leading-relaxed shadow-sm ${
                           isBuyer
-                            ? 'bg-black text-white rounded-br-md'
-                            : 'bg-gray-100 text-gray-900 rounded-bl-md'
+                            ? 'bg-black text-white rounded-br-none'
+                            : 'bg-zinc-50 text-zinc-900 rounded-bl-none border border-zinc-100'
                         }`}>
                           {msg.text}
                         </div>
-                        <div className={`flex items-center gap-1 mt-1 ${isBuyer ? 'justify-end' : 'justify-start'}`}>
-                          <span className="text-[9px] text-gray-400">
-                            {isBuyer ? 'You' : 'SheDoo'}
+                        <div className={`flex items-center gap-3 mt-3 ${isBuyer ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">
+                            {isBuyer ? 'Owner' : 'SheDoo'}
                           </span>
-                          <span className="text-[9px] text-gray-300">
+                          <span className="w-1 h-1 rounded-full bg-zinc-200" />
+                          <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest">
                             {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
@@ -431,68 +468,32 @@ export default function OrderTrackingPage() {
                 <div ref={chatEndRef} />
               </div>
 
-              {/* Message input */}
-              <div className="px-3 py-3 border-t border-gray-100 bg-white">
-                <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center gap-2">
+              {/* Input Area */}
+              <div className="p-6 border-t border-zinc-50 bg-white">
+                <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="relative group">
                   <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 h-10 px-4 bg-gray-50 border border-gray-100 rounded-full text-sm focus:outline-none focus:border-gray-300 transition-colors"
+                    placeholder="Message concierge..."
+                    className="w-full h-14 pl-6 pr-16 bg-zinc-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-black transition-all outline-none"
                   />
                   <button
                     type="submit"
                     disabled={!newMessage.trim() || isSendingMessage}
-                    className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                    className="absolute right-2 top-2 w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center hover:bg-brand-accent transition-all duration-500 disabled:opacity-20 disabled:cursor-not-allowed shrink-0 shadow-lg"
                   >
                     <Send className="h-4 w-4" />
                   </button>
                 </form>
-              </div>
-            </div>
-
-            {/* Need Help & WhatsApp/SMS Tracking */}
-            <div className="mt-4 bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
-              <div>
-                <p className="text-xs font-bold text-gray-900 mb-1">Track via Mobile</p>
-                <p className="text-[10px] text-gray-400 mb-3">Instant support for Order #{order.id?.slice(-8).toUpperCase()}</p>
-                <div className="flex flex-col gap-2">
-                  <a 
-                    href={`https://wa.me/255749097220?text=Hello%2C%20I%27d%20like%20to%20track%20my%20order%20%23${order.id?.slice(-8).toUpperCase()}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 bg-green-50 rounded-xl border border-green-100 group hover:shadow-sm transition-all"
-                  >
-                    <div className="flex items-center gap-2">
-                      <MessageCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-[11px] font-bold text-green-700">Track on WhatsApp</span>
-                    </div>
-                    <ArrowRight className="h-3 w-3 text-green-300 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                  
-                  <a 
-                    href={`sms:+255749097220?body=Hello%2C%20I%27d%20like%20to%20track%20my%20order%20%23${order.id?.slice(-8).toUpperCase()}`}
-                    className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-100 group hover:shadow-sm transition-all"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-blue-600" />
-                      <span className="text-[11px] font-bold text-blue-700">Track via SMS</span>
-                    </div>
-                    <ArrowRight className="h-3 w-3 text-blue-300 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </div>
-              </div>
-              
-              <div className="pt-3 border-t border-gray-50">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Direct Contact</p>
-                <div className="flex gap-4">
-                  <a href="tel:+255749097220" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
-                    <Phone className="h-3 w-3" /> Call Support
-                  </a>
-                  <a href="mailto:shabanimnango99@gmail.com" className="flex items-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-900 transition-colors">
-                    <Mail className="h-3 w-3" /> Email us
-                  </a>
+                <div className="mt-4 flex items-center justify-center gap-6">
+                   <a href={`https://wa.me/255749097220?text=Order%20Help%20%23${order.id?.slice(-8).toUpperCase()}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-zinc-400 hover:text-emerald-500 transition-colors">
+                      <MessageCircle size={12} /> WhatsApp
+                   </a>
+                   <span className="w-1 h-1 rounded-full bg-zinc-200" />
+                   <a href={`tel:+255749097220`} className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black transition-colors">
+                      <Phone size={12} /> Call Direct
+                   </a>
                 </div>
               </div>
             </div>

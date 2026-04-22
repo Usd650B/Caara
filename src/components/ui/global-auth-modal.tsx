@@ -6,12 +6,16 @@ import { AuthModal } from "./auth-modal"
 export function GlobalAuthModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [returnPath, setReturnPath] = useState<string | null>(null)
+  const [actionOnSuccess, setActionOnSuccess] = useState<string | null>(null)
 
   useEffect(() => {
     const handleShowModal = (e: any) => {
       setIsOpen(true)
       if (e.detail?.returnPath) {
         setReturnPath(e.detail.returnPath)
+      }
+      if (e.detail?.actionOnSuccess) {
+        setActionOnSuccess(e.detail.actionOnSuccess)
       }
     }
 
@@ -29,8 +33,14 @@ export function GlobalAuthModal() {
   }, [])
 
   const handleSuccess = () => {
-    if (returnPath) {
+    if (actionOnSuccess) {
+      window.dispatchEvent(new CustomEvent(actionOnSuccess))
+      setIsOpen(false)
+      setActionOnSuccess(null)
+    } else if (returnPath) {
       window.location.href = returnPath
+    } else {
+      setIsOpen(false)
     }
   }
 
@@ -43,9 +53,9 @@ export function GlobalAuthModal() {
   )
 }
 
-export function openAuthModal(returnPath?: string) {
+export function openAuthModal(returnPath?: string, actionOnSuccess?: string) {
   if (typeof window !== 'undefined') {
-    const event = new CustomEvent('show-auth-modal', { detail: { returnPath } });
+    const event = new CustomEvent('show-auth-modal', { detail: { returnPath, actionOnSuccess } });
     window.dispatchEvent(event);
   }
 }

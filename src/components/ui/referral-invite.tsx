@@ -9,7 +9,7 @@ import { openAuthModal } from "./global-auth-modal";
 
 const MAX_INVITES = 5;
 
-export function ReferralInvite() {
+export function ReferralInvite({ hideSection = false }: { hideSection?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [referral, setReferral] = useState<Referral | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,11 +40,17 @@ export function ReferralInvite() {
 
   const handleOpen = () => {
     if (!user) {
-      openAuthModal();
+      openAuthModal(undefined, 'open-referral-modal');
       return;
     }
     setIsOpen(true);
   };
+
+  useEffect(() => {
+    const handleTrigger = () => handleOpen();
+    window.addEventListener('open-referral-modal', handleTrigger);
+    return () => window.removeEventListener('open-referral-modal', handleTrigger);
+  }, [user]);
 
   const copyCode = () => {
     if (referral?.referralCode) {
@@ -91,9 +97,15 @@ export function ReferralInvite() {
     if (result.success) {
       setSuccessMsg(`🎉 ${valid.length} invitation${valid.length > 1 ? "s" : ""} sent! They'll each get 15% off.`);
       setInvitees([{ name: "", contact: "" }]);
+      
+      // Sync bonus to localStorage so inviter gets 15% off immediately
+      const { syncReferralBonus } = await import("@/lib/bonus");
+      await syncReferralBonus(user!.email, user!.name || "");
+      
       // Refresh referral
       const updated = await getOrCreateReferral(user!.email, user!.name || "");
       setReferral(updated);
+      window.dispatchEvent(new CustomEvent('cart-updated')); // Refresh cart UI if open
     } else {
       setErrorMsg(result.error || "Failed to send invitations.");
     }
@@ -103,7 +115,8 @@ export function ReferralInvite() {
   return (
     <>
       {/* ═══ Homepage Display Section ═══ */}
-      <section className="py-20 px-4 sm:px-8 bg-gradient-to-br from-[var(--brand-primary-50)] via-white to-[var(--brand-accent-50)] relative overflow-hidden">
+      {!hideSection && (
+        <section id="offers" className="py-20 px-4 sm:px-8 bg-gradient-to-br from-[var(--brand-primary-50)] via-white to-[var(--brand-accent-50)] relative overflow-hidden">
         {/* Background shapes */}
         <div className="absolute top-10 right-10 w-64 h-64 rounded-full opacity-[0.04] blur-3xl" style={{ background: 'var(--brand-primary)' }} />
         <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full opacity-[0.04] blur-3xl" style={{ background: 'var(--brand-accent)' }} />
@@ -205,7 +218,8 @@ export function ReferralInvite() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      )}
 
       {/* ═══ INVITATION MODAL ═══ */}
       {isOpen && (

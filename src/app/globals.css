@@ -165,6 +165,7 @@
   }
 
   .luxury-italic {
+    font-family: var(--font-playfair);
     @apply italic font-medium;
   }
 }

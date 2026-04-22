@@ -23,12 +23,13 @@ export function ProductCard({
 }: ProductCardProps) {
   const { formatPrice, t } = useSettings();
   
-  const generateSlug = (name: string, id: string) => {
+  const generateSlug = (name: string | undefined, id: string | undefined) => {
+    if (!name) return id || 'product';
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-    return `${slug}-${id}`;
+    return `${slug}-${id || ''}`;
   };
 
-  const productUrl = `/products/${generateSlug(product.name, product.id || '')}`;
+  const productUrl = `/products/${generateSlug(product?.name, product?.id)}`;
 
   const handleProductClick = (e: React.MouseEvent) => {
     if (!isCustomerAuthenticated()) {

@@ -33,7 +33,48 @@ export default function TrackOrderPage() {
           <div className="flex flex-col gap-4">
              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Order Concierge</h4>
              <h1 className="text-5xl md:text-6xl font-bold tracking-tight">Track your <span className="luxury-italic">Journey</span></h1>
-             <p className="text-zinc-500 text-lg leading-relaxed max-w-md">Our team is ready to provide live updates on your order. Connect with us for instant assistance.</p>
+             <p className="text-zinc-500 text-lg leading-relaxed max-w-md">Enter your Order ID to see real-time updates or connect with us for instant assistance.</p>
+          </div>
+
+          {/* Website Tracking Input */}
+          <div className="bg-zinc-50 p-8 rounded-[40px] border border-zinc-100 flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 ml-1">Order ID</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="E.g. 5f3a... or #SHEDOO-..."
+                  className="w-full h-14 bg-white border-none rounded-2xl px-6 text-sm focus:ring-2 focus:ring-black outline-none shadow-sm"
+                  id="orderIdInput"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = (e.target as HTMLInputElement).value.trim().replace('#', '');
+                      if (val) window.location.href = `/order-tracking/${val}`;
+                    }
+                  }}
+                />
+                <button 
+                  onClick={() => {
+                    const input = document.getElementById('orderIdInput') as HTMLInputElement;
+                    const val = input.value.trim().replace('#', '');
+                    if (val) window.location.href = `/order-tracking/${val}`;
+                  }}
+                  className="absolute right-2 top-2 h-10 px-6 bg-black text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center gap-2"
+                >
+                  Track <ArrowRight size={14} />
+                </button>
+              </div>
+            </div>
+            <p className="text-[10px] text-zinc-400 italic">You can find your Order ID in your confirmation screen or SMS.</p>
+          </div>
+
+          <div className="relative py-4">
+            <div className="absolute inset-0 flex items-center">
+               <div className="w-full border-t border-zinc-100" />
+            </div>
+            <div className="relative flex justify-center">
+               <span className="bg-white px-4 text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-300">or use social channels</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
