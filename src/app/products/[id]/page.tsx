@@ -81,7 +81,7 @@ export default function ProductDetailPage() {
 
     const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existingIndex = existingCart.findIndex((item: any) =>
-      item.id === product.id && item.size === selectedSize && item.color === selectedColor
+      item.id === product.id && (item.size || "") === (selectedSize || "") && (item.color || "") === (selectedColor || "")
     );
     if (existingIndex >= 0) existingCart[existingIndex].quantity += quantity;
     else existingCart.push(cartItem);

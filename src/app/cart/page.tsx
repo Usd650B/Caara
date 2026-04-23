@@ -79,9 +79,12 @@ export default function CartPage() {
   }, []);
 
   const updateQuantity = (id: string, size: string, color: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
+    if (newQuantity < 1) {
+      removeItem(id, size, color);
+      return;
+    }
     const updatedCart = cartItems.map(item => 
-      (item.id === id && item.size === size && item.color === color)
+      (item.id === id && (item.size || "") === (size || "") && (item.color || "") === (color || ""))
         ? { ...item, quantity: newQuantity }
         : item
     );
@@ -89,9 +92,9 @@ export default function CartPage() {
   };
 
   const removeItem = (id: string, size: string, color: string) => {
-    // Robust filtering: compare all key properties
+    // Robust filtering: compare all key properties gracefully
     const updatedCart = cartItems.filter(item => 
-      !(item.id === id && item.size === size && item.color === color)
+      !(item.id === id && (item.size || "") === (size || "") && (item.color || "") === (color || ""))
     );
     saveCart(updatedCart);
   };
