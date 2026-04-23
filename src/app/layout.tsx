@@ -9,9 +9,15 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "SheDoo - Premium Luxury Handbags",
-  description: "Discover SheDoo Elegance - High-quality, stylish luxury handbags at prices you can afford. Premium fashion for every style.",
-  keywords: ["handbags", "luxury bags", "SheDoo", "fashion", "designer bags", "premium handbags"],
+  title: "SheDoo - Premium Luxury Handbags & Accessories",
+  description: "Discover SheDoo Elegance - High-quality, stylish luxury handbags at prices you can afford. Shop premium leather bags, totes, crossbody, and designer handbags.",
+  keywords: [
+    "SheDoo", "SheDoo handbags", "luxury handbags", "premium leather bags", 
+    "designer handbags", "affordable luxury bags", "women's fashion accessories", 
+    "exclusive handbag collection", "elegant purses", "totes", "crossbody bags", 
+    "shoulder bags", "chic fashion bags", "SheDoo fashion", "high-end bags",
+    "trendy purses", "luxury bags for women", "premium accessories"
+  ],
   authors: [{ name: "SheDoo Fashion" }],
   creator: "SheDoo Fashion",
   publisher: "SheDoo Beauty",
