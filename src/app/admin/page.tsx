@@ -424,9 +424,12 @@ interface DashboardContentProps {
   };
   analytics: {
     totalVisitors: number;
+    todayVisitors: number;
     totalProductViews: number;
+    todayProductViews: number;
     abandonedCarts: number;
     totalSignups: number;
+    todaySignups: number;
   } | null;
   orders: Order[];
   abandonedCartsList?: any[];
@@ -435,12 +438,11 @@ interface DashboardContentProps {
 
 const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], recentClicks = [] }: DashboardContentProps) => (
   <div className="space-y-8">
-    {/* KPI Metrics Row */}
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard title="Total Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="12.5" accent="blue" />
-      <StatCard title="Orders" value={stats.totalOrders} icon={ShoppingCart} trend="up" trendValue="8.2" accent="green" />
+      <StatCard title="Total Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} accent="blue" />
+      <StatCard title="Orders" value={stats.totalOrders} icon={ShoppingCart} accent="green" />
       <StatCard title="Products" value={stats.totalProducts} icon={Package} accent="teal" />
-      <StatCard title="Customers" value={stats.totalCustomers} icon={Users} trend="up" trendValue="24.8" accent="amber" />
+      <StatCard title="Customers" value={stats.totalCustomers} icon={Users} accent="amber" />
     </div>
 
     {/* Live Metrics Row */}
@@ -450,9 +452,9 @@ const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], r
         <p className="text-[11px] font-bold uppercase tracking-widest text-neutral-500">Live Metrics</p>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Today's Visitors" value={analytics?.totalVisitors || 0} icon={Eye} accent="teal" />
-        <StatCard title="Product Clicks" value={analytics?.totalProductViews || 0} icon={Target} accent="blue" />
-        <StatCard title="New Signups" value={analytics?.totalSignups || 0} icon={ShieldCheck} accent="green" />
+        <StatCard title="Today's Visitors" value={analytics?.todayVisitors || 0} icon={Eye} accent="teal" />
+        <StatCard title="Today's Clicks" value={analytics?.todayProductViews || 0} icon={Target} accent="blue" />
+        <StatCard title="Today's Signups" value={analytics?.todaySignups || 0} icon={ShieldCheck} accent="green" />
         <StatCard title="Abandoned Carts" value={analytics?.abandonedCarts || 0} icon={AlertCircle} accent="rose" />
       </div>
     </div>
@@ -581,22 +583,24 @@ const DashboardContent = ({ stats, orders, analytics, abandonedCartsList = [], r
           </div>
         </div>
 
-        {/* Quick Link Card */}
-        <div className="bg-neutral-950 text-white rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-            <Diamond className="h-32 w-32" />
+        {/* Actionable Intelligence Card */}
+        <div className="bg-neutral-950 text-white rounded-2xl p-6 relative overflow-hidden shadow-xl">
+          <div className="absolute -top-10 -right-10 p-6 opacity-5">
+            <Activity className="h-40 w-40" />
           </div>
           <div className="relative space-y-4">
-            <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-yellow-400" />
+            <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+              <Activity className="h-4 w-4 text-emerald-400" />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-1">Intelligence</p>
-              <h4 className="text-lg font-bold leading-tight">"Luxury Bags" sector growing 14% MoM</h4>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Actionable Intelligence</p>
+              <h4 className="text-lg font-bold leading-tight mb-2">
+                {orders.filter(o => o.status === 'pending').length} pending orders to process
+              </h4>
+              <p className="text-[11px] text-white/70 leading-relaxed">
+                You currently have {abandonedCartsList.length} active abandoned carts. Reaching out to these customers can increase your daily revenue.
+              </p>
             </div>
-            <Button className="w-full bg-white text-black hover:bg-neutral-100 font-bold uppercase text-[10px] h-10 rounded-xl transition-all">
-              Access Analytics
-            </Button>
           </div>
         </div>
       </div>

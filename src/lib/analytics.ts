@@ -301,17 +301,23 @@ export const getAnalyticsRange = async (range: 'today' | 'week' | 'month' | 'yea
 // Dashboard Aggregation
 export const getDashboardAnalytics = async (): Promise<{
   totalVisitors: number;
+  todayVisitors: number;
   totalProductViews: number;
+  todayProductViews: number;
   abandonedCarts: number;
   totalSignups: number;
+  todaySignups: number;
 }> => {
   const db = getDb()
   if (!db) {
     return {
       totalVisitors: 0,
+      todayVisitors: 0,
       totalProductViews: 0,
+      todayProductViews: 0,
       abandonedCarts: 0,
-      totalSignups: 0
+      totalSignups: 0,
+      todaySignups: 0
     }
   }
 
@@ -320,10 +326,15 @@ export const getDashboardAnalytics = async (): Promise<{
     const querySnapshot = await getDocs(q)
     
     let totalVisitors = 0
+    let todayVisitors = 0
     let totalProductViews = 0
+    let todayProductViews = 0
     let totalAddedToCart = 0
     let totalCompletedOrders = 0
     let totalSignups = 0
+    let todaySignups = 0
+
+    const todayId = getTodayDocId()
 
     querySnapshot.forEach((doc) => {
       const data = doc.data() as DailyAnalytics
@@ -332,23 +343,35 @@ export const getDashboardAnalytics = async (): Promise<{
       totalAddedToCart += data.addedToCart || 0
       totalCompletedOrders += data.completedOrders || 0
       totalSignups += data.signups || 0
+
+      if (data.date === todayId || doc.id === todayId) {
+        todayVisitors = data.visitors || 0
+        todayProductViews = data.productViews || 0
+        todaySignups = data.signups || 0
+      }
     })
 
     const abandonedCarts = Math.max(0, totalAddedToCart - totalCompletedOrders)
 
     return {
       totalVisitors,
+      todayVisitors,
       totalProductViews,
+      todayProductViews,
       abandonedCarts,
-      totalSignups
+      totalSignups,
+      todaySignups
     }
   } catch (err) {
     console.error("Failed to fetch dashboard analytics", err)
     return {
       totalVisitors: 0,
+      todayVisitors: 0,
       totalProductViews: 0,
+      todayProductViews: 0,
       abandonedCarts: 0,
-      totalSignups: 0
+      totalSignups: 0,
+      todaySignups: 0
     }
   }
 }
